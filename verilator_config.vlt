@@ -1,0 +1,5 @@
+`verilator_config
+lint_off -rule WIDTH -file "tb/verilog-axi/rtl/axi_ram.v"
+lint_off -rule WIDTH -file "tb/rtl_wrapper/axi_mem_wrapper.sv"
+lint_off -rule WIDTH -file "tb/rtl_wrapper/wrapper.sv"
+lint_off -rule CASEINCOMPLETE -file "tb/verilog-axi/rtl/axi_ram.v"

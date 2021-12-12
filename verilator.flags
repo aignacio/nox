@@ -1,0 +1,30 @@
+// For performance use line below
+// -O3 --x-assign fast --x-initial fast --noassert
+//-Wno-WIDTH
+//-Wno-CASEINCOMPLETE
+//-Wno-CASEX
+//-Wno-LITENDIAN
+//-Wno-UNSIGNED
+//-Wno-CASEWITHX
+//-Wno-IMPLICIT
+//-Wno-BLKANDNBLK
+//-Wno-CMPCONST
+//-Wno-MODDUP
+//-Wno-UNOPTTHREADS
+//-Wno-INSECURE
+//-Wno-COMBDLY
+-Wno-UNOPTFLAT
+-Wno-TIMESCALEMOD
+// --coverage
+--exe
+//--threads 4
+//--trace
+--trace-depth			10000
+--trace-structs
+--trace-fst
+--trace-max-array	10000
+--trace-max-width 10000
+--cc
+//--hierarchical
+verilator_config.vlt
+

@@ -1,0 +1,3 @@
+[submodule "tb/cpp/elfio"]
+	path = tb/cpp/elfio
+	url = git@github.com:serge1/ELFIO.git
