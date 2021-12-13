@@ -1,0 +1,40 @@
+[*]
+[*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
+[*] Mon Dec 13 17:00:46 2021
+[*]
+[dumpfile] "/Users/aignacio/projects/nox/nox_waves.fst"
+[dumpfile_mtime] "Mon Dec 13 16:59:44 2021"
+[dumpfile_size] 902544
+[savefile] "/Users/aignacio/projects/nox/waves.gtkw"
+[timestart] 1
+[size] 2286 711
+[pos] 74 1287
+*-5.000000 109 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.nox_sim.
+[treeopen] TOP.nox_sim.u_nox.
+[sst_width] 271
+[signals_width] 279
+[sst_expanded] 1
+[sst_vpaned_height] 421
+@28
+TOP.nox_sim.u_nox.arst
+TOP.nox_sim.u_nox.clk
+@800200
+-instr_if
+@22
+TOP.nox_sim.u_nox.start_addr_i[31:0]
+@28
+TOP.nox_sim.u_nox.start_fetch_i
+@22
+TOP.nox_sim.u_nox.instr_axi_mosi_o.araddr[31:0]
+@29
+TOP.nox_sim.u_nox.instr_axi_mosi_o.arvalid
+@28
+TOP.nox_sim.u_nox.instr_axi_miso_i.rvalid
+@22
+TOP.nox_sim.u_nox.instr_axi_miso_i.rdata[31:0]
+@1000200
+-instr_if
+[pattern_trace] 1
+[pattern_trace] 0

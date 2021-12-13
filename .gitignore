@@ -25,4 +25,5 @@ fusesoc.conf
 .tox
 .test_durations
 *.i
+*.fst
 output_temp/

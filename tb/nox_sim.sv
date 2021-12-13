@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 12.12.2021
+ * Last Modified Date: 13.12.2021
  */
 module nox_sim import utils_pkg::*; (
   input   clk,
@@ -50,32 +50,19 @@ module nox_sim import utils_pkg::*; (
   );
 
   // synthesis translate_off
-  //axi_printf_verilator u_axi_verilator (
-    //.clk      (clk),
-    //.arst     (arst),
-    //.axi_mosi (slaves_axi_mosi[2]),
-    //.axi_miso (slaves_axi_miso[2])
-  //);
+  function automatic void writeWordIRAM(addr_val, word_val);
+    /*verilator public*/
+    logic [31:0] addr_val;
+    logic [31:0] word_val;
+    u_iram.mem_loading[addr_val] = word_val;
+  endfunction
 
-  //function automatic void writeWordIRAM(addr_val, word_val);
-    //[> verilator public <]
-    //logic [31:0] addr_val;
-    //logic [31:0] word_val;
-    //u_ram_instr_rv.u_ram.mem[addr_val] = word_val;
-  //endfunction
-
-  //function automatic void writeWordDRAM(addr_val, word_val);
-    //[> verilator public <]
-    //logic [31:0] addr_val;
-    //logic [31:0] word_val;
-    ////u_ram_rv.u_ram.mem[addr_val] = word_val;
-  //endfunction
-
-  //function automatic void writeRstAddr(boot_addr);
-    //[> verilator public <]
-    //logic [31:0] boot_addr;
-    //boot_ff = boot_addr;
-  //endfunction
+  function automatic void writeWordDRAM(addr_val, word_val);
+    /*verilator public*/
+    logic [31:0] addr_val;
+    logic [31:0] word_val;
+    u_dram.mem_loading[addr_val] = word_val;
+  endfunction
   // synthesis translate_on
 endmodule
 

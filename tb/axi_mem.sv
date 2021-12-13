@@ -6,8 +6,10 @@ module axi_mem import utils_pkg::*; #(
   input   s_axi_mosi_t  axi_mosi,
   output  s_axi_miso_t  axi_miso
 );
-  localparam ADDR_RAM = $clog2(MEM_KB*1024);
-  logic [ADDR_RAM-1:0][31:0] mem_ff;
+  localparam ADDR_RAM  = $clog2((MEM_KB*1024)/4);
+  localparam NUM_WORDS = (MEM_KB*1024)/4;
+  logic [NUM_WORDS-1:0][31:0] mem_ff;
+  logic [NUM_WORDS-1:0][31:0] mem_loading;
   logic [ADDR_RAM-1:0] rd_addr;
   logic [ADDR_RAM-1:0] wr_addr;
   logic [31:0] next_wdata;
@@ -54,10 +56,13 @@ module axi_mem import utils_pkg::*; #(
     next_wr_addr = axi_addr_t'('0);
     next_axi_wr  = axi_wr_vld_ff;
     next_wr_size = axi_size_t'('h0);
-    wr_addr      = {wr_addr_ff[ADDR_RAM-1:2],2'h0};
+    wr_addr      = wr_addr_ff[2+:ADDR_RAM];
     byte_sel_wr  = 'h0;
     we_mem       = 'b0;
     next_bvalid  = bvalid_ff;
+    next_rd_size = axi_size_t'('h0);
+    next_wdata   = 'h0;
+
     axi_miso.awready = 'b1;
     axi_miso.wready  = axi_wr_vld_ff;
     axi_miso.bid     = 'b0;
@@ -94,7 +99,7 @@ module axi_mem import utils_pkg::*; #(
     next_rd_data = 'd0;
     next_axi_rd  = 'b0;
     next_rd_size = axi_size_t'('h0);
-    rd_addr      = {rd_addr_ff[ADDR_RAM-1:2], 2'h0};
+    rd_addr      = rd_addr_ff[2+:ADDR_RAM];
     byte_sel_rd  = 'h0;
     axi_miso.arready = 'b1;
 
@@ -140,6 +145,16 @@ module axi_mem import utils_pkg::*; #(
       if (we_mem) begin
         mem_ff[wr_addr] <= next_wdata;
       end
+    end
+  end
+
+  initial begin
+    `ifdef ACT_H_RESET
+    if (rst) begin
+    `else
+    if (~rst) begin
+    `endif
+      mem_ff = mem_loading;
     end
   end
 endmodule

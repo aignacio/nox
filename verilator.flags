@@ -17,8 +17,8 @@
 -Wno-TIMESCALEMOD
 // --coverage
 --exe
-//--threads 4
-//--trace
+--threads 4
+--trace
 --trace-depth			10000
 --trace-structs
 --trace-fst
@@ -27,4 +27,3 @@
 --cc
 //--hierarchical
 verilator_config.vlt
-

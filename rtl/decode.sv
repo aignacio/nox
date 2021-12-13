@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 10.12.2021
+ * Last Modified Date: 12.12.2021
  */
 module decode
   import utils_pkg::*;
@@ -47,7 +47,7 @@ module decode
   end
 
   always_comb begin : dec_op
-    id_ex_o = id_ex_ff;
+    id_ex_o    = id_ex_ff;
     instr_dec  = fetch_instr_i;
     next_trap  = trap_info_ff;
     next_id_ex = id_ex_ff;
@@ -175,6 +175,7 @@ module decode
       end
     end
 
+    id_regs_o = s_stall_id_t'('0);
     if (id_valid_o) begin
       id_regs_o.rs1_addr = instr_dec.rs1;
       id_regs_o.rs2_addr = instr_dec.rs2;
