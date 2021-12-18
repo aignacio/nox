@@ -25,7 +25,6 @@ void show_summary(s_sim_setup_t *setup) {
         << "\n\tWaves enable: " << setup->waves_dump
         << "\n\tWaves path: "   << setup->waves_path
         << "\n\tELF file: "     << setup->elf_path
-        << "\n"
         << std::endl;
   cout  << "=================================================" << std::endl;
 

@@ -106,25 +106,39 @@ bool loadELF(testbench<Vnox_sim> *sim, string program_path, const bool en_print)
 
     if (en_print){
       printf("\nSegment [%d] - LMA[0x%x] VMA[0x%x]", i,(uint32_t)lma_addr,(uint32_t)vma_addr);
-      printf("\nFile size [%d] - Memory size [%d]",file_size,mem_size);
+      printf("\nFile size [%d] - Memory size [%d ~ %d]\n",file_size,mem_size,mem_size/1024);
     }
     if (mem_size >= (IRAM_KB_SIZE*1024)){
       printf("\n\n[ELF Loader] ERROR:");
       printf("\nELF program: %d bytes", mem_size);
-      printf("\nVerilator model memory size: %d bytes", (IRAM_KB_SIZE*1024));
+      printf("\nVerilator model memory size: %d bytes\n", (IRAM_KB_SIZE*1024));
       return 1;
     }
     if ((lma_addr >= IRAM_ADDR && lma_addr < (IRAM_ADDR+(IRAM_KB_SIZE*1024))) && (file_size > 0x00)){
       int init_addr = (lma_addr-IRAM_ADDR);
       // IRAM Address
-      if (en_print) printf("\n> IRAM address space");
       for (uint32_t p = 0; p < mem_size; p+=4){
         uint32_t word_line = ((uint8_t)p_seg->get_data()[p+3]<<24)+((uint8_t)p_seg->get_data()[p+2]<<16)+
                              ((uint8_t)p_seg->get_data()[p+1]<<8)+(uint8_t)p_seg->get_data()[p];
         // If the whole word is zeroed, we don't write as it might overlap other regions
         if (!(word_line == 0x00)) {
-          cout << "Addr[" << (p+init_addr)/4<< "] Data [" << word_line << "]" << std::endl;
+          if ((p+init_addr)/4 < 10)
+            cout << "Addr[" << std::hex << (p+init_addr)/4 << "] Data[" << std::hex << word_line << "]" << std::endl;
           sim->core->nox_sim->writeWordIRAM((p+init_addr)/4,word_line);
+        }
+      }
+    }
+    else if ((lma_addr >= DRAM_ADDR && lma_addr < (DRAM_ADDR+(DRAM_KB_SIZE*1024))) && (file_size > 0x00)) {
+      int init_addr = (lma_addr-DRAM_ADDR);
+      // DRAM Address
+      for (uint32_t p = 0; p < mem_size; p+=4){
+        uint32_t word_line = ((uint8_t)p_seg->get_data()[p+3]<<24)+((uint8_t)p_seg->get_data()[p+2]<<16)+
+                             ((uint8_t)p_seg->get_data()[p+1]<<8)+(uint8_t)p_seg->get_data()[p];
+        // If the whole word is zeroed, we don't write as it might overlap other regions
+        if (!(word_line == 0x00)) {
+          if ((p+init_addr)/4 < 10)
+            cout << "Addr[" << std::hex << (p+init_addr)/4 << "] Data[" << std::hex << word_line << "]" << std::endl;
+          sim->core->nox_sim->writeWordDRAM((p+init_addr)/4,word_line);
         }
       }
     }

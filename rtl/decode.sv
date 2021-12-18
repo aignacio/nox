@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 12.12.2021
+ * Last Modified Date: 18.12.2021
  */
 module decode
   import utils_pkg::*;
@@ -17,7 +17,7 @@ module decode
   input                 stall_i,
   input   pc_t          pc_reset_i,
   input   pc_t          pc_jump_i,
-  output  s_stall_id_t  id_regs_o,
+  //output  s_stall_id_t  id_regs_o,
   // From FETCH stg I/F
   input   valid_t       fetch_valid_i,
   output  ready_t       fetch_ready_o,
@@ -36,6 +36,7 @@ module decode
 );
   valid_t     dec_valid_ff, next_vld_dec;
   s_instr_t   instr_dec;
+  logic       wait_inst_ff, next_wait_inst;
 
   s_trap_info_t trap_info_ff, next_trap;
   s_id_ex_t id_ex_ff, next_id_ex;
@@ -47,17 +48,40 @@ module decode
   end
 
   always_comb begin : dec_op
-    id_ex_o    = id_ex_ff;
+    if (jump_i || stall_i) begin
+      // ..Insert a NOP
+      id_ex_o          = s_id_ex_t'('0);
+      id_ex_o.we_rd    = 'b0;
+      id_ex_o.rs1_op   = REG_RF;
+      id_ex_o.rs2_op   = IMM;
+      id_ex_o.lsu      = NO_LSU;
+      id_ex_o.branch   = 'b0;
+      id_ex_o.jump     = 'b0;
+      id_ex_o.f7       = sfunct7_t'('h0);
+      id_ex_o.rd_addr  = raddr_t'('h0);
+      id_ex_o.f3       = RV_F3_ADD_SUB;
+      id_ex_o.shamt    = shamt_t'('h0);
+      id_ex_o.rshift   = rshift_t'('h0);
+      id_ex_o.imm      = imm_t'('h0);
+      id_ex_o.rs1_addr = raddr_t'('h0);
+      id_ex_o.rs2_addr = raddr_t'('h0);
+    end
+    else begin
+      id_ex_o = id_ex_ff;
+    end
+
     instr_dec  = fetch_instr_i;
     next_trap  = trap_info_ff;
     next_id_ex = id_ex_ff;
 
     // Defaults
-    next_id_ex.rd_addr = instr_dec.rd;
-    next_id_ex.lsu     = NO_LSU;
-    next_id_ex.branch  = 1'b0;
-    next_id_ex.we_rd   = 1'b0;
-    next_id_ex.jump    = 1'b0;
+    next_id_ex.rd_addr  = instr_dec.rd;
+    next_id_ex.lsu      = NO_LSU;
+    next_id_ex.branch   = 1'b0;
+    next_id_ex.we_rd    = 1'b0;
+    next_id_ex.jump     = 1'b0;
+    next_id_ex.rs1_addr = instr_dec.rs1;
+    next_id_ex.rs2_addr = instr_dec.rs2;
 
     case(instr_dec.op)
       RV_OP_IMM: begin
@@ -146,53 +170,42 @@ module decode
       end
     endcase
 
-    if (fetch_valid_i && id_ready_i && ~stall_i) begin
+    if (fetch_valid_i && id_ready_i && wait_inst_ff && ~stall_i) begin
       next_id_ex.pc_dec  = id_ex_ff.pc_dec + 'd4;
     end
-
-    if (jump_i || stall_i) begin
-      // ..Insert a NOP
-      next_id_ex.we_rd   = 'b0;
-      next_id_ex.rs1_op  = REG_RF;
-      next_id_ex.rs2_op  = IMM;
-      next_id_ex.lsu     = NO_LSU;
-      next_id_ex.branch  = 'b0;
-      next_id_ex.jump    = 'b0;
-      next_id_ex.f7      = sfunct7_t'('h0);
-      next_id_ex.rd_addr = raddr_t'('h0);
-      next_id_ex.f3      = RV_F3_ADD_SUB;
-      next_id_ex.shamt   = shamt_t'('h0);
-      next_id_ex.rshift  = rshift_t'('h0);
-      next_id_ex.imm     = imm_t'('h0);
+    else begin
+      next_id_ex.pc_dec  = id_ex_ff.pc_dec;
     end
 
     if (jump_i) begin
       next_id_ex.pc_dec  = pc_jump_i;
     end
-    else if (~stall_i) begin
-      if (fetch_valid_i && id_ready_i) begin
-        next_id_ex.pc_dec  = id_ex_ff.pc_dec + 'd4;
-      end
+
+    next_wait_inst = wait_inst_ff;
+    if (~wait_inst_ff) begin
+      next_wait_inst = (fetch_valid_i && id_ready_i && ~stall_i);
+    end
+    else if (jump_i) begin
+      next_wait_inst = 'b0;
     end
 
-    id_regs_o = s_stall_id_t'('0);
-    if (id_valid_o) begin
-      id_regs_o.rs1_addr = instr_dec.rs1;
-      id_regs_o.rs2_addr = instr_dec.rs2;
-      id_regs_o.rs1_sel  = (next_id_ex.rs1_op == REG_RF);
-      id_regs_o.rs2_sel  = (next_id_ex.rs2_op == REG_RF);
-    end
+    //id_regs_o.rs1_addr = instr_dec.rs1;
+    //id_regs_o.rs2_addr = instr_dec.rs2;
+    //id_regs_o.rs1_sel  = (next_id_ex.rs1_op == REG_RF);
+    //id_regs_o.rs2_sel  = (next_id_ex.rs2_op == REG_RF);
   end : dec_op
 
   `CLK_PROC(clk, rst) begin
     `RST_TYPE(rst) begin
-      dec_valid_ff    <= 1'b0;
+      dec_valid_ff    <= 'b0;
       id_ex_ff        <= `OP_RST_L;
       id_ex_ff.pc_dec <= pc_reset_i;
+      wait_inst_ff    <= 'b0;
     end
     else begin
-      dec_valid_ff <= next_vld_dec;
-      id_ex_ff     <= next_id_ex;
+      dec_valid_ff    <= next_vld_dec;
+      id_ex_ff        <= next_id_ex;
+      wait_inst_ff    <= next_wait_inst;
     end
   end
 

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 10.12.2021
+ * Last Modified Date: 18.12.2021
  */
 module lsu
   import utils_pkg::*;
@@ -32,16 +32,17 @@ module lsu
   logic new_txn;
   logic rd_txn;
   logic wr_txn;
+  logic wr_txn_dp;
 
   function automatic cb_size_t size_txn(lsu_w_t size);
     cb_size_t sz;
     case (size)
-      RV_LSU_LB:  sz = CB_BYTE;
-      RV_LSU_LH:  sz = CB_HALF_WORD;
-      RV_LSU_LW:  sz = CB_WORD;
-      RV_LSU_LBU: sz = CB_BYTE;
-      RV_LSU_LHU: sz = CB_HALF_WORD;
-      default:    sz = CB_WORD;
+      RV_LSU_B:  sz = CB_BYTE;
+      RV_LSU_H:  sz = CB_HALF_WORD;
+      RV_LSU_W:  sz = CB_WORD;
+      RV_LSU_BU: sz = CB_BYTE;
+      RV_LSU_HU: sz = CB_HALF_WORD;
+      default:   sz = CB_WORD;
     endcase
     return sz;
   endfunction
@@ -49,22 +50,23 @@ module lsu
   function automatic logic [3:0] maskSTRB(lsu_w_t size);
     cb_strb_t mask;
     case (size)
-      RV_LSU_LB:  mask = cb_strb_t'('b0001);
-      RV_LSU_LH:  mask = cb_strb_t'('b0011);
-      RV_LSU_LW:  mask = cb_strb_t'('b1111);
-      RV_LSU_LBU: mask = cb_strb_t'('b0001);
-      RV_LSU_LHU: mask = cb_strb_t'('b0011);
-      default:    mask = cb_strb_t'('b1111);
+      RV_LSU_B:  mask = cb_strb_t'('b0001);
+      RV_LSU_H:  mask = cb_strb_t'('b0011);
+      RV_LSU_W:  mask = cb_strb_t'('b1111);
+      RV_LSU_BU: mask = cb_strb_t'('b0001);
+      RV_LSU_HU: mask = cb_strb_t'('b0011);
+      default:   mask = cb_strb_t'('b1111);
     endcase
     return mask;
   endfunction
 
   always_comb begin
-    new_txn  = (lsu_i.op_typ != NO_LSU);
-    rd_txn   = (lsu_i.op_typ == LSU_LOAD);
-    wr_txn   = (lsu_i.op_typ == LSU_STORE);
-    lsu_bp_o = 'b0;
-    next_req = req_ff;
+    new_txn   = (lsu_i.op_typ  != NO_LSU);
+    rd_txn    = (lsu_i.op_typ  == LSU_LOAD);
+    wr_txn    = (lsu_i.op_typ  == LSU_STORE);
+    wr_txn_dp = (lsu_ff.op_typ == LSU_STORE);
+    lsu_bp_o  = 'b0;
+    next_req  = req_ff;
 
     // Default values transfer nothing
     data_cb_mosi_o = s_cb_mosi_t'('0);
@@ -87,7 +89,7 @@ module lsu
     end : addr_ph
 
     if (req_ff) begin : data_ph
-      if (wr_txn) begin
+      if (wr_txn_dp) begin
         data_cb_mosi_o.wr_data       = lsu_ff.wdata;
         data_cb_mosi_o.wr_strobe     = maskSTRB(lsu_ff.width);
         data_cb_mosi_o.wr_data_valid = 'b1;

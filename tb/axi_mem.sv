@@ -19,9 +19,7 @@ module axi_mem import utils_pkg::*; #(
   logic bvalid_ff, next_bvalid;
   logic axi_rd_vld_ff, next_axi_rd;
   logic axi_wr_vld_ff, next_axi_wr;
-  axi_addr_t  rd_addr_ff, next_rd_addr;
   axi_addr_t  wr_addr_ff, next_wr_addr;
-  axi_size_t  size_rd_ff, next_rd_size;
   axi_size_t  size_wr_ff, next_wr_size;
   axi_data_t  rd_data_ff, next_rd_data;
 
@@ -60,11 +58,11 @@ module axi_mem import utils_pkg::*; #(
     byte_sel_wr  = 'h0;
     we_mem       = 'b0;
     next_bvalid  = bvalid_ff;
-    next_rd_size = axi_size_t'('h0);
+    next_wr_size = axi_size_t'('h0);
     next_wdata   = 'h0;
 
     axi_miso.awready = 'b1;
-    axi_miso.wready  = axi_wr_vld_ff;
+    axi_miso.wready  = 'b1;
     axi_miso.bid     = 'b0;
     axi_miso.bresp   = AXI_OKAY;
     axi_miso.buser   = 'h0;
@@ -73,7 +71,7 @@ module axi_mem import utils_pkg::*; #(
     if (axi_mosi.awvalid && axi_miso.awready) begin
       next_wr_addr = axi_mosi.awaddr;
       next_axi_wr  = 'b1;
-      next_rd_size = axi_mosi.awsize;
+      next_wr_size = axi_mosi.awsize;
     end
 
     if (axi_mosi.wvalid && axi_wr_vld_ff) begin
@@ -95,51 +93,44 @@ module axi_mem import utils_pkg::*; #(
   end : axi_wr_datapath
 
   always_comb begin : axi_rd_datapath
-    next_rd_addr = axi_addr_t'('0);
-    next_rd_data = 'd0;
+    next_rd_data = rd_data_ff;
     next_axi_rd  = 'b0;
-    next_rd_size = axi_size_t'('h0);
-    rd_addr      = rd_addr_ff[2+:ADDR_RAM];
     byte_sel_rd  = 'h0;
+    rd_addr      = axi_mosi.araddr[2+:ADDR_RAM];
     axi_miso.arready = 'b1;
 
-    if (axi_mosi.arvalid && axi_miso.arready) begin
-      next_rd_addr = axi_mosi.araddr;
-      next_axi_rd  = 'b1;
-      next_rd_size = axi_mosi.arsize;
+    if (axi_rd_vld_ff) begin
+      next_axi_rd  = ~axi_mosi.rready;
     end
 
-    if (axi_rd_vld_ff) begin
-      byte_sel_rd  = rd_addr_ff[1:0];
-      next_rd_data = mask_axi(mem_ff[rd_addr], byte_sel_rd, size_rd_ff);
+    if (axi_mosi.arvalid && axi_miso.arready) begin
+      next_axi_rd  = 'b1;
+      byte_sel_rd  = axi_mosi.araddr[1:0];
+      next_rd_data = mask_axi(mem_ff[rd_addr], byte_sel_rd, axi_mosi.arsize);
     end
 
     axi_miso.rid    = 1'b0;
     axi_miso.rresp  = AXI_OKAY;
     axi_miso.ruser  = axi_user_req_t'('h0);
-    axi_miso.rdata  = axi_data_t'(rd_data_ff);
     axi_miso.rvalid = axi_rd_vld_ff;
     axi_miso.rlast  = axi_rd_vld_ff;
+    axi_miso.rdata  = axi_miso.rvalid ? axi_data_t'(rd_data_ff) : axi_data_t'('h0);
   end : axi_rd_datapath
 
   `CLK_PROC(clk, rst) begin
     `RST_TYPE(rst) begin
       rd_data_ff    <= `OP_RST_L;
-      rd_addr_ff    <= `OP_RST_L;
       wr_addr_ff    <= `OP_RST_L;
       axi_rd_vld_ff <= `OP_RST_L;
       axi_wr_vld_ff <= `OP_RST_L;
-      size_rd_ff    <= `OP_RST_L;
       size_wr_ff    <= `OP_RST_L;
       bvalid_ff     <= `OP_RST_L;
     end
     else begin
       rd_data_ff    <= next_rd_data;
-      rd_addr_ff    <= next_rd_addr;
       wr_addr_ff    <= next_wr_addr;
       axi_rd_vld_ff <= next_axi_rd;
       axi_wr_vld_ff <= next_axi_wr;
-      size_rd_ff    <= next_rd_size;
       size_wr_ff    <= next_wr_size;
       bvalid_ff     <= next_bvalid;
       if (we_mem) begin

@@ -23,11 +23,11 @@
   } oper_mux_t;
 
   typedef enum logic [2:0] {
-    RV_LSU_LB  = 3'b000,
-    RV_LSU_LH  = 3'b001,
-    RV_LSU_LW  = 3'b010,
-    RV_LSU_LBU = 3'b100,
-    RV_LSU_LHU = 3'b101
+    RV_LSU_B  = 3'b000,
+    RV_LSU_H  = 3'b001,
+    RV_LSU_W  = 3'b010,
+    RV_LSU_BU = 3'b100,
+    RV_LSU_HU = 3'b101
   } lsu_w_t;
 
   typedef enum logic [1:0] {
@@ -134,6 +134,8 @@
     shamt_t      shamt;
     rshift_t     rshift;
     imm_t        imm;
+    raddr_t      rs1_addr;
+    raddr_t      rs2_addr;
   } s_id_ex_t;
 
   typedef struct packed {

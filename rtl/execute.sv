@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 10.12.2021
+ * Last Modified Date: 18.12.2021
  */
 module execute
   import utils_pkg::*;
@@ -16,6 +16,7 @@ module execute
   output  s_branch_t    branch_o,
   output  s_jump_t      jump_o,
   output  raddr_t       rd_addr_ex_o,
+  input   rdata_t       wb_value_i,
   // From DEC stg I/F
   input   s_id_ex_t     id_ex_i,
   input   rdata_t       rs1_data_i,
@@ -32,6 +33,7 @@ module execute
 );
   s_ex_mem_wb_t ex_mem_wb_ff, next_ex_mem_wb;
   alu_t         op1, op2, res;
+  fwd_mux_t     rs1_fwd, rs2_fwd;
 
   function automatic branch_dec(branch_t op, rdata_t rs1, rdata_t rs2);
     logic         take_branch;
@@ -46,6 +48,21 @@ module execute
     endcase
     return take_branch;
   endfunction
+
+  always_comb begin : fwd_mux
+    rs1_fwd = NO_FWD;
+    rs2_fwd = NO_FWD;
+
+    if (ex_mem_wb_ff.rd_addr != 'h0) begin
+      if ((id_ex_i.rs1_op == REG_RF) && (id_ex_i.rs1_addr == ex_mem_wb_ff.rd_addr)) begin
+        rs1_fwd = FWD_REG;
+      end
+
+      if ((id_ex_i.rs2_op == REG_RF) && (id_ex_i.rs2_addr == ex_mem_wb_ff.rd_addr)) begin
+        rs2_fwd = FWD_REG;
+      end
+    end
+  end : fwd_mux
 
   always_comb begin : alu_proc
     op1 = alu_t'('0);
@@ -62,6 +79,8 @@ module execute
       default:  op1 = alu_t'('0);
     endcase
 
+    op1 = (rs1_fwd == FWD_REG) ? wb_value_i : op1;
+
     // Mux Src B
     case (id_ex_i.rs2_op)
       REG_RF:   op2 = alu_t'(rs2_data_i);
@@ -70,6 +89,8 @@ module execute
       PC:       op2 = alu_t'(id_ex_i.pc_dec);
       default:  op2 = alu_t'('0);
     endcase
+
+    op2 = (rs2_fwd == FWD_REG) ? wb_value_i : op2;
 
     // ALU compute
     case (id_ex_i.f3)
@@ -101,20 +122,6 @@ module execute
       default:        res = alu_t'('0);
     endcase
 
-    branch_o.b_act   = id_ex_i.branch && ~lsu_bp_i;
-    branch_o.b_addr  = id_ex_i.imm;
-    branch_o.take_branch  = branch_dec(branch_t'(id_ex_i.f3),
-                                       rs1_data_i,
-                                       rs2_data_i);
-
-    jump_o.j_act  = id_ex_i.jump && ~lsu_bp_i;
-    jump_o.j_addr = res;
-
-    lsu_o.op_typ = id_ex_i.lsu;
-    lsu_o.width  = lsu_w_t'(id_ex_i.f3);
-    lsu_o.addr   = res;
-    lsu_o.wdata  = rs2_data_i;
-
     next_ex_mem_wb.result  = (id_ex_i.jump) ? alu_t'(id_ex_i.pc_dec+'d4) : res;
     next_ex_mem_wb.rd_addr = id_ex_i.rd_addr;
     next_ex_mem_wb.we_rd   = id_ex_i.we_rd;
@@ -130,6 +137,22 @@ module execute
     ex_mem_wb_o = ex_mem_wb_ff;
     rd_addr_ex_o = id_ex_i.rd_addr;
   end : alu_proc
+
+  always_comb begin : jump_lsu_mgmt
+    branch_o.b_act   = id_ex_i.branch && ~lsu_bp_i;
+    branch_o.b_addr  = id_ex_i.imm;
+    branch_o.take_branch  = branch_dec(branch_t'(id_ex_i.f3),
+                                      (rs1_fwd == NO_FWD) ? rs1_data_i : wb_value_i,
+                                      (rs1_fwd == NO_FWD) ? rs2_data_i : wb_value_i);
+
+    jump_o.j_act  = id_ex_i.jump && ~lsu_bp_i;
+    jump_o.j_addr = res;
+
+    lsu_o.op_typ = id_ex_i.lsu;
+    lsu_o.width  = id_ex_i.lsu_w;
+    lsu_o.addr   = res;
+    lsu_o.wdata  = (rs2_fwd == NO_FWD) ? rs2_data_i : wb_value_i;
+  end : jump_lsu_mgmt
 
   `CLK_PROC(clk, rst) begin
     `RST_TYPE(rst) begin

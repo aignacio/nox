@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 05.11.2021
- * Last Modified Date: 04.12.2021
+ * Last Modified Date: 18.12.2021
  */
 module register_file
   import utils_pkg::*;
@@ -23,16 +23,24 @@ module register_file
   rdata_t next_rs2, rs2_ff;
 
   always_comb begin
-    next_rs1 = reg_file_ff[rs1_addr_i];
-    next_rs2 = reg_file_ff[rs2_addr_i];
+    next_rs1 = rdata_t'('0);
+    next_rs2 = rdata_t'('0);
 
-    rs1_data_o = (rs1_addr_i == raddr_t'('d0)) ? rdata_t'('d0) : rs1_ff;
-    rs2_data_o = (rs2_addr_i == raddr_t'('d0)) ? rdata_t'('d0) : rs2_ff;
+    if (rs1_addr_i != 'h0) begin
+      next_rs1 = reg_file_ff[rs1_addr_i];
+    end
+
+    if (rs2_addr_i != 'h0) begin
+      next_rs2 = reg_file_ff[rs2_addr_i];
+    end
 
     if (we_i && (rd_addr_i != raddr_t'('d0))) begin
-      rs1_data_o = (rs1_addr_i == rd_addr_i) ? rd_data_i : rs1_ff;
-      rs2_data_o = (rs2_addr_i == rd_addr_i) ? rd_data_i : rs2_ff;
+      next_rs1 = (rs1_addr_i == rd_addr_i) ? rd_data_i : next_rs1;
+      next_rs2 = (rs2_addr_i == rd_addr_i) ? rd_data_i : next_rs2;
     end
+
+    rs1_data_o = rs1_ff;
+    rs2_data_o = rs2_ff;
   end
 
   `CLK_PROC(clk, rst) begin

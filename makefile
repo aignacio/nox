@@ -15,7 +15,7 @@ INCS_VLOG			:=	$(addprefix -I,$(_INCS_VLOG))
 
 # Parameters of simulation
 VERILATOR_TB	:=	tb
-IRAM_KB_SIZE	?=	128
+IRAM_KB_SIZE	?=	256
 DRAM_KB_SIZE	?=	128
 IRAM_ADDR			?=	0x80000000
 DRAM_ADDR			?=	0x10000000

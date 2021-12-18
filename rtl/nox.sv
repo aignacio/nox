@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 12.12.2021
+ * Last Modified Date: 18.12.2021
  */
 module nox
   import utils_pkg::*;
@@ -106,7 +106,7 @@ module nox
     .stall_i               (stall),
     .pc_jump_i             (fetch_addr),
     .pc_reset_i            (start_addr_i),
-    .id_regs_o             (id_regs),
+    //.id_regs_o             (id_regs),
     // From FETCH stg I/F
     .fetch_valid_i         (fetch_valid),
     .fetch_ready_o         (fetch_ready),
@@ -131,6 +131,7 @@ module nox
     .branch_o              (branch),
     .jump_o                (jump),
     .rd_addr_ex_o          (rd_addr_ex),
+    .wb_value_i            (wb_dec.rd_data),
     // From DEC stg I/F
     .id_ex_i               (id_ex),
     .rs1_data_i            (rs1_data),
@@ -178,10 +179,11 @@ module nox
     // From LSU
     .wb_lsu_i       (lsu_op_wb),
     .lsu_rd_data_i  (lsu_rd_data),
+    .lsu_bp_i       (lsu_bp),
     // To DEC stg
     .wb_dec_o       (wb_dec),
     .stall_o        (stall),
     // From DEC
-    .id_regs_i      (id_regs)
+    .id_regs_i      (id_regs)//,
   );
 endmodule
