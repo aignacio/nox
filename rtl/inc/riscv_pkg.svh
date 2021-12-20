@@ -131,7 +131,6 @@
     sfunct7_t    f7;
     raddr_t      rd_addr;
     funct3_t     f3;
-    shamt_t      shamt;
     rshift_t     rshift;
     imm_t        imm;
     raddr_t      rs1_addr;

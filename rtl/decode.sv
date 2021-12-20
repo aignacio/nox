@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 18.12.2021
+ * Last Modified Date: 20.12.2021
  */
 module decode
   import utils_pkg::*;
@@ -60,7 +60,6 @@ module decode
       id_ex_o.f7       = sfunct7_t'('h0);
       id_ex_o.rd_addr  = raddr_t'('h0);
       id_ex_o.f3       = RV_F3_ADD_SUB;
-      id_ex_o.shamt    = shamt_t'('h0);
       id_ex_o.rshift   = rshift_t'('h0);
       id_ex_o.imm      = imm_t'('h0);
       id_ex_o.rs1_addr = raddr_t'('h0);
@@ -90,7 +89,6 @@ module decode
         next_id_ex.rs2_op = IMM;
         next_id_ex.imm    = gen_imm(fetch_instr_i, I_IMM);
         next_id_ex.rshift = instr_dec[30] ? RV_SRA : RV_SRL;
-        next_id_ex.shamt  = instr_dec[24:20];
         next_id_ex.we_rd  = 1'b1;
       end
       RV_LUI: begin

@@ -98,24 +98,15 @@ module execute
 
     // ALU compute
     case (id_ex_i.f3)
-      RV_F3_ADD_SUB: begin
-        op2 = id_ex_i.f7 ? (~op2+'d1) : op2;
-        res = op1 + op2;
-        if (id_ex_i.jump) begin
-          // For JALR set LSB[0] == 'b0
-          res[0] = (id_ex_i.rs1_op == REG_RF) ? 1'b0 : res[0];
-        end
-      end
-      RV_F3_SLT:      res = (signed'(op1 < op2)) ? alu_t'('d1) : alu_t'('d0);
-      RV_F3_SLTU:     res = (op1 < op2) ? alu_t'('d1) : alu_t'('d0);
+      RV_F3_ADD_SUB:  res = id_ex_i.f7 ? op1 - op2 : op1 + op2;
+      RV_F3_SLT:      res = (signed'(op1) < signed'(op2)) ? 'd1 : 'd0;
+      RV_F3_SLTU:     res = (op1 < op2) ? 'd1 : 'd0;
       RV_F3_XOR:      res = (op1 ^ op2);
       RV_F3_OR:       res = (op1 | op2);
       RV_F3_AND:      res = (op1 & op2);
-      RV_F3_SLL:      res = (id_ex_i.rs2_op == IMM) ? (op1 << id_ex_i.shamt) :
-                                                      (op1 << op2[4:0]);
-      RV_F3_SRL_SRA:  res = (id_ex_i.rshift == RV_SRA) ? (signed'(op1) >>> op2[4:0]) :
-                                                         (op1 >> op2[4:0]);
-      default:        res = alu_t'('0);
+      RV_F3_SLL:      res = (id_ex_i.rs2_op == IMM) ? (op1 << op2[4:0]) : (op1 << op2[4:0]);
+      RV_F3_SRL_SRA:  res = (id_ex_i.rshift == RV_SRA) ? (signed'(op1) >>> op2[4:0]) : (op1 >> op2[4:0]);
+      default:        res = 'd0;
     endcase
 
     next_ex_mem_wb.result  = (id_ex_i.jump) ? alu_t'(id_ex_i.pc_dec+'d4) : res;
@@ -151,7 +142,7 @@ module execute
                                          (rs2_fwd == NO_FWD) ? rs2_data_i : wb_value_i);
 
     next_jump.j_act  = ~jump_or_branch && id_ex_i.jump && ~lsu_bp_i;
-    next_jump.j_addr = res;
+    next_jump.j_addr = {res[31:1], 1'b0};
 
     fwd_wdata = (id_ex_i.lsu == LSU_STORE) &&
                 (ex_mem_wb_ff.we_rd) &&
