@@ -86,7 +86,7 @@ bool loadELF(testbench<Vnox_sim> *sim, string program_path, const bool en_print)
   if (program.get_class() != ELFCLASS32 ||
     program.get_machine() != 0xf3){
     cout << "\n[ERROR] Error loading ELF file, headers does not match with ELFCLASS32/RISC-V!" << endl;
-    return false;
+    return 1;
   }
 
   ELFIO::Elf_Half seg_num = program.segments.size();
@@ -108,14 +108,17 @@ bool loadELF(testbench<Vnox_sim> *sim, string program_path, const bool en_print)
       printf("\nSegment [%d] - LMA[0x%x] VMA[0x%x]", i,(uint32_t)lma_addr,(uint32_t)vma_addr);
       printf("\nFile size [%d] - Memory size [%d ~ %d]\n",file_size,mem_size,mem_size/1024);
     }
-    if (mem_size >= (IRAM_KB_SIZE*1024)){
-      printf("\n\n[ELF Loader] ERROR:");
-      printf("\nELF program: %d bytes", mem_size);
-      printf("\nVerilator model memory size: %d bytes\n", (IRAM_KB_SIZE*1024));
-      return 1;
-    }
+
     if ((lma_addr >= IRAM_ADDR && lma_addr < (IRAM_ADDR+(IRAM_KB_SIZE*1024))) && (file_size > 0x00)){
       int init_addr = (lma_addr-IRAM_ADDR);
+
+      if (mem_size >= (IRAM_KB_SIZE*1024)){
+        printf("\n\n[ELF Loader] IRAM ERROR:");
+        printf("\nELF program: %d KB", mem_size/1024);
+        printf("\nVerilator model memory size: %d KB\n", (IRAM_KB_SIZE));
+        printf("\nELF File too big for emulated memory!\n");
+        return 1;
+      }
       // IRAM Address
       for (uint32_t p = 0; p < mem_size; p+=4){
         uint32_t word_line = ((uint8_t)p_seg->get_data()[p+3]<<24)+((uint8_t)p_seg->get_data()[p+2]<<16)+
@@ -130,6 +133,14 @@ bool loadELF(testbench<Vnox_sim> *sim, string program_path, const bool en_print)
     }
     else if ((lma_addr >= DRAM_ADDR && lma_addr < (DRAM_ADDR+(DRAM_KB_SIZE*1024))) && (file_size > 0x00)) {
       int init_addr = (lma_addr-DRAM_ADDR);
+
+      if (mem_size >= (DRAM_KB_SIZE*1024)){
+        printf("\n\n[ELF Loader] DRAM ERROR:");
+        printf("\nELF program: %d KB", mem_size/1024);
+        printf("\nVerilator model memory size: %d KB\n", (DRAM_KB_SIZE));
+        printf("\nELF File too big for emulated memory!\n");
+        return 1;
+      }
       // DRAM Address
       for (uint32_t p = 0; p < mem_size; p+=4){
         uint32_t word_line = ((uint8_t)p_seg->get_data()[p+3]<<24)+((uint8_t)p_seg->get_data()[p+2]<<16)+
@@ -148,6 +159,8 @@ bool loadELF(testbench<Vnox_sim> *sim, string program_path, const bool en_print)
 }
 
 int main(int argc, char** argv, char** env){
+  Verilated::commandArgs(argc, argv);
+
   auto *dut = new testbench<Vnox_sim>;
   s_sim_setup_t setup = {
     .sim_cycles = 1000,
@@ -159,7 +172,9 @@ int main(int argc, char** argv, char** env){
   cout << "[IRAM] " << STRINGIZE_VALUE_OF(IRAM_KB_SIZE) << "KB" << std::endl;
   cout << "[DRAM] " << STRINGIZE_VALUE_OF(DRAM_KB_SIZE) << "KB" << std::endl;
   parse_input(argc, argv, &setup);
-  dut->opentrace(STRINGIZE_VALUE_OF(WAVEFORM_FST));
+
+  if (WAVEFORM_USE)
+    dut->opentrace(STRINGIZE_VALUE_OF(WAVEFORM_FST));
 
   if (loadELF(dut, setup.elf_path, true)) {
     cout << "\nError while processing ELF file!" << std::endl;
@@ -167,9 +182,11 @@ int main(int argc, char** argv, char** env){
   }
 
   dut->reset(2);
-  while(setup.sim_cycles--) {
+  while(!Verilated::gotFinish() && setup.sim_cycles--) {
     dut->tick();
   }
+
+  cout << "\n" << std::endl;
   dut->close();
   exit(EXIT_SUCCESS);
 }

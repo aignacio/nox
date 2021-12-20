@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 09.12.2021
- * Last Modified Date: 18.12.2021
+ * Last Modified Date: 19.12.2021
  */
 module control
   import utils_pkg::*;
@@ -59,7 +59,8 @@ module control
 
   always_comb begin
     // To FETCH / DEC (flush_i)
-    fetch_req_o  = (branch_i.b_act || jump_i.j_act);
+    fetch_req_o  = ((branch_i.b_act && branch_i.take_branch) ||
+                     jump_i.j_act);
     // To FETCH / DEC (pc_jump_i)
     fetch_addr_o = (branch_i.b_act) ? branch_i.b_addr :
                                       jump_i.j_addr;

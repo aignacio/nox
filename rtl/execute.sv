@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 18.12.2021
+ * Last Modified Date: 20.12.2021
  */
 module execute
   import utils_pkg::*;
@@ -34,6 +34,10 @@ module execute
   s_ex_mem_wb_t ex_mem_wb_ff, next_ex_mem_wb;
   alu_t         op1, op2, res;
   fwd_mux_t     rs1_fwd, rs2_fwd;
+  logic         fwd_wdata;
+  logic         jump_or_branch;
+  s_branch_t    branch_ff, next_branch;
+  s_jump_t      jump_ff, next_jump;
 
   function automatic branch_dec(branch_t op, rdata_t rs1, rdata_t rs2);
     logic         take_branch;
@@ -53,7 +57,7 @@ module execute
     rs1_fwd = NO_FWD;
     rs2_fwd = NO_FWD;
 
-    if (ex_mem_wb_ff.rd_addr != 'h0) begin
+    if ((ex_mem_wb_ff.rd_addr != 'h0) && (ex_mem_wb_ff.we_rd)) begin
       if ((id_ex_i.rs1_op == REG_RF) && (id_ex_i.rs1_addr == ex_mem_wb_ff.rd_addr)) begin
         rs1_fwd = FWD_REG;
       end
@@ -108,17 +112,9 @@ module execute
       RV_F3_OR:       res = (op1 | op2);
       RV_F3_AND:      res = (op1 & op2);
       RV_F3_SLL:      res = (id_ex_i.rs2_op == IMM) ? (op1 << id_ex_i.shamt) :
-                                                      (op1 << op2);
-      RV_F3_SRL_SRA: begin
-        if (id_ex_i.rs2_op == IMM) begin
-          res = (id_ex_i.rshift == RV_SRA) ? (op1 >>> id_ex_i.shamt) :
-                                             (op1 >>  id_ex_i.shamt);
-        end
-        else begin
-          res = (id_ex_i.rshift == RV_SRA) ? (op1 >>> op2) :
-                                             (op1 >>  op2);
-        end
-      end
+                                                      (op1 << op2[4:0]);
+      RV_F3_SRL_SRA:  res = (id_ex_i.rshift == RV_SRA) ? (signed'(op1) >>> op2[4:0]) :
+                                                         (op1 >> op2[4:0]);
       default:        res = alu_t'('0);
     endcase
 
@@ -131,6 +127,12 @@ module execute
       id_ready_o = 'b0;
     end
 
+    if (jump_or_branch) begin
+      next_ex_mem_wb.we_rd = 'b0;
+      illegal_ex_o = 'b0;
+      trap_info_o = s_trap_info_t'('0);
+    end
+
     illegal_ex_o = 'b0;
     trap_info_o = s_trap_info_t'('0);
 
@@ -139,27 +141,42 @@ module execute
   end : alu_proc
 
   always_comb begin : jump_lsu_mgmt
-    branch_o.b_act   = id_ex_i.branch && ~lsu_bp_i;
-    branch_o.b_addr  = id_ex_i.imm;
-    branch_o.take_branch  = branch_dec(branch_t'(id_ex_i.f3),
-                                      (rs1_fwd == NO_FWD) ? rs1_data_i : wb_value_i,
-                                      (rs1_fwd == NO_FWD) ? rs2_data_i : wb_value_i);
+    jump_or_branch = ((branch_ff.b_act && branch_ff.take_branch) || jump_ff.j_act);
 
-    jump_o.j_act  = id_ex_i.jump && ~lsu_bp_i;
-    jump_o.j_addr = res;
+    next_branch.b_act   = id_ex_i.branch && ~lsu_bp_i;
+    next_branch.b_addr  = id_ex_i.pc_dec + id_ex_i.imm;
+    next_branch.take_branch  = ~jump_or_branch &&
+                               branch_dec(branch_t'(id_ex_i.f3),
+                                         (rs1_fwd == NO_FWD) ? rs1_data_i : wb_value_i,
+                                         (rs2_fwd == NO_FWD) ? rs2_data_i : wb_value_i);
+
+    next_jump.j_act  = ~jump_or_branch && id_ex_i.jump && ~lsu_bp_i;
+    next_jump.j_addr = res;
+
+    fwd_wdata = (id_ex_i.lsu == LSU_STORE) &&
+                (ex_mem_wb_ff.we_rd) &&
+                (ex_mem_wb_ff.rd_addr == id_ex_i.rs2_addr) &&
+                (ex_mem_wb_ff.rd_addr != raddr_t'('h0));
 
     lsu_o.op_typ = id_ex_i.lsu;
     lsu_o.width  = id_ex_i.lsu_w;
     lsu_o.addr   = res;
-    lsu_o.wdata  = (rs2_fwd == NO_FWD) ? rs2_data_i : wb_value_i;
+    lsu_o.wdata  = (fwd_wdata) ? wb_value_i : rs2_data_i;
+
+    branch_o = branch_ff;
+    jump_o = jump_ff;
   end : jump_lsu_mgmt
 
   `CLK_PROC(clk, rst) begin
     `RST_TYPE(rst) begin
       ex_mem_wb_ff <= `OP_RST_L;
+      branch_ff    <= s_branch_t'('h0);
+      jump_ff      <= s_jump_t'('h0);
     end
     else begin
       ex_mem_wb_ff <= next_ex_mem_wb;
+      branch_ff    <= next_branch;
+      jump_ff      <= next_jump;
     end
   end
 endmodule

@@ -99,8 +99,8 @@ module lsu
     // Backpressure check
     bp_addr = new_txn && (rd_txn ? ~data_cb_miso_i.rd_addr_ready :
                                    ~data_cb_miso_i.wr_addr_ready);
-    bp_data = req_ff && (rd_txn ? ~data_cb_miso_i.rd_valid :
-                                  ~data_cb_miso_i.wr_data_ready);
+    bp_data = req_ff && (~wr_txn_dp ? ~data_cb_miso_i.rd_valid :
+                                      ~data_cb_miso_i.wr_data_ready);
     lsu_bp_o = bp_addr || bp_data;
 
     // Moves to data ph. in case we have a txn
