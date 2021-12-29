@@ -241,6 +241,7 @@ module axi_mem import utils_pkg::*; #(
       bvalid_ff     <= `OP_RST_L;
   `ifdef SIMULATION
       char_ff       <= 'b0;
+      num_ff        <= 'b0;
       sig_ff        <= s_signature_t'('h0);
       start_sig_ff  <= 'b0;
       end_sig_ff    <= 'b0;
@@ -256,7 +257,7 @@ module axi_mem import utils_pkg::*; #(
       bvalid_ff     <= next_bvalid;
   `ifdef SIMULATION
       char_ff       <= next_char;
-      num_ff        <= num_ff;
+      num_ff        <= next_num;
       sig_ff        <= next_sig;
       start_sig_ff  <= next_start_sig;
       end_sig_ff    <= next_end_sig;

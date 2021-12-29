@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 20.12.2021
+ * Last Modified Date: 29.12.2021
  */
 module decode
   import utils_pkg::*;
@@ -74,11 +74,8 @@ module decode
     next_id_ex = id_ex_ff;
 
     // Defaults
+    next_id_ex          = s_id_ex_t'('0);
     next_id_ex.rd_addr  = instr_dec.rd;
-    next_id_ex.lsu      = NO_LSU;
-    next_id_ex.branch   = 1'b0;
-    next_id_ex.we_rd    = 1'b0;
-    next_id_ex.jump     = 1'b0;
     next_id_ex.rs1_addr = instr_dec.rs1;
     next_id_ex.rs2_addr = instr_dec.rs2;
 

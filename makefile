@@ -22,7 +22,7 @@ DRAM_ADDR			?=	0x10000000
 OUT_VERILATOR	:=	output_verilator
 ROOT_MOD_VERI	:=	nox_sim
 VERILATOR_EXE	:=	$(OUT_VERILATOR)/$(ROOT_MOD_VERI)
-DISPLAY_TEST	?=	0 # Display or not $display under axi_mem.sv
+DISPLAY_TEST	?=	1 # Display or not $display under axi_mem.sv
 WAVEFORM_USE	?=	0 # Use 0 to not generate waves, like in compliance test
 WAVEFORM_FST	?=	nox_waves.fst
 
@@ -82,7 +82,7 @@ lint:
 	ec $(_CORE_VERILOG)
 
 clean:
-	rm -rf $(OUT_VERILATOR) sw/tile_slave/output run_dir
+	rm -rf $(OUT_VERILATOR) run_dir
 
 all: clean $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk
 	@echo "Verilator build done!"

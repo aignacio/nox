@@ -164,7 +164,7 @@ int main(int argc, char** argv, char** env){
   auto *dut = new testbench<Vnox_sim>;
   s_sim_setup_t setup = {
     .sim_cycles = 1000,
-    .waves_dump = 1,
+    .waves_dump = WAVEFORM_USE,
     .waves_path = STRINGIZE_VALUE_OF(WAVEFORM_FST)
   };
 
