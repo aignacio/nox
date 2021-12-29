@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 20.12.2021
+ * Last Modified Date: 29.12.2021
  */
 module execute
   import utils_pkg::*;
@@ -105,7 +105,7 @@ module execute
       RV_F3_OR:       res = (op1 | op2);
       RV_F3_AND:      res = (op1 & op2);
       RV_F3_SLL:      res = (id_ex_i.rs2_op == IMM) ? (op1 << op2[4:0]) : (op1 << op2[4:0]);
-      RV_F3_SRL_SRA:  res = (id_ex_i.rshift == RV_SRA) ? (signed'(op1) >>> op2[4:0]) : (op1 >> op2[4:0]);
+      RV_F3_SRL_SRA:  res = (id_ex_i.rshift == RV_SRA) ? signed'((signed'(op1) >>> op2[4:0])) : (op1 >> op2[4:0]);
       default:        res = 'd0;
     endcase
 
