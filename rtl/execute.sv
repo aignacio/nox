@@ -98,7 +98,7 @@ module execute
 
     // ALU compute
     case (id_ex_i.f3)
-      RV_F3_ADD_SUB:  res = id_ex_i.f7 ? op1 - op2 : op1 + op2;
+      RV_F3_ADD_SUB:  res = (id_ex_i.f7 == RV_F7_1) ? op1 - op2 : op1 + op2;
       RV_F3_SLT:      res = (signed'(op1) < signed'(op2)) ? 'd1 : 'd0;
       RV_F3_SLTU:     res = (op1 < op2) ? 'd1 : 'd0;
       RV_F3_XOR:      res = (op1 ^ op2);

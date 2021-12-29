@@ -107,6 +107,7 @@ module decode
         next_id_ex.rs1_op = REG_RF;
         next_id_ex.rs2_op = REG_RF;
         next_id_ex.f7     = instr_dec[30] ? RV_F7_1 : RV_F7_0;
+        next_id_ex.rshift = instr_dec[30] ? RV_SRA : RV_SRL;
         next_id_ex.we_rd  = 1'b1;
       end
       RV_JAL: begin
