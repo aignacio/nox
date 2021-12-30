@@ -272,7 +272,10 @@ module axi_mem import utils_pkg::*; #(
       end
   `endif
       if (we_mem) begin
-        mem_ff[wr_addr] <= next_wdata;
+        for (int i=0;i<4;i++) begin
+          if (axi_mosi.wstrb[i])
+            mem_ff[wr_addr][i*8+:8] <= axi_mosi.wdata[i*8+:8];
+        end
       end
     end
   end

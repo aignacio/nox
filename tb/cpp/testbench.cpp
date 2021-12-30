@@ -178,7 +178,7 @@ int main(int argc, char** argv, char** env){
 
   if (loadELF(dut, setup.elf_path, true)) {
     cout << "\nError while processing ELF file!" << std::endl;
-    exit(1);
+    //exit(EXIT_FAILURE);
   }
 
   dut->reset(2);

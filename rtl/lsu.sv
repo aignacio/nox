@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 18.12.2021
+ * Last Modified Date: 30.12.2021
  */
 module lsu
   import utils_pkg::*;
@@ -33,6 +33,7 @@ module lsu
   logic rd_txn;
   logic wr_txn;
   logic wr_txn_dp;
+  logic [1:0] strb_ff, next_strb;
 
   function automatic cb_size_t size_txn(lsu_w_t size);
     cb_size_t sz;
@@ -47,7 +48,7 @@ module lsu
     return sz;
   endfunction
 
-  function automatic logic [3:0] maskSTRB(lsu_w_t size);
+  function automatic logic [3:0] mask_strobe(lsu_w_t size, logic [1:0] shift_left);
     cb_strb_t mask;
     case (size)
       RV_LSU_B:  mask = cb_strb_t'('b0001);
@@ -57,6 +58,16 @@ module lsu
       RV_LSU_HU: mask = cb_strb_t'('b0011);
       default:   mask = cb_strb_t'('b1111);
     endcase
+
+    for (int i=0;i<4;i++) begin
+      if (i[1:0] == shift_left) begin
+        return mask;
+      end
+      else begin
+        mask = {mask[2:0],1'b0};
+      end
+    end
+
     return mask;
   endfunction
 
@@ -67,6 +78,7 @@ module lsu
     wr_txn_dp = (lsu_ff.op_typ == LSU_STORE);
     lsu_bp_o  = 'b0;
     next_req  = req_ff;
+    next_strb = strb_ff;
 
     // Default values transfer nothing
     data_cb_mosi_o = s_cb_mosi_t'('0);
@@ -80,6 +92,7 @@ module lsu
         data_cb_mosi_o.wr_addr       = lsu_i.addr;
         data_cb_mosi_o.wr_size       = size_txn(lsu_i.width);
         data_cb_mosi_o.wr_addr_valid = 'b1;
+        next_strb                    = lsu_i.addr[1:0];
       end
       else begin
         data_cb_mosi_o.rd_addr       = lsu_i.addr;
@@ -91,7 +104,7 @@ module lsu
     if (req_ff) begin : data_ph
       if (wr_txn_dp) begin
         data_cb_mosi_o.wr_data       = lsu_ff.wdata;
-        data_cb_mosi_o.wr_strobe     = maskSTRB(lsu_ff.width);
+        data_cb_mosi_o.wr_strobe     = mask_strobe(lsu_ff.width, strb_ff);
         data_cb_mosi_o.wr_data_valid = 'b1;
       end
     end : data_ph
@@ -127,12 +140,14 @@ module lsu
 
   `CLK_PROC(clk, rst) begin
     `RST_TYPE(rst) begin
-      lsu_ff <= s_lsu_op_t'('0);
-      req_ff <= 'b0;
+      lsu_ff  <= s_lsu_op_t'('0);
+      req_ff  <= 'b0;
+      strb_ff <= `OP_RST_L;
     end
     else begin
-      lsu_ff <= next_lsu;
-      req_ff <= next_req;
+      lsu_ff  <= next_lsu;
+      req_ff  <= next_req;
+      strb_ff <= next_strb;
     end
   end
 endmodule

@@ -15,7 +15,8 @@ INCS_VLOG			:=	$(addprefix -I,$(_INCS_VLOG))
 
 # Parameters of simulation
 VERILATOR_TB	:=	tb
-IRAM_KB_SIZE	?=	2*1024
+IRAM_KB_SIZE	?=	256
+#IRAM_KB_SIZE	?=	2*1024
 DRAM_KB_SIZE	?=	128
 IRAM_ADDR			?=	0x80000000
 DRAM_ADDR			?=	0x10000000
@@ -23,7 +24,7 @@ OUT_VERILATOR	:=	output_verilator
 ROOT_MOD_VERI	:=	nox_sim
 VERILATOR_EXE	:=	$(OUT_VERILATOR)/$(ROOT_MOD_VERI)
 DISPLAY_TEST	?=	1 # Display or not $display under axi_mem.sv
-WAVEFORM_USE	?=	0 # Use 0 to not generate waves, like in compliance test
+WAVEFORM_USE	?=	1 # Use 0 to not generate waves, like in compliance test
 WAVEFORM_FST	?=	nox_waves.fst
 
 # Testbench files
