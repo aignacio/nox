@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 09.12.2021
- * Last Modified Date: 19.12.2021
+ * Last Modified Date: 06.01.2022
  */
 module control
   import utils_pkg::*;
@@ -30,6 +30,23 @@ module control
 );
   logic stall_rs1, stall_rs2;
   logic       stall_ff, next_stall;
+
+  function automatic rdata_t fmt_load(s_lsu_op_t load, rdata_t rdata);
+    rdata_t data;
+    for (int i=0;i<`XLEN/8;i++) begin
+      if (load.addr[1:0]==i[1:0]) begin
+        data = rdata >> (8*i);
+      end
+    end
+
+    case (load.width)
+      RV_LSU_B:   return {{24{data[7]}},data[7:0]};
+      RV_LSU_H:   return {{16{data[15]}},data[15:0]};
+      RV_LSU_BU:  return {24'h0,data[7:0]};
+      RV_LSU_HU:  return {16'h0,data[15:0]};
+      default:    return data;
+    endcase
+  endfunction
 
   always_comb begin : hdu_check
     stall_o = stall_ff;
@@ -72,7 +89,7 @@ module control
 
     if (wb_lsu_i.op_typ == LSU_LOAD) begin
       wb_dec_o.we_rd   = lsu_bp_i ? 1'b0 : ex_mem_wb_i.we_rd;
-      wb_dec_o.rd_data = lsu_rd_data_i;
+      wb_dec_o.rd_data = fmt_load(wb_lsu_i, lsu_rd_data_i);
     end
     wb_dec_o.rd_addr = ex_mem_wb_i.rd_addr;
   end : mux_for_w_rf
