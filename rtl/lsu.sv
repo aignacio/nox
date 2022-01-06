@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 30.12.2021
+ * Last Modified Date: 06.01.2022
  */
 module lsu
   import utils_pkg::*;
@@ -33,7 +33,7 @@ module lsu
   logic rd_txn;
   logic wr_txn;
   logic wr_txn_dp;
-  logic [1:0] strb_ff, next_strb;
+  logic [1:0] byte_sel_ff, next_bsel;
 
   function automatic cb_size_t size_txn(lsu_w_t size);
     cb_size_t sz;
@@ -78,7 +78,7 @@ module lsu
     wr_txn_dp = (lsu_ff.op_typ == LSU_STORE);
     lsu_bp_o  = 'b0;
     next_req  = req_ff;
-    next_strb = strb_ff;
+    next_bsel = byte_sel_ff;
 
     // Default values transfer nothing
     data_cb_mosi_o = s_cb_mosi_t'('0);
@@ -88,23 +88,28 @@ module lsu
     if (new_txn) begin : addr_ph
       // 1 - stall execute stg
       // 0 - don't stall
+      next_bsel = lsu_i.addr[1:0];
       if (wr_txn) begin
-        data_cb_mosi_o.wr_addr       = lsu_i.addr;
-        data_cb_mosi_o.wr_size       = size_txn(lsu_i.width);
+        data_cb_mosi_o.wr_addr       = {lsu_i.addr[31:2],2'b0};
+        data_cb_mosi_o.wr_size       = CB_WORD; //size_txn(lsu_i.width);
         data_cb_mosi_o.wr_addr_valid = 'b1;
-        next_strb                    = lsu_i.addr[1:0];
       end
       else begin
-        data_cb_mosi_o.rd_addr       = lsu_i.addr;
-        data_cb_mosi_o.rd_size       = size_txn(lsu_i.width);
+        data_cb_mosi_o.rd_addr       = {lsu_i.addr[31:2],2'b0};
+        data_cb_mosi_o.rd_size       = CB_WORD;//size_txn(lsu_i.width);
         data_cb_mosi_o.rd_addr_valid = 'b1;
       end
     end : addr_ph
 
     if (req_ff) begin : data_ph
       if (wr_txn_dp) begin
-        data_cb_mosi_o.wr_data       = lsu_ff.wdata;
-        data_cb_mosi_o.wr_strobe     = mask_strobe(lsu_ff.width, strb_ff);
+        data_cb_mosi_o.wr_strobe = mask_strobe(lsu_ff.width, byte_sel_ff);
+
+        for (int i=0;i<4;i++) begin
+          if (byte_sel_ff==i[1:0]) begin
+            data_cb_mosi_o.wr_data = lsu_ff.wdata << (8*i);
+          end
+        end
         data_cb_mosi_o.wr_data_valid = 'b1;
       end
     end : data_ph
@@ -140,14 +145,14 @@ module lsu
 
   `CLK_PROC(clk, rst) begin
     `RST_TYPE(rst) begin
-      lsu_ff  <= s_lsu_op_t'('0);
-      req_ff  <= 'b0;
-      strb_ff <= `OP_RST_L;
+      lsu_ff      <= s_lsu_op_t'('0);
+      req_ff      <= 'b0;
+      byte_sel_ff <= `OP_RST_L;
     end
     else begin
-      lsu_ff  <= next_lsu;
-      req_ff  <= next_req;
-      strb_ff <= next_strb;
+      lsu_ff      <= next_lsu;
+      req_ff      <= next_req;
+      byte_sel_ff <= next_bsel;
     end
   end
 endmodule

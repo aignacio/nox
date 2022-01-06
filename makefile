@@ -24,7 +24,7 @@ OUT_VERILATOR	:=	output_verilator
 ROOT_MOD_VERI	:=	nox_sim
 VERILATOR_EXE	:=	$(OUT_VERILATOR)/$(ROOT_MOD_VERI)
 DISPLAY_TEST	?=	1 # Display or not $display under axi_mem.sv
-WAVEFORM_USE	?=	1 # Use 0 to not generate waves, like in compliance test
+WAVEFORM_USE	?=	0 # Use 0 to not generate waves, like in compliance test
 WAVEFORM_FST	?=	nox_waves.fst
 
 # Testbench files
