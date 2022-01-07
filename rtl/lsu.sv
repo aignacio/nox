@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 06.01.2022
+ * Last Modified Date: 07.01.2022
  */
 module lsu
   import utils_pkg::*;
@@ -137,11 +137,12 @@ module lsu
     trap_info_o = s_trap_info_t'('0);
     wb_lsu_o = lsu_ff;
 
-    lsu_data_o = '0;
-    for (int i=0;i<`XLEN/8;i++) begin
-      if (lsu_ff.addr[1:0]==i[1:0])
-        lsu_data_o = data_cb_miso_i.rd_data << (8*i);
-    end
+    lsu_data_o = data_cb_miso_i.rd_data;
+    //lsu_data_o = '0;
+    //for (int i=0;i<`XLEN/8;i++) begin
+    //  if (lsu_ff.addr[1:0]==i[1:0])
+    //    lsu_data_o = data_cb_miso_i.rd_data << (8*i);
+    //end
   end
 
   `CLK_PROC(clk, rst) begin
