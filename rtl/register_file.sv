@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 05.11.2021
- * Last Modified Date: 18.12.2021
+ * Last Modified Date: 07.01.2022
  */
 module register_file
   import utils_pkg::*;
@@ -15,6 +15,7 @@ module register_file
   input   raddr_t rd_addr_i,
   input   rdata_t rd_data_i,
   input           we_i,
+  input           re_i,
   output  rdata_t rs1_data_o,
   output  rdata_t rs2_data_o
 );
@@ -37,6 +38,11 @@ module register_file
     if (we_i && (rd_addr_i != raddr_t'('d0))) begin
       next_rs1 = (rs1_addr_i == rd_addr_i) ? rd_data_i : next_rs1;
       next_rs2 = (rs2_addr_i == rd_addr_i) ? rd_data_i : next_rs2;
+    end
+
+    if (~re_i) begin
+      next_rs1 = rs1_ff;
+      next_rs2 = rs2_ff;
     end
 
     rs1_data_o = rs1_ff;

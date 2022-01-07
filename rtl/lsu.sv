@@ -16,6 +16,7 @@ module lsu
   input   s_lsu_op_t    lsu_i,
   // To EXE stg
   output                lsu_bp_o,
+  output                lsu_bp_data_o,
   // To write-back datapath
   output  s_lsu_op_t    wb_lsu_o,
   output  rdata_t       lsu_data_o,
@@ -90,6 +91,8 @@ module lsu
     bp_data = req_ff && (wr_txn_dp ? ~data_cb_miso_i.wr_data_ready :
                                      ~data_cb_miso_i.rd_valid);
     lsu_bp_o = bp_addr || bp_data;
+
+    lsu_bp_data_o = bp_data;
 
     if (new_txn) begin : addr_ph
       // 1 - stall execute stg

@@ -21,10 +21,10 @@ void show_usage(void) {
 void show_summary(s_sim_setup_t *setup) {
   cout  << "=================================================" << std::endl;
   cout  << "Running simulation: \n"
-        << "\n\tClock cycles: " << setup->sim_cycles
-        << "\n\tWaves enable: " << setup->waves_dump
-        << "\n\tWaves path: "   << setup->waves_path
-        << "\n\tELF file: "     << setup->elf_path
+        << "\n\tClock cycles: \t" << setup->sim_cycles
+        << "\n\tWaves enable: \t" << setup->waves_dump
+        << "\n\tWaves path:   \t" << setup->waves_path
+        << "\n\tELF file:     \t" << setup->elf_path
         << std::endl;
   cout  << "=================================================" << std::endl;
 

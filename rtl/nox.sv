@@ -44,7 +44,7 @@ module nox
   s_jump_t      jump;
   raddr_t       rd_addr_ex;
   s_wb_t        wb_dec;
-  logic         stall;
+  logic         lsu_bp_data;
   s_stall_id_t  id_regs;
 
 `ifdef TARGET_FPGA
@@ -61,20 +61,20 @@ module nox
 
   cb_to_axi u_instr_cb_to_axi(
     // Core bus Master I/F
-    .cb_mosi_i  (instr_cb_mosi),
-    .cb_miso_o  (instr_cb_miso),
-    // AXI Mast er I/F
-    .axi_mosi_o (instr_axi_mosi_o),
-    .axi_miso_i (instr_axi_miso_i)
+    .cb_mosi_i             (instr_cb_mosi),
+    .cb_miso_o             (instr_cb_miso),
+    // AXI Master I/F
+    .axi_mosi_o            (instr_axi_mosi_o),
+    .axi_miso_i            (instr_axi_miso_i)
   );
 
   cb_to_axi u_lsu_cb_to_axi(
     // Core bus Master I/F
-    .cb_mosi_i  (lsu_cb_mosi),
-    .cb_miso_o  (lsu_cb_miso),
-    // AXI Mast er I/F
-    .axi_mosi_o (lsu_axi_mosi_o),
-    .axi_miso_i (lsu_axi_miso_i)
+    .cb_mosi_i             (lsu_cb_mosi),
+    .cb_miso_o             (lsu_cb_miso),
+    // AXI Master I/F
+    .axi_mosi_o            (lsu_axi_mosi_o),
+    .axi_miso_i            (lsu_axi_miso_i)
   );
 
   fetch u_fetch(
@@ -152,6 +152,7 @@ module nox
     .lsu_i                 (lsu_op),
     // To EXE stg
     .lsu_bp_o              (lsu_bp),
+    .lsu_bp_data_o         (lsu_bp_data),
     // To write-back datapath
     .wb_lsu_o              (lsu_op_wb),
     .lsu_data_o            (lsu_rd_data),
@@ -164,13 +165,16 @@ module nox
   );
 
   wb u_wb(
+    .clk                   (clk),
+    .rst                   (rst),
     // From EXEC/WB
-    .ex_mem_wb_i    (ex_mem_wb),
+    .ex_mem_wb_i           (ex_mem_wb),
     // From LSU
-    .wb_lsu_i       (lsu_op_wb),
-    .lsu_rd_data_i  (lsu_rd_data),
-    .lsu_bp_i       (lsu_bp),
+    .wb_lsu_i              (lsu_op_wb),
+    .lsu_rd_data_i         (lsu_rd_data),
+    .lsu_bp_i              (lsu_bp),
+    .lsu_bp_data_i         (lsu_bp_data),
     // To DEC stg
-    .wb_dec_o       (wb_dec)
+    .wb_dec_o              (wb_dec)
   );
 endmodule

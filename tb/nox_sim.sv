@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 13.12.2021
+ * Last Modified Date: 07.01.2022
  */
 module nox_sim import utils_pkg::*; (
   input   clk,
@@ -21,6 +21,7 @@ module nox_sim import utils_pkg::*; (
   assign masters_axi_miso[1] = slaves_axi_miso[1];
 
   axi_mem #(
+    .ROM   (1),
     .MEM_KB(`IRAM_KB_SIZE)
   ) u_iram (
     .clk      (clk),

@@ -85,14 +85,14 @@ bool loadELF(testbench<Vnox_sim> *sim, string program_path, const bool en_print)
 
   if (program.get_class() != ELFCLASS32 ||
     program.get_machine() != 0xf3){
-    cout << "\n[ERROR] Error loading ELF file, headers does not match with ELFCLASS32/RISC-V!" << endl;
+    cout << "\n[ERROR] Error loading ELF file, headers does not match with ELFCLASS32/RISC-V!" << std::endl;
     return 1;
   }
 
   ELFIO::Elf_Half seg_num = program.segments.size();
 
   if (en_print){
-    cout << "[ELF Loader]"    << std::endl;
+    cout << "\n[ELF Loader]"    << std::endl;
     cout << "Program path: "  << program_path << std::endl;
     cout << "Number of segments (program headers): " << seg_num << std::endl;
   }
@@ -105,18 +105,18 @@ bool loadELF(testbench<Vnox_sim> *sim, string program_path, const bool en_print)
     const uint32_t file_size = (uint32_t)p_seg->get_file_size();
 
     if (en_print){
-      printf("\nSegment [%d] - LMA[0x%x] VMA[0x%x]", i,(uint32_t)lma_addr,(uint32_t)vma_addr);
-      printf("\nFile size [%d] - Memory size [%d ~ %d]\n",file_size,mem_size,mem_size/1024);
+      cout << "Segment [" << (uint32_t)i << "] - LMA [" << std::hex << lma_addr << "] VMA [" << std::hex << vma_addr << "]" << std::endl;
+      cout << "File size [" << file_size << "] - Memory size [" << std::dec << mem_size << " ~ " << std::dec << mem_size/1024 << " KB]" << std::endl;
     }
 
     if ((lma_addr >= IRAM_ADDR && lma_addr < (IRAM_ADDR+(IRAM_KB_SIZE*1024))) && (file_size > 0x00)){
       int init_addr = (lma_addr-IRAM_ADDR);
 
       if (mem_size >= (IRAM_KB_SIZE*1024)){
-        printf("\n\n[ELF Loader] IRAM ERROR:");
-        printf("\nELF program: %d KB", mem_size/1024);
-        printf("\nVerilator model memory size: %d KB\n", (IRAM_KB_SIZE));
-        printf("\nELF File too big for emulated memory!\n");
+        cout << "[ELF Loader] IRAM ERROR:" << std::endl;
+        cout << "ELF program: \t" << mem_size/1024 << " KB" << std::endl;
+        cout << "Verilator model memory size: \t" << IRAM_KB_SIZE << " KB" << std::endl;
+        cout << "ELF File too big for emulated memory!" << std::endl;
         return 1;
       }
       // IRAM Address
@@ -125,8 +125,8 @@ bool loadELF(testbench<Vnox_sim> *sim, string program_path, const bool en_print)
                              ((uint8_t)p_seg->get_data()[p+1]<<8)+(uint8_t)p_seg->get_data()[p];
         // If the whole word is zeroed, we don't write as it might overlap other regions
         if (!(word_line == 0x00)) {
-          if ((p+init_addr)/4 < 10)
-            cout << "Addr[" << std::hex << (p+init_addr)/4 << "] Data[" << std::hex << word_line << "]" << std::endl;
+          //if ((p+init_addr)/4 < 10)
+          //  cout << "Addr[" << std::hex << (p+init_addr)/4 << "] Data[" << std::hex << word_line << "]" << std::endl;
           sim->core->nox_sim->writeWordIRAM((p+init_addr)/4,word_line);
         }
       }
@@ -135,10 +135,10 @@ bool loadELF(testbench<Vnox_sim> *sim, string program_path, const bool en_print)
       int init_addr = (lma_addr-DRAM_ADDR);
 
       if (mem_size >= (DRAM_KB_SIZE*1024)){
-        printf("\n\n[ELF Loader] DRAM ERROR:");
-        printf("\nELF program: %d KB", mem_size/1024);
-        printf("\nVerilator model memory size: %d KB\n", (DRAM_KB_SIZE));
-        printf("\nELF File too big for emulated memory!\n");
+        cout << "[ELF Loader] DRAM ERROR:" << std::endl;
+        cout << "ELF program: \t" << mem_size/1024 << " KB" << std::endl;
+        cout << "Verilator model memory size: \t" << DRAM_KB_SIZE << " KB" << std::endl;
+        cout << "ELF File too big for emulated memory!" << std::endl;
         return 1;
       }
       // DRAM Address
@@ -147,8 +147,8 @@ bool loadELF(testbench<Vnox_sim> *sim, string program_path, const bool en_print)
                              ((uint8_t)p_seg->get_data()[p+1]<<8)+(uint8_t)p_seg->get_data()[p];
         // If the whole word is zeroed, we don't write as it might overlap other regions
         if (!(word_line == 0x00)) {
-          if ((p+init_addr)/4 < 10)
-            cout << "Addr[" << std::hex << (p+init_addr)/4 << "] Data[" << std::hex << word_line << "]" << std::endl;
+          //if ((p+init_addr)/4 < 10)
+          //  cout << "Addr[" << std::hex << (p+init_addr)/4 << "] Data[" << std::hex << word_line << "]" << std::endl;
           sim->core->nox_sim->writeWordDRAM((p+init_addr)/4,word_line);
         }
       }

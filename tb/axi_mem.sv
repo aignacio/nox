@@ -1,5 +1,6 @@
 module axi_mem import utils_pkg::*; #(
-  parameter MEM_KB = 4,
+  parameter MEM_KB        = 4,
+  parameter ROM           = 0,
   parameter DISPLAY_TEST  = `DISPLAY_TEST,
   parameter BP_ADDRS_CHN  = `BP_ADDRS_CHN,
   parameter BP_RDATA_CHN  = `BP_RDATA_CHN,
@@ -27,6 +28,8 @@ module axi_mem import utils_pkg::*; #(
   axi_size_t  size_wr_ff, next_wr_size;
   axi_data_t  rd_data_ff, next_rd_data;
 `ifdef SIMULATION
+  logic [1:0] rand_addr_ready_ff;
+  logic [1:0] rand_data_ready_ff;
   logic [7:0] char_wr;
   logic next_char, char_ff;
   logic next_num, num_ff;
@@ -131,6 +134,12 @@ module axi_mem import utils_pkg::*; #(
     axi_miso.buser   = 'h0;
     axi_miso.bvalid  = 'b0;
 
+`ifdef SIMULATION
+    if (BP_ADDRS_CHN) begin
+      axi_miso.awready = (rand_addr_ready_ff == 0);
+    end
+`endif
+
 `ifndef SIMULATION
     if (axi_mosi.awvalid && axi_miso.awready) begin
       next_wr_addr = axi_mosi.awaddr;
@@ -176,7 +185,7 @@ module axi_mem import utils_pkg::*; #(
       end
     end
     // Data phase
-    if (axi_mosi.wvalid && axi_wr_vld_ff) begin
+    if (axi_mosi.wvalid && axi_wr_vld_ff && axi_miso.wready) begin
       next_bvalid = 'b1;
       if (fin_sig_ff) begin
         dump_signature();
@@ -214,6 +223,12 @@ module axi_mem import utils_pkg::*; #(
     rd_addr      = axi_mosi.araddr[2+:ADDR_RAM];
     axi_miso.arready = 'b1;
 
+`ifdef SIMULATION
+    if (BP_ADDRS_CHN) begin
+      axi_miso.arready = (rand_addr_ready_ff == 0);
+    end
+`endif
+
     if (axi_rd_vld_ff) begin
       next_axi_rd  = ~axi_mosi.rready;
     end
@@ -241,6 +256,7 @@ module axi_mem import utils_pkg::*; #(
       size_wr_ff    <= `OP_RST_L;
       bvalid_ff     <= `OP_RST_L;
   `ifdef SIMULATION
+      rand_addr_ready_ff <= 'b0;
       char_ff       <= 'b0;
       num_ff        <= 'b0;
       sig_ff        <= s_signature_t'('h0);
@@ -257,6 +273,9 @@ module axi_mem import utils_pkg::*; #(
       size_wr_ff    <= next_wr_size;
       bvalid_ff     <= next_bvalid;
   `ifdef SIMULATION
+      /* verilator lint_off WIDTH */
+      rand_addr_ready_ff <= ROM ? 'b0 : $urandom_range(1,0);
+      /* verilator lint_on WIDTH */
       char_ff       <= next_char;
       num_ff        <= next_num;
       sig_ff        <= next_sig;

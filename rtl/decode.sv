@@ -48,7 +48,7 @@ module decode
   always_comb begin : dec_op
     if (jump_i) begin
       // ..Insert a NOP
-      id_ex_o          = s_id_ex_t'('0);
+      id_ex_o = s_id_ex_t'('0);
     end
     else begin
       id_ex_o = id_ex_ff;
@@ -170,6 +170,10 @@ module decode
       next_wait_inst = 'b0;
     end
 
+    // We are stalling due to bp on the LSU
+    if (~id_ready_i) begin
+      next_id_ex = id_ex_ff;
+    end
   end : dec_op
 
   `CLK_PROC(clk, rst) begin
@@ -194,6 +198,7 @@ module decode
     .rd_addr_i (wb_dec_i.rd_addr),
     .rd_data_i (wb_dec_i.rd_data),
     .we_i      (wb_dec_i.we_rd),
+    .re_i      (id_ready_i),
     .rs1_data_o(rs1_data_o),
     .rs2_data_o(rs2_data_o)
   );
