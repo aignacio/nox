@@ -21,8 +21,8 @@ IRAM_ADDR			?=	0x80000000
 DRAM_ADDR			?=	0x10000000
 DISPLAY_TEST	?=	0 # Display or not $display under axi_mem.sv [compliance test]
 WAVEFORM_USE	?=	0 # Use 0 to not generate waves [compliance test]
-BP_ADDRS_CHN	?=	0 # Insert bp on aw/raddr chn
-BP_RDATA_CHN	?=	0 # Insert bp on rdata chn
+BP_ADDRS_CHN	?=	1 # Insert bp on aw/raddr chn
+BP_RDATA_CHN	?=	1 # Insert bp on rdata chn
 BP_BWRES_CHN	?=	0 # Insert bp on b chn
 
 # Verilator info
