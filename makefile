@@ -14,18 +14,23 @@ _INCS_VLOG		?=	rtl/inc
 INCS_VLOG			:=	$(addprefix -I,$(_INCS_VLOG))
 
 # Parameters of simulation
-VERILATOR_TB	:=	tb
 #IRAM_KB_SIZE	?=	256
 IRAM_KB_SIZE	?=	2*1024
 DRAM_KB_SIZE	?=	128
 IRAM_ADDR			?=	0x80000000
 DRAM_ADDR			?=	0x10000000
+DISPLAY_TEST	?=	0 # Display or not $display under axi_mem.sv [compliance test]
+WAVEFORM_USE	?=	0 # Use 0 to not generate waves [compliance test]
+BP_ADDRS_CHN	?=	1 # Insert bp on aw/raddr chn
+BP_RDATA_CHN	?=	0 # Insert bp on rdata chn
+BP_BWRES_CHN	?=	0 # Insert bp on b chn
+
+# Verilator info
+VERILATOR_TB	:=	tb
+WAVEFORM_FST	?=	nox_waves.fst
 OUT_VERILATOR	:=	output_verilator
 ROOT_MOD_VERI	:=	nox_sim
 VERILATOR_EXE	:=	$(OUT_VERILATOR)/$(ROOT_MOD_VERI)
-DISPLAY_TEST	?=	0 # Display or not $display under axi_mem.sv
-WAVEFORM_USE	?=	0 # Use 0 to not generate waves, like in compliance test
-WAVEFORM_FST	?=	nox_waves.fst
 
 # Testbench files
 SRC_CPP				:=	$(wildcard $(VERILATOR_TB)/cpp/*.cpp)
@@ -37,6 +42,9 @@ INCS_CPP			:=	$(addprefix -I,$(_INC_CPPS))
 _MACROS_VLOG	?=	IRAM_KB_SIZE=$(IRAM_KB_SIZE)
 _MACROS_VLOG	+=	DRAM_KB_SIZE=$(DRAM_KB_SIZE)
 _MACROS_VLOG	+=	DISPLAY_TEST=$(DISPLAY_TEST)
+_MACROS_VLOG	+=	BP_ADDRS_CHN=$(BP_ADDRS_CHN)
+_MACROS_VLOG	+=	BP_RDATA_CHN=$(BP_RDATA_CHN)
+_MACROS_VLOG	+=	BP_BWRES_CHN=$(BP_BWRES_CHN)
 _MACROS_VLOG	+=	SIMULATION
 MACROS_VLOG		?=	$(addprefix +define+,$(_MACROS_VLOG))
 

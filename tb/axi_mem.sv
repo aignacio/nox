@@ -1,6 +1,9 @@
 module axi_mem import utils_pkg::*; #(
   parameter MEM_KB = 4,
-  parameter DISPLAY_TEST = `DISPLAY_TEST
+  parameter DISPLAY_TEST  = `DISPLAY_TEST,
+  parameter BP_ADDRS_CHN  = `BP_ADDRS_CHN,
+  parameter BP_RDATA_CHN  = `BP_RDATA_CHN,
+  parameter BP_BWRES_CHN  = `BP_BWRES_CHN
 )(
   input                 clk,
   input                 rst,
@@ -172,7 +175,6 @@ module axi_mem import utils_pkg::*; #(
         next_wr_size = axi_mosi.awsize;
       end
     end
-    /* verilator lint_off UNOPTTHREADS */
     // Data phase
     if (axi_mosi.wvalid && axi_wr_vld_ff) begin
       next_bvalid = 'b1;
@@ -186,7 +188,6 @@ module axi_mem import utils_pkg::*; #(
       else if (end_sig_ff) begin
         next_sig.end_addr = axi_mosi.wdata;
       end
-      /* verilator lint_on UNOPTTHREADS */
       else if (~char_ff && ~num_ff) begin
         byte_sel_wr = wr_addr_ff[1:0];
         next_wdata  = mask_axi_w(axi_mosi.wdata, byte_sel_wr, axi_mosi.wstrb);
