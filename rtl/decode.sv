@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 29.12.2021
+ * Last Modified Date: 07.01.2022
  */
 module decode
   import utils_pkg::*;
@@ -14,10 +14,8 @@ module decode
   input                 rst,
   // Control signals
   input                 jump_i,
-  input                 stall_i,
   input   pc_t          pc_reset_i,
   input   pc_t          pc_jump_i,
-  //output  s_stall_id_t  id_regs_o,
   // From FETCH stg I/F
   input   valid_t       fetch_valid_i,
   output  ready_t       fetch_ready_o,
@@ -43,27 +41,14 @@ module decode
 
   always_comb begin
     next_vld_dec  = fetch_valid_i;
-    fetch_ready_o = (id_ready_i && ~stall_i);
+    fetch_ready_o = id_ready_i;
     id_valid_o    = dec_valid_ff;
   end
 
   always_comb begin : dec_op
-    if (jump_i || stall_i) begin
+    if (jump_i) begin
       // ..Insert a NOP
       id_ex_o          = s_id_ex_t'('0);
-      id_ex_o.we_rd    = 'b0;
-      id_ex_o.rs1_op   = REG_RF;
-      id_ex_o.rs2_op   = IMM;
-      id_ex_o.lsu      = NO_LSU;
-      id_ex_o.branch   = 'b0;
-      id_ex_o.jump     = 'b0;
-      id_ex_o.f7       = sfunct7_t'('h0);
-      id_ex_o.rd_addr  = raddr_t'('h0);
-      id_ex_o.f3       = RV_F3_ADD_SUB;
-      id_ex_o.rshift   = rshift_t'('h0);
-      id_ex_o.imm      = imm_t'('h0);
-      id_ex_o.rs1_addr = raddr_t'('h0);
-      id_ex_o.rs2_addr = raddr_t'('h0);
     end
     else begin
       id_ex_o = id_ex_ff;
@@ -166,7 +151,7 @@ module decode
       end
     endcase
 
-    if (fetch_valid_i && id_ready_i && wait_inst_ff && ~stall_i) begin
+    if (fetch_valid_i && id_ready_i && wait_inst_ff) begin
       next_id_ex.pc_dec  = id_ex_ff.pc_dec + 'd4;
     end
     else begin
@@ -179,16 +164,12 @@ module decode
 
     next_wait_inst = wait_inst_ff;
     if (~wait_inst_ff) begin
-      next_wait_inst = (fetch_valid_i && id_ready_i && ~stall_i);
+      next_wait_inst = (fetch_valid_i && id_ready_i);
     end
     else if (jump_i) begin
       next_wait_inst = 'b0;
     end
 
-    //id_regs_o.rs1_addr = instr_dec.rs1;
-    //id_regs_o.rs2_addr = instr_dec.rs2;
-    //id_regs_o.rs1_sel  = (next_id_ex.rs1_op == REG_RF);
-    //id_regs_o.rs2_sel  = (next_id_ex.rs2_op == REG_RF);
   end : dec_op
 
   `CLK_PROC(clk, rst) begin

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 18.12.2021
+ * Last Modified Date: 07.01.2022
  */
 module nox
   import utils_pkg::*;
@@ -103,10 +103,8 @@ module nox
     .rst                   (rst),
     // Control signals
     .jump_i                (fetch_req),
-    .stall_i               (stall),
     .pc_jump_i             (fetch_addr),
     .pc_reset_i            (start_addr_i),
-    //.id_regs_o             (id_regs),
     // From FETCH stg I/F
     .fetch_valid_i         (fetch_valid),
     .fetch_ready_o         (fetch_ready),
@@ -128,9 +126,6 @@ module nox
     .clk                   (clk),
     .rst                   (rst),
     // Control signals
-    .branch_o              (branch),
-    .jump_o                (jump),
-    .rd_addr_ex_o          (rd_addr_ex),
     .wb_value_i            (wb_dec.rd_data),
     // From DEC stg I/F
     .id_ex_i               (id_ex),
@@ -142,6 +137,9 @@ module nox
     .ex_mem_wb_o           (ex_mem_wb),
     .lsu_o                 (lsu_op),
     .lsu_bp_i              (lsu_bp),
+    // To FETCH stg
+    .fetch_req_o           (fetch_req),
+    .fetch_addr_o          (fetch_addr),
     // Trap - Instruction access fault
     .illegal_ex_o          (),
     .trap_info_o           ()
@@ -165,25 +163,14 @@ module nox
     .trap_info_o           ()
   );
 
-  control u_control(
-    .clk            (clk),
-    .rst            (rst),
-    // To FETCH stg
-    .fetch_req_o    (fetch_req),
-    .fetch_addr_o   (fetch_addr),
+  wb u_wb(
     // From EXEC/WB
     .ex_mem_wb_i    (ex_mem_wb),
-    .branch_i       (branch),
-    .jump_i         (jump),
-    .rd_addr_ex_i   (rd_addr_ex),
     // From LSU
     .wb_lsu_i       (lsu_op_wb),
     .lsu_rd_data_i  (lsu_rd_data),
     .lsu_bp_i       (lsu_bp),
     // To DEC stg
-    .wb_dec_o       (wb_dec),
-    .stall_o        (stall),
-    // From DEC
-    .id_regs_i      (id_regs)//,
+    .wb_dec_o       (wb_dec)
   );
 endmodule

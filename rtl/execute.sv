@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 29.12.2021
+ * Last Modified Date: 07.01.2022
  */
 module execute
   import utils_pkg::*;
@@ -13,9 +13,6 @@ module execute
   input                 clk,
   input                 rst,
   // Control signals
-  output  s_branch_t    branch_o,
-  output  s_jump_t      jump_o,
-  output  raddr_t       rd_addr_ex_o,
   input   rdata_t       wb_value_i,
   // From DEC stg I/F
   input   s_id_ex_t     id_ex_i,
@@ -27,6 +24,9 @@ module execute
   output  s_ex_mem_wb_t ex_mem_wb_o,
   output  s_lsu_op_t    lsu_o,
   input                 lsu_bp_i,
+  // To FETCH stg
+  output  logic         fetch_req_o,
+  output  pc_t          fetch_addr_o,
   // Trap - Instruction access fault
   output  logic         illegal_ex_o,
   output  s_trap_info_t trap_info_o
@@ -128,7 +128,6 @@ module execute
     trap_info_o = s_trap_info_t'('0);
 
     ex_mem_wb_o = ex_mem_wb_ff;
-    rd_addr_ex_o = id_ex_i.rd_addr;
   end : alu_proc
 
   always_comb begin : jump_lsu_mgmt
@@ -153,10 +152,14 @@ module execute
     lsu_o.width  = id_ex_i.lsu_w;
     lsu_o.addr   = res;
     lsu_o.wdata  = (fwd_wdata) ? wb_value_i : rs2_data_i;
-
-    branch_o = branch_ff;
-    jump_o = jump_ff;
   end : jump_lsu_mgmt
+
+  always_comb begin : fetch_req
+    // To FETCH / DEC (flush_i)
+    fetch_req_o  = ((branch_ff.b_act && branch_ff.take_branch) || jump_ff.j_act);
+    // To FETCH / DEC (pc_jump_i)
+    fetch_addr_o = (branch_ff.b_act) ? branch_ff.b_addr : jump_ff.j_addr;
+  end : fetch_req
 
   `CLK_PROC(clk, rst) begin
     `RST_TYPE(rst) begin
