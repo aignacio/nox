@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 07.01.2022
+ * Last Modified Date: 08.01.2022
  */
 module lsu
   import utils_pkg::*;
@@ -29,7 +29,8 @@ module lsu
 );
   s_lsu_op_t lsu_ff, next_lsu;
   logic req_ff, next_req;
-  logic bp_addr, bp_data;
+  logic wr_resp_ff, next_wresp;
+  logic bp_addr, bp_data, bp_wr_resp;
   logic new_txn;
   logic rd_txn;
   logic wr_txn;
@@ -79,6 +80,7 @@ module lsu
     lsu_bp_o  = 'b0;
     next_req  = req_ff;
     next_lsu = lsu_ff;
+    next_wresp = wr_resp_ff ? ~data_cb_miso_i.wr_resp_valid : (wr_txn_dp && data_cb_miso_i.wr_data_ready);
 
     // Default values transfer nothing
     data_cb_mosi_o = s_cb_mosi_t'('0);
@@ -90,7 +92,9 @@ module lsu
                                    ~data_cb_miso_i.wr_addr_ready);
     bp_data = req_ff && (wr_txn_dp ? ~data_cb_miso_i.wr_data_ready :
                                      ~data_cb_miso_i.rd_valid);
-    lsu_bp_o = bp_addr || bp_data;
+    bp_wr_resp = wr_resp_ff ? ~data_cb_miso_i.wr_resp_valid : 'b0;
+
+    lsu_bp_o = bp_addr || bp_data || bp_wr_resp;
 
     lsu_bp_data_o = bp_data;
 
@@ -141,10 +145,12 @@ module lsu
     `RST_TYPE(rst) begin
       lsu_ff      <= s_lsu_op_t'('0);
       req_ff      <= 'b0;
+      wr_resp_ff  <= `OP_RST_L;
     end
     else begin
       lsu_ff      <= next_lsu;
       req_ff      <= next_req;
+      wr_resp_ff  <= next_wresp;
     end
   end
 endmodule

@@ -14,16 +14,17 @@ _INCS_VLOG		?=	rtl/inc
 INCS_VLOG			:=	$(addprefix -I,$(_INCS_VLOG))
 
 # Parameters of simulation
-#IRAM_KB_SIZE	?=	256
-IRAM_KB_SIZE	?=	2*1024
+IRAM_KB_SIZE	?=	256
+#IRAM_KB_SIZE	?=	2*1024
 DRAM_KB_SIZE	?=	128
 IRAM_ADDR			?=	0x80000000
+ENTRY_ADDR		?=	\'h8000_0000
 DRAM_ADDR			?=	0x10000000
-DISPLAY_TEST	?=	0 # Display or not $display under axi_mem.sv [compliance test]
-WAVEFORM_USE	?=	0 # Use 0 to not generate waves [compliance test]
-BP_ADDRS_CHN	?=	1 # Insert bp on aw/raddr chn
-BP_RDATA_CHN	?=	1 # Insert bp on rdata chn
-BP_BWRES_CHN	?=	0 # Insert bp on b chn
+DISPLAY_TEST	?=	1 # Enable $display in axi_mem.sv [compliance test]
+WAVEFORM_USE	?=	1 # Use 0 to not generate waves [compliance test]
+BP_ADDRS_CHN	?=	1 # Insert bp on address chn - aw/raddr [MISO]
+BP_WRDTA_CHN	?=	1 # Insert bp on data chn - wready/rvalid [MISO]
+BP_BWRES_CHN	?=	1 # Insert bp on write resp chn - bvalid [MISO]
 
 # Verilator info
 VERILATOR_TB	:=	tb
@@ -41,9 +42,10 @@ INCS_CPP			:=	$(addprefix -I,$(_INC_CPPS))
 # Verilog Macros
 _MACROS_VLOG	?=	IRAM_KB_SIZE=$(IRAM_KB_SIZE)
 _MACROS_VLOG	+=	DRAM_KB_SIZE=$(DRAM_KB_SIZE)
+_MACROS_VLOG	+=	ENTRY_ADDR=$(ENTRY_ADDR)
 _MACROS_VLOG	+=	DISPLAY_TEST=$(DISPLAY_TEST)
 _MACROS_VLOG	+=	BP_ADDRS_CHN=$(BP_ADDRS_CHN)
-_MACROS_VLOG	+=	BP_RDATA_CHN=$(BP_RDATA_CHN)
+_MACROS_VLOG	+=	BP_WRDTA_CHN=$(BP_WRDTA_CHN)
 _MACROS_VLOG	+=	BP_BWRES_CHN=$(BP_BWRES_CHN)
 _MACROS_VLOG	+=	SIMULATION
 MACROS_VLOG		?=	$(addprefix +define+,$(_MACROS_VLOG))

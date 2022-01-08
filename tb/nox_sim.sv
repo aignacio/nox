@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 07.01.2022
+ * Last Modified Date: 08.01.2022
  */
 module nox_sim import utils_pkg::*; (
   input   clk,
@@ -43,7 +43,7 @@ module nox_sim import utils_pkg::*; (
     .clk              (clk),
     .arst             (rst),
     .start_fetch_i    ('b1),
-    .start_addr_i     ('h8000_0000),
+    .start_addr_i     (`ENTRY_ADDR),
     .instr_axi_mosi_o (masters_axi_mosi[0]),
     .instr_axi_miso_i (masters_axi_miso[0]),
     .lsu_axi_mosi_o   (masters_axi_mosi[1]),

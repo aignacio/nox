@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Fri Jan  7 16:57:19 2022
+[*] Sat Jan  8 11:13:42 2022
 [*]
 [dumpfile] "/Users/aignacio/projects/nox/nox_waves.fst"
-[dumpfile_mtime] "Fri Jan  7 16:53:44 2022"
-[dumpfile_size] 1187163
+[dumpfile_mtime] "Sat Jan  8 11:05:06 2022"
+[dumpfile_size] 1179097
 [savefile] "/Users/aignacio/projects/nox/waves.gtkw"
-[timestart] 256
+[timestart] 1
 [size] 3318 1727
-[pos] 140 45
-*-2.831576 283 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] -1 -1
+*-6.652027 152 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.nox_sim.
 [treeopen] TOP.nox_sim.u_dram.
@@ -23,7 +23,7 @@
 [sst_width] 271
 [signals_width] 350
 [sst_expanded] 1
-[sst_vpaned_height] 1340
+[sst_vpaned_height] 1459
 @28
 TOP.nox_sim.u_nox.arst
 TOP.nox_sim.u_nox.clk
@@ -38,10 +38,16 @@ TOP.nox_sim.u_nox.start_addr_i[31:0]
 @28
 TOP.nox_sim.u_nox.start_fetch_i
 @22
+[color] 2
 TOP.nox_sim.u_nox.instr_axi_mosi_o.araddr[31:0]
 @28
+[color] 2
 TOP.nox_sim.u_nox.instr_axi_mosi_o.arvalid
+[color] 2
+TOP.nox_sim.masters_axi_miso[0].arready
+[color] 7
 TOP.nox_sim.u_nox.instr_axi_miso_i.rvalid
+[color] 7
 TOP.nox_sim.u_nox.instr_axi_mosi_o.rready
 @22
 TOP.nox_sim.u_nox.instr_axi_miso_i.rdata[31:0]
@@ -49,17 +55,19 @@ TOP.nox_sim.u_nox.instr_axi_miso_i.rdata[31:0]
 -instr_if
 @800200
 -data_if[LSU]
-@28
-TOP.nox_sim.masters_axi_mosi[1].awvalid
-TOP.nox_sim.slaves_axi_miso[1].awready
 @22
+[color] 2
 TOP.nox_sim.masters_axi_mosi[1].awaddr[31:0]
 @28
-TOP.nox_sim.masters_axi_mosi[1].wvalid
-TOP.nox_sim.slaves_axi_miso[1].wready
+[color] 2
+TOP.nox_sim.masters_axi_mosi[1].awvalid
+[color] 2
+TOP.nox_sim.slaves_axi_miso[1].awready
 @22
+[color] 7
 TOP.nox_sim.masters_axi_mosi[1].wdata[31:0]
 @c00028
+[color] 7
 TOP.nox_sim.masters_axi_mosi[1].wstrb[3:0]
 @28
 (0)TOP.nox_sim.masters_axi_mosi[1].wstrb[3:0]
@@ -69,15 +77,29 @@ TOP.nox_sim.masters_axi_mosi[1].wstrb[3:0]
 @1401200
 -group_end
 @28
-TOP.nox_sim.masters_axi_mosi[1].arvalid
+[color] 7
+TOP.nox_sim.masters_axi_mosi[1].wvalid
+[color] 7
+TOP.nox_sim.slaves_axi_miso[1].wready
+[color] 3
+TOP.nox_sim.masters_axi_miso[1].bvalid
+[color] 3
+TOP.nox_sim.masters_axi_mosi[1].bready
 @22
+[color] 2
 TOP.nox_sim.masters_axi_mosi[1].araddr[31:0]
 @28
+[color] 2
+TOP.nox_sim.masters_axi_mosi[1].arvalid
+[color] 2
 TOP.nox_sim.masters_axi_miso[1].arready
+[color] 7
 TOP.nox_sim.masters_axi_miso[1].rvalid
 @22
+[color] 7
 TOP.nox_sim.masters_axi_miso[1].rdata[31:0]
 @28
+[color] 7
 TOP.nox_sim.masters_axi_mosi[1].rready
 @1000200
 -data_if[LSU]
@@ -89,7 +111,7 @@ TOP.nox_sim.u_nox.u_execute.next_branch.take_branch
 TOP.nox_sim.u_nox.u_execute.next_branch.b_addr[31:0]
 [color] 7
 TOP.nox_sim.u_nox.u_decode.next_id_ex.pc_dec[31:0]
-@100000028
+@100000029
 [color] 7
 TOP.nox_sim.u_nox.u_decode.instr_dec.op[6:0]
 @800200
@@ -225,12 +247,7 @@ TOP.nox_sim.u_nox.u_decode.id_ready_i
 @28
 TOP.nox_sim.u_nox.u_lsu.bp_addr
 TOP.nox_sim.u_nox.u_lsu.bp_data
-@29
+TOP.nox_sim.u_nox.u_lsu.bp_wr_resp
 TOP.nox_sim.u_nox.u_lsu.lsu_bp_o
 [pattern_trace] 1
 [pattern_trace] 0
-!100000@@
-?"800001E8
-@23
-TOP.nox_sim.u_nox.u_decode.next_id_ex.pc_dec[31:0]
-!!
