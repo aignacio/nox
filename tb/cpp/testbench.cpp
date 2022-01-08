@@ -178,7 +178,7 @@ int main(int argc, char** argv, char** env){
 
   if (loadELF(dut, setup.elf_path, true)) {
     cout << "\nError while processing ELF file!" << std::endl;
-    //exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);
   }
 
   dut->reset(2);
@@ -186,6 +186,7 @@ int main(int argc, char** argv, char** env){
     dut->tick();
   }
 
+  cout << "\nRemaining clk cycles: " << setup.sim_cycles << std::endl;
   cout << "\n" << std::endl;
   dut->close();
   exit(EXIT_SUCCESS);

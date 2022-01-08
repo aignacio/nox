@@ -21,7 +21,6 @@ module nox_sim import utils_pkg::*; (
   assign masters_axi_miso[1] = slaves_axi_miso[1];
 
   axi_mem #(
-    .ROM   (1),
     .MEM_KB(`IRAM_KB_SIZE)
   ) u_iram (
     .clk      (clk),

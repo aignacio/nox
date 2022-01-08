@@ -14,17 +14,17 @@ _INCS_VLOG		?=	rtl/inc
 INCS_VLOG			:=	$(addprefix -I,$(_INCS_VLOG))
 
 # Parameters of simulation
-IRAM_KB_SIZE	?=	256
-#IRAM_KB_SIZE	?=	2*1024
+#IRAM_KB_SIZE	?=	256
+IRAM_KB_SIZE	?=	2*1024
 DRAM_KB_SIZE	?=	128
-IRAM_ADDR			?=	0x80000000
 ENTRY_ADDR		?=	\'h8000_0000
+IRAM_ADDR			?=	0x80000000
 DRAM_ADDR			?=	0x10000000
-DISPLAY_TEST	?=	1 # Enable $display in axi_mem.sv [compliance test]
-WAVEFORM_USE	?=	1 # Use 0 to not generate waves [compliance test]
-BP_ADDRS_CHN	?=	1 # Insert bp on address chn - aw/raddr [MISO]
-BP_WRDTA_CHN	?=	1 # Insert bp on data chn - wready/rvalid [MISO]
-BP_BWRES_CHN	?=	1 # Insert bp on write resp chn - bvalid [MISO]
+DISPLAY_TEST	?=	0 # Enable $display in axi_mem.sv [compliance test]
+WAVEFORM_USE	?=	0 # Use 0 to not generate waves [compliance test]
+BP_ADDRS_CHN	?=	0 # Insert bp on address chn - aw/raddr [MISO]
+BP_WRDTA_CHN	?=	0 # Insert bp on data chn - wready/rvalid [MISO]
+BP_BWRES_CHN	?=	0 # Insert bp on write resp chn - bvalid [MISO]
 
 # Verilator info
 VERILATOR_TB	:=	tb
