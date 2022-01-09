@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 07.01.2022
+ * Last Modified Date: 09.01.2022
  */
 module nox
   import utils_pkg::*;
@@ -45,7 +45,6 @@ module nox
   raddr_t       rd_addr_ex;
   s_wb_t        wb_dec;
   logic         lsu_bp_data;
-  s_stall_id_t  id_regs;
 
 `ifdef TARGET_FPGA
   reset_sync#(

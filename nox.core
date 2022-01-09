@@ -1,0 +1,68 @@
+CAPI=2:
+name: core:nox:v0.0.1
+description: Nox RISC-V core
+
+filesets:
+  rtl_nox:
+    files:
+      - rtl/inc/axi_pkg.svh      : {is_include_file: true}
+      - rtl/inc/nox_pkg.svh      : {is_include_file: true}
+      - rtl/inc/core_bus_pkg.svh : {is_include_file: true}
+      - rtl/inc/riscv_pkg.svh    : {is_include_file: true}
+      - rtl/inc/utils_pkg.svh    : {is_include_file: true}
+      - rtl/fetch.sv
+      - rtl/fifo.sv
+      - rtl/nox.sv
+      - rtl/wb.sv
+      - rtl/reset_sync.sv
+      - rtl/execute.sv
+      - rtl/cb_to_axi.sv
+      - rtl/register_file.sv
+      - rtl/lsu.sv
+      - rtl/skid_buffer.sv
+      - rtl/decode.sv
+      - tb/nox_sim.sv
+    file_type: systemVerilogSource
+
+  synth_nox:
+    files:
+      - xlnx/nox_synth.sv
+      - tb/axi_mem.sv
+    file_type: systemVerilogSource
+
+  tb:
+    files:
+      - tb/axi_mem_wbp.sv
+      - tb/axi_mem.sv
+    file_type: systemVerilogSource
+
+  nexysV_constraints:
+    files:
+      - xlnx/nexys_video.xdc : {file_type  : xdc}
+
+targets:
+  default: &default
+    filesets: [rtl_nox]
+    toplevel: nox_sim
+    #parameters: [DEBUG=1]
+
+  lint:
+    default_tool: verilator
+    filesets: [rtl_nox]
+    tools:
+      verilator:
+        mode: lint-only
+        verilator_options: ["--Wno-UNOPTFLAT"]
+    toplevel: nox_sim
+
+  nv_synth:
+    <<: *default
+    default_tool : vivado
+    description : Nexys Video board synthesis
+    filesets_append:
+      - synth_nox
+      - nexysV_constraints
+    tools:
+      vivado:
+        part : xc7a200tsbg484-1
+    toplevel: nox_synth

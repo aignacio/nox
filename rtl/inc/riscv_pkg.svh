@@ -168,13 +168,6 @@
     logic       we_rd;
   } s_wb_t;
 
-  typedef struct packed {
-    raddr_t     rs1_addr;
-    raddr_t     rs2_addr;
-    logic       rs1_sel;
-    logic       rs2_sel;
-  } s_stall_id_t;
-
   function automatic imm_t gen_imm(instr_raw_t instr, imm_type_t imm_type);
     imm_t imm_res;
 
