@@ -70,11 +70,6 @@
   } mem_t;
 
   typedef enum logic {
-    false,
-    true
-  } bool_t;
-
-  typedef enum logic {
     NO_FWD,
     FWD_REG
   } fwd_mux_t;

@@ -237,11 +237,11 @@ module axi_mem import utils_pkg::*; #(
 
   `CLK_PROC(clk, rst) begin
     `RST_TYPE(rst) begin
-      rd_data_ff    <= `OP_RST_L;
-      wr_addr_ff    <= `OP_RST_L;
+      rd_data_ff    <= axi_data_t'(`OP_RST_L);
+      wr_addr_ff    <= axi_addr_t'(`OP_RST_L);
       axi_rd_vld_ff <= `OP_RST_L;
       axi_wr_vld_ff <= `OP_RST_L;
-      size_wr_ff    <= `OP_RST_L;
+      size_wr_ff    <= axi_size_t'(`OP_RST_L);
       bvalid_ff     <= `OP_RST_L;
   `ifdef SIMULATION
       char_ff       <= 'b0;

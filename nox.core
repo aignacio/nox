@@ -5,11 +5,11 @@ description: Nox RISC-V core
 filesets:
   rtl_nox:
     files:
-      - rtl/inc/axi_pkg.svh      : {is_include_file: true}
-      - rtl/inc/nox_pkg.svh      : {is_include_file: true}
-      - rtl/inc/core_bus_pkg.svh : {is_include_file: true}
-      - rtl/inc/riscv_pkg.svh    : {is_include_file: true}
-      - rtl/inc/utils_pkg.svh    : {is_include_file: true}
+      - rtl/inc/axi_pkg.svh: {is_include_file: true}
+      - rtl/inc/nox_pkg.svh: {is_include_file: true}
+      - rtl/inc/core_bus_pkg.svh: {is_include_file: true}
+      - rtl/inc/riscv_pkg.svh: {is_include_file: true}
+      - rtl/inc/utils_pkg.sv
       - rtl/fetch.sv
       - rtl/fifo.sv
       - rtl/nox.sv
@@ -21,7 +21,6 @@ filesets:
       - rtl/lsu.sv
       - rtl/skid_buffer.sv
       - rtl/decode.sv
-      - tb/nox_sim.sv
     file_type: systemVerilogSource
 
   synth_nox:
@@ -38,13 +37,18 @@ filesets:
 
   nexysV_constraints:
     files:
-      - xlnx/nexys_video.xdc : {file_type  : xdc}
+      - xlnx/nexys_video.xdc: {file_type  : xdc}
+
+parameters:
+  DISPLAY_TEST:
+    datatype: bool
+    default : false
+    paramtype: vlogdefine
 
 targets:
   default: &default
     filesets: [rtl_nox]
     toplevel: nox_sim
-    #parameters: [DEBUG=1]
 
   lint:
     default_tool: verilator
@@ -66,3 +70,4 @@ targets:
       vivado:
         part : xc7a200tsbg484-1
     toplevel: nox_synth
+    parameters: [DISPLAY_TEST=false]

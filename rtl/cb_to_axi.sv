@@ -3,13 +3,11 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.10.2021
- * Last Modified Date: 04.12.2021
+ * Last Modified Date: 10.01.2022
  */
 module cb_to_axi
   import utils_pkg::*;
-#(
-  parameter logic [2:0] PROT = 'b010 // INSTRUCTION - 100 / NONSECURE - 010 / PRIV - 001
-)(
+(
   // Core bus Master I/F
   input   s_cb_mosi_t   cb_mosi_i,
   output  s_cb_miso_t   cb_miso_o,
@@ -33,8 +31,8 @@ module cb_to_axi
     axi_mosi_o.arsize   = axi_size_t'(cb_mosi_i.rd_size);
     axi_mosi_o.arvalid  = cb_mosi_i.rd_addr_valid;
     axi_mosi_o.rready   = cb_mosi_i.rd_ready;
-    axi_mosi_o.arprot   = PROT;
-    axi_mosi_o.awprot   = PROT;
+    axi_mosi_o.arprot   = axi_prot_t'(AXI_NONSECURE);
+    axi_mosi_o.awprot   = axi_prot_t'(AXI_NONSECURE);
 
     // MISO
     cb_miso_o.wr_addr_ready = axi_miso_i.awready;

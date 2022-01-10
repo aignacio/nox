@@ -116,7 +116,7 @@
   typedef struct packed {
     pc_t        pc_addr;
     instr_raw_t instr;
-    bool_t      active;
+    logic       active;
   } s_trap_info_t;
 
   typedef struct packed {

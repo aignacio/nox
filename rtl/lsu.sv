@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 08.01.2022
+ * Last Modified Date: 10.01.2022
  */
 module lsu
   import utils_pkg::*;
@@ -15,8 +15,8 @@ module lsu
   // From EXE stg
   input   s_lsu_op_t    lsu_i,
   // To EXE stg
-  output                lsu_bp_o,
-  output                lsu_bp_data_o,
+  output  logic         lsu_bp_o,
+  output  logic         lsu_bp_data_o,
   // To write-back datapath
   output  s_lsu_op_t    wb_lsu_o,
   output  rdata_t       lsu_data_o,
