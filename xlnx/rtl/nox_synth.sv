@@ -79,9 +79,9 @@ module nox_synth
     .I(clk_out_clock_gen)
   );
 
-  axi_rom_wrapper #(
-    .MEM_KB(8)
-  ) u_irom (
+  axi_mem #(
+    .MEM_KB(4)
+  ) u_iram (
     .clk      (clk),
     .rst      (rst),
     .axi_mosi (slaves_axi_mosi[0]),

@@ -3,11 +3,11 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 08.01.2022
+ * Last Modified Date: 10.01.2022
  */
 module nox_sim import utils_pkg::*; (
-  input   clk,
-  input   rst
+  input               clk,
+  input               rst
 );
   s_axi_mosi_t  [1:0] masters_axi_mosi;
   s_axi_miso_t  [1:0] masters_axi_miso;
