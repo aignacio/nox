@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 07.01.2022
+ * Last Modified Date: 10.01.2022
  */
 module execute
   import utils_pkg::*;
@@ -73,6 +73,8 @@ module execute
     op2 = alu_t'('0);
     res = alu_t'('0);
     id_ready_o = 'b1;
+
+    next_ex_mem_wb = ex_mem_wb_ff;
 
     // Mux Src A
     case (id_ex_i.rs1_op)
