@@ -15,7 +15,7 @@ INCS_VLOG			:=	$(addprefix -I,$(_INCS_VLOG))
 
 # Parameters of simulation
 #IRAM_KB_SIZE	?=	256
-IRAM_KB_SIZE	?=	2*1024
+IRAM_KB_SIZE	?=	2*1024 #2MB due to J-Tests on RV Compliance tests
 DRAM_KB_SIZE	?=	128
 ENTRY_ADDR		?=	\'h8000_0000
 IRAM_ADDR			?=	0x80000000
@@ -48,6 +48,7 @@ _MACROS_VLOG	+=	BP_ADDRS_CHN=$(BP_ADDRS_CHN)
 _MACROS_VLOG	+=	BP_WRDTA_CHN=$(BP_WRDTA_CHN)
 _MACROS_VLOG	+=	BP_BWRES_CHN=$(BP_BWRES_CHN)
 _MACROS_VLOG	+=	SIMULATION
+_MACROS_VLOG	+=	RV_COMPLIANCE
 MACROS_VLOG		?=	$(addprefix +define+,$(_MACROS_VLOG))
 
 CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall -std=c++11 \

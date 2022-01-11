@@ -186,7 +186,7 @@ int main(int argc, char** argv, char** env){
     dut->tick();
   }
 
-  cout << "\nRemaining clk cycles: " << setup.sim_cycles << std::endl;
+  cout << "\nRemaining clk cycles: " << setup.sim_cycles+1 << std::endl;
   cout << "\n" << std::endl;
   dut->close();
   exit(EXIT_SUCCESS);

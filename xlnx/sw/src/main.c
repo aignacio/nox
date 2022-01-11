@@ -15,6 +15,7 @@ int main(void) {
     if (i == 1000){
       i = 0;
       *addr_leds = leds_out;
+      leds_out = ~leds_out;
     }
     i++;
   }

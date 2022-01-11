@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 10.01.2022
+ * Last Modified Date: 11.01.2022
  */
 module nox_sim import utils_pkg::*; (
   input               clk,
@@ -20,6 +20,7 @@ module nox_sim import utils_pkg::*; (
   assign masters_axi_miso[0] = slaves_axi_miso[0];
   assign masters_axi_miso[1] = slaves_axi_miso[1];
 
+  /* verilator lint_off PINMISSING */
   axi_mem #(
     .MEM_KB(`IRAM_KB_SIZE)
   ) u_iram (
@@ -37,6 +38,7 @@ module nox_sim import utils_pkg::*; (
     .axi_mosi (slaves_axi_mosi[1]),
     .axi_miso (slaves_axi_miso[1])
   );
+  /* verilator lint_on PINMISSING */
 
   nox u_nox(
     .clk              (clk),

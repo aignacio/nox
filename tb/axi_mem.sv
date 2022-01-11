@@ -4,9 +4,7 @@ module axi_mem import utils_pkg::*; #(
 )(
   input                 clk,
   input                 rst,
-`ifndef SIMULATION
   output  logic [7:0]   csr_o,
-`endif
   input   s_axi_mosi_t  axi_mosi,
   output  s_axi_miso_t  axi_miso
 );
@@ -23,11 +21,8 @@ module axi_mem import utils_pkg::*; #(
   logic bvalid_ff, next_bvalid;
   logic axi_rd_vld_ff, next_axi_rd;
   logic axi_wr_vld_ff, next_axi_wr;
-
-`ifndef SIMULATION
   logic csr_decode_ff, next_dec_csr;
   logic [7:0] csr_output_ff, next_csr;
-`endif
 
   axi_addr_t  wr_addr_ff, next_wr_addr;
   axi_size_t  size_wr_ff, next_wr_size;
@@ -124,6 +119,7 @@ module axi_mem import utils_pkg::*; #(
   endfunction
 
   always_comb begin : axi_wr_datapath
+    csr_o        = '0;
     next_wr_addr = axi_addr_t'('0);
     next_axi_wr  = axi_wr_vld_ff;
     next_wr_size = axi_size_t'('h0);
@@ -141,11 +137,11 @@ module axi_mem import utils_pkg::*; #(
     axi_miso.buser   = 'h0;
     axi_miso.bvalid  = 'b0;
 
-`ifndef SIMULATION
     csr_o = csr_output_ff;
     next_csr = csr_output_ff;
-    next_dec_csr = csr_decode_ff;
+    next_dec_csr = 'b0;
 
+`ifndef SIMULATION
     if (axi_mosi.awvalid && axi_miso.awready) begin
       next_wr_addr = axi_mosi.awaddr;
       next_axi_wr  = 'b1;
@@ -173,6 +169,7 @@ module axi_mem import utils_pkg::*; #(
     next_fin       = 'b0;
     next_sig       = sig_ff;
 
+
     // Address phase
     if (axi_mosi.awvalid && axi_miso.awready) begin
       if (axi_mosi.awaddr == 'hA000_0000) begin
@@ -189,6 +186,9 @@ module axi_mem import utils_pkg::*; #(
       end
       else if (axi_mosi.awaddr == 'hC000_0000) begin
         next_fin = 'b1;
+      end
+      else if (axi_mosi.awaddr == 'hD000_0000) begin
+        next_dec_csr = 'b1;
       end
       else begin
         next_wr_addr = axi_mosi.awaddr;
@@ -215,6 +215,10 @@ module axi_mem import utils_pkg::*; #(
         byte_sel_wr = wr_addr_ff[1:0];
         next_wdata  = mask_axi_w(axi_mosi.wdata, byte_sel_wr, axi_mosi.wstrb);
         we_mem      = 'b1;
+        if (csr_decode_ff) begin
+          next_csr = axi_mosi.wdata[7:0];
+          we_mem = 'b0;
+        end
       end
     end
 `endif
@@ -263,6 +267,8 @@ module axi_mem import utils_pkg::*; #(
       axi_wr_vld_ff <= `OP_RST_L;
       size_wr_ff    <= axi_size_t'(`OP_RST_L);
       bvalid_ff     <= `OP_RST_L;
+      csr_output_ff <= `OP_RST_L;
+      csr_decode_ff <= `OP_RST_L;
 `ifdef SIMULATION
       char_ff       <= 'b0;
       num_ff        <= 'b0;
@@ -270,9 +276,6 @@ module axi_mem import utils_pkg::*; #(
       start_sig_ff  <= 'b0;
       end_sig_ff    <= 'b0;
       fin_sig_ff    <= 'b0;
-`else
-      csr_output_ff <= `OP_RST_L;
-      csr_decode_ff <= `OP_RST_L;
 `endif
     end
     else begin
@@ -282,6 +285,8 @@ module axi_mem import utils_pkg::*; #(
       axi_wr_vld_ff <= next_axi_wr;
       size_wr_ff    <= next_wr_size;
       bvalid_ff     <= next_bvalid;
+      csr_output_ff <= next_csr;
+      csr_decode_ff <= next_dec_csr;
 `ifdef SIMULATION
       char_ff       <= next_char;
       num_ff        <= next_num;
@@ -297,9 +302,6 @@ module axi_mem import utils_pkg::*; #(
         if (DISPLAY_TEST)
           $write("%d",find_byte(axi_mosi.wdata));
       end
-`else
-      csr_output_ff <= next_csr;
-      csr_decode_ff <= next_dec_csr;
 `endif
       if (we_mem) begin
         for (int i=0;i<4;i++) begin

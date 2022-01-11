@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 09.01.2022
+ * Last Modified Date: 11.01.2022
  */
 module nox
   import utils_pkg::*;
@@ -40,9 +40,6 @@ module nox
   s_lsu_op_t    lsu_op_wb;
   logic         fetch_req;
   pc_t          fetch_addr;
-  s_branch_t    branch;
-  s_jump_t      jump;
-  raddr_t       rd_addr_ex;
   s_wb_t        wb_dec;
   logic         lsu_bp_data;
 
