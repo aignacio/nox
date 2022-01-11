@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 10.01.2022
+ * Last Modified Date: 11.01.2022
  */
 module lsu
   import utils_pkg::*;
@@ -92,6 +92,7 @@ module lsu
                                    ~data_cb_miso_i.wr_addr_ready);
     bp_data = req_ff && (wr_txn_dp ? ~data_cb_miso_i.wr_data_ready :
                                      ~data_cb_miso_i.rd_valid);
+
     bp_wr_resp = wr_resp_ff ? ~data_cb_miso_i.wr_resp_valid : 'b0;
 
     lsu_bp_o = bp_addr || bp_data || bp_wr_resp;
@@ -131,6 +132,10 @@ module lsu
     if (~lsu_bp_o) begin
       next_lsu = lsu_i;
       next_req = new_txn;
+    end
+
+    if (req_ff && wr_txn_dp && bp_addr && ~bp_data) begin
+      next_req = 'b0;
     end
 
     txn_error_o = req_ff ? ((data_cb_miso_i.wr_resp_error != CB_OKAY) ||

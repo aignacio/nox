@@ -28,7 +28,8 @@ filesets:
       - xlnx/rtl/nox_synth.sv
       - xlnx/rtl/axi_rom_wrapper.sv
       - xlnx/sw/output/boot_rom.sv
-      - tb/axi_mem.sv
+      - xlnx/rtl/axi_mem_wrapper.sv
+      - xlnx/rtl/axi_ram.v
     file_type: systemVerilogSource
 
   tb:

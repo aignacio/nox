@@ -26,7 +26,7 @@ module axi_rom_wrapper
     axi_miso.ruser   = '0;
     axi_miso.rvalid  = '0;
 
-    next_req = axi_mosi.arvalid;
+    next_req = (req_ff && ~axi_mosi.arvalid) ?  ~axi_mosi.rready : axi_mosi.arvalid;
     next_bvalid = req_ff;
 
     if (req_ff) begin
