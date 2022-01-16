@@ -12,7 +12,7 @@ int main(void) {
   uint8_t leds_out = 0x0F;
 
   while(true){
-    if (i == 1000){
+    if (i == 500000){
       i = 0;
       *addr_leds = leds_out;
       leds_out = ~leds_out;

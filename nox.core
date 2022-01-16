@@ -42,6 +42,10 @@ filesets:
     files:
       - xlnx/nexys_video.xdc: {file_type  : xdc}
 
+  kintex7_constraints:
+    files:
+      - xlnx/kintex7_qmtech.xdc: {file_type  : xdc}
+
 parameters:
   DISPLAY_TEST:
     datatype: bool
@@ -72,5 +76,18 @@ targets:
     tools:
       vivado:
         part : xc7a200tsbg484-1
+    toplevel: nox_synth
+    parameters: [DISPLAY_TEST=false]
+
+  x7_synth:
+    <<: *default
+    default_tool : vivado
+    description : Kintex 7 board synthesis
+    filesets_append:
+      - synth_nox
+      - kintex7_constraints
+    tools:
+      vivado:
+        part : xc7k325tffg676-1
     toplevel: nox_synth
     parameters: [DISPLAY_TEST=false]
