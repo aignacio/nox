@@ -38,6 +38,13 @@ filesets:
       - tb/axi_mem.sv
     file_type: systemVerilogSource
 
+  files_tcl:
+    files:
+      - xlnx/tcl/call_viv_hooks.tcl: { file_type: tclSource }
+      - xlnx/tcl/vivado_hook_synth_design_pre.tcl: { file_type: user, copyto: vivado_hook_synth_design_pre.tcl }
+      - xlnx/tcl/vivado_hook_write_bitstream_pre.tcl: { file_type: user, copyto: vivado_hook_write_bitstream_pre.tcl }
+      - xlnx/tcl/vivado_hook_opt_design_post.tcl: { file_type: user, copyto: vivado_hook_opt_design_post.tcl }
+
   nexysV_constraints:
     files:
       - xlnx/nexys_video.xdc: {file_type  : xdc}
@@ -73,6 +80,7 @@ targets:
     filesets_append:
       - synth_nox
       - nexysV_constraints
+      - files_tcl
     tools:
       vivado:
         part : xc7a200tsbg484-1
@@ -86,6 +94,7 @@ targets:
     filesets_append:
       - synth_nox
       - kintex7_constraints
+      - files_tcl
     tools:
       vivado:
         part : xc7k325tffg676-1

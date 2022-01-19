@@ -13,8 +13,10 @@
   `ifdef TARGET_FPGA
     `define ACT_L_RESET
     `define SYNC_RESET
-    `define OP_RST_H  'x
-    `define OP_RST_L  'x
+    `define OP_RST_H  '1
+    `define OP_RST_L  '0
+    //`define OP_RST_H  'x
+    //`define OP_RST_L  'x
   `endif
 
   `ifdef TARGET_ASIC

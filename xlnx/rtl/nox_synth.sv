@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 15.01.2022
+ * Last Modified Date: 19.01.2022
  */
 module nox_synth
   import utils_pkg::*;
@@ -11,7 +11,8 @@ module nox_synth
   input               clk_in,
   input               rst_cpu,
   input               rst_clk,
-  output  logic [7:0] csr_out
+  output  logic [7:0] csr_out,
+  output  logic       test_act
 );
   s_axi_mosi_t  [1:0] masters_axi_mosi;
   s_axi_miso_t  [1:0] masters_axi_miso;
@@ -28,9 +29,10 @@ module nox_synth
   logic reset_clk;
   logic [7:0] csr_out_int;
 
-  assign csr_out[0] = start_fetch;
-  assign csr_out[1] = rst_cpu;
+  assign csr_out[0]   = start_fetch;
+  assign csr_out[1]   = rst_cpu;
   assign csr_out[7:2] = csr_out_int[6:1];
+  assign test_act     = 'b0;
 
   // 100MHz (in) -> 80MHz (clk out)
   logic clk_in_clk_gen;
