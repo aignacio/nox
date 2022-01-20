@@ -47,11 +47,11 @@ filesets:
 
   nexysV_constraints:
     files:
-      - xlnx/nexys_video.xdc: {file_type  : xdc}
+      - xlnx/nexys_video.xdc: {file_type: xdc}
 
   kintex7_constraints:
     files:
-      - xlnx/kintex7_qmtech.xdc: {file_type  : xdc}
+      - xlnx/kintex7_qmtech.xdc: {file_type: xdc}
 
 parameters:
   DISPLAY_TEST:
