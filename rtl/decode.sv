@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 07.01.2022
+ * Last Modified Date: 23.01.2022
  */
 module decode
   import utils_pkg::*;
@@ -37,7 +37,7 @@ module decode
   logic       wait_inst_ff, next_wait_inst;
 
   s_trap_info_t trap_info_ff, next_trap;
-  s_id_ex_t id_ex_ff, next_id_ex;
+  s_id_ex_t     id_ex_ff, next_id_ex;
 
   always_comb begin
     next_vld_dec  = fetch_valid_i;
@@ -56,7 +56,6 @@ module decode
 
     instr_dec  = fetch_instr_i;
     next_trap  = trap_info_ff;
-    next_id_ex = id_ex_ff;
 
     // Defaults
     next_id_ex          = s_id_ex_t'('0);
@@ -144,6 +143,15 @@ module decode
         next_id_ex.f3     = RV_F3_ADD_SUB;
         next_id_ex.rs1_op = ZERO;
         next_id_ex.rs2_op = ZERO;
+        next_id_ex.imm    = gen_imm(fetch_instr_i, CSR_IMM);
+        if ((instr_dec.f3 != 'b000) && (instr_dec.f3 == 'b100)) begin
+          next_id_ex.csr_op = csr_t'(instr_dec.f3);
+          next_id_ex.addr   = instr_dec[31:20];
+          // When rd != x0
+          if (instr_dec.rd != 'h0) begin
+            next_id_ex.we_rd  = 1'b1;
+          end
+        end
       end
       default: begin
         next_trap.active = 1'b1;

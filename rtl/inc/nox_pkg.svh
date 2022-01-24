@@ -66,11 +66,6 @@
   typedef logic valid_t;
   typedef logic ready_t;
 
-  typedef enum logic [1:0] {
-    FF,
-    BRAM_XILINX
-  } mem_t;
-
   typedef enum logic {
     NO_FWD,
     FWD_REG
