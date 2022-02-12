@@ -11,26 +11,13 @@
 
   typedef logic [$clog2(`XLEN)-1:0] raddr_t;
   typedef logic [`XLEN-1:0]         rdata_t;
+  typedef logic [(`XLEN*2)-1:0]     rdata_ext_t;
   typedef logic [`XLEN-1:0]         imm_t;
   typedef logic [4:0]               shamt_t;
   typedef logic [`XLEN-1:0]         alu_t;
   typedef logic [11:0]              csr_addr_t;
 
   typedef enum logic [11:0] {
-    RV_CSR_MCYCLE     = 12'hB00,
-    RV_CSR_MCYCLEH    = 12'hB80,
-    RV_CSR_CYCLE      = 12'hC00,
-    RV_CSR_CYCLEH     = 12'hC80,
-    RV_CSR_MINSTRET   = 12'hB02,
-    RV_CSR_MINSTRETH  = 12'hB82,
-    RV_CSR_INSTRET    = 12'hC02,
-    RV_CSR_INSTRETH   = 12'hC82,
-    RV_CSR_TIME       = 12'hC01,
-    RV_CSR_TIMEH      = 12'hC81,
-    RV_CSR_MVENDORID  = 12'hF11,
-    RV_CSR_MARCHID    = 12'hF12,
-    RV_CSR_MIMPLID    = 12'hF13,
-    RV_CSR_MHARTID    = 12'hF14,
     RV_CSR_MSTATUS    = 12'h300,
     RV_CSR_MISA       = 12'h301,
     RV_CSR_MIE        = 12'h304,
@@ -39,7 +26,21 @@
     RV_CSR_MEPC       = 12'h341,
     RV_CSR_MCAUSE     = 12'h342,
     RV_CSR_MTVAL      = 12'h343,
-    RV_CSR_MIP        = 12'h344
+    RV_CSR_MIP        = 12'h344,
+    RV_CSR_MCYCLE     = 12'hB00,
+    RV_CSR_MCYCLEH    = 12'hB80,
+    RV_CSR_MINSTRET   = 12'hB02,
+    RV_CSR_MINSTRETH  = 12'hB82,
+    RV_CSR_CYCLE      = 12'hC00,
+    RV_CSR_CYCLEH     = 12'hC80,
+    RV_CSR_TIME       = 12'hC01,
+    RV_CSR_TIMEH      = 12'hC81,
+    RV_CSR_INSTRET    = 12'hC02,
+    RV_CSR_INSTRETH   = 12'hC82,
+    RV_CSR_MVENDORID  = 12'hF11,
+    RV_CSR_MARCHID    = 12'hF12,
+    RV_CSR_MIMPLID    = 12'hF13,
+    RV_CSR_MHARTID    = 12'hF14
   } addr_csrs_t;
 
   typedef enum logic [1:0] {
@@ -103,14 +104,14 @@
   } branch_t;
 
   typedef enum logic [2:0]{
-    RV_F3_ADD_SUB   = 3'b000,
-    RV_F3_SLT       = 3'b010,
-    RV_F3_SLTU      = 3'b011,
-    RV_F3_XOR       = 3'b100,
-    RV_F3_OR        = 3'b110,
-    RV_F3_AND       = 3'b111,
-    RV_F3_SLL       = 3'b001,
-    RV_F3_SRL_SRA   = 3'b101
+    RV_F3_ADD_SUB = 3'b000,
+    RV_F3_SLT     = 3'b010,
+    RV_F3_SLTU    = 3'b011,
+    RV_F3_XOR     = 3'b100,
+    RV_F3_OR      = 3'b110,
+    RV_F3_AND     = 3'b111,
+    RV_F3_SLL     = 3'b001,
+    RV_F3_SRL_SRA = 3'b101
   } funct3_t;
 
   typedef enum logic [6:0]{
@@ -145,15 +146,16 @@
   typedef struct packed {
     csr_t       op;
     csr_addr_t  addr;
+    logic       rs1_x0;
   } s_csr_t;
 
   typedef struct packed {
-    funct7_t  f7;
-    raddr_t   rs2;
-    raddr_t   rs1;
-    funct3_t  f3;
-    raddr_t   rd;
-    op_t      op;
+    funct7_t    f7;
+    raddr_t     rs2;
+    raddr_t     rs1;
+    funct3_t    f3;
+    raddr_t     rd;
+    op_t        op;
   } s_instr_t;
 
   typedef struct packed {
@@ -163,22 +165,22 @@
   } s_trap_info_t;
 
   typedef struct packed {
-    logic         we_rd;
-    pc_t          pc_dec;
-    oper_mux_t    rs1_op;
-    oper_mux_t    rs2_op;
-    lsu_t         lsu;
-    lsu_w_t       lsu_w;
-    logic         branch;
-    logic         jump;
-    sfunct7_t     f7;
-    raddr_t       rd_addr;
-    funct3_t      f3;
-    rshift_t      rshift;
-    imm_t         imm;
-    raddr_t       rs1_addr;
-    raddr_t       rs2_addr;
-    s_csr_t       csr;
+    logic       we_rd;
+    pc_t        pc_dec;
+    oper_mux_t  rs1_op;
+    oper_mux_t  rs2_op;
+    lsu_t       lsu;
+    lsu_w_t     lsu_w;
+    logic       branch;
+    logic       jump;
+    sfunct7_t   f7;
+    raddr_t     rd_addr;
+    funct3_t    f3;
+    rshift_t    rshift;
+    imm_t       imm;
+    raddr_t     rs1_addr;
+    raddr_t     rs2_addr;
+    s_csr_t     csr;
   } s_id_ex_t;
 
   typedef struct packed {

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 23.01.2022
+ * Last Modified Date: 31.01.2022
  */
 module decode
   import utils_pkg::*;
@@ -140,13 +140,15 @@ module decode
         next_id_ex.rs2_op = ZERO;
       end
       RV_SYSTEM: begin // TODO: Create logic for ecall/ebreak
-        next_id_ex.f3     = RV_F3_ADD_SUB;
-        next_id_ex.rs1_op = ZERO;
-        next_id_ex.rs2_op = ZERO;
-        next_id_ex.imm    = gen_imm(fetch_instr_i, CSR_IMM);
+        next_id_ex.f3         = RV_F3_ADD_SUB;
+        next_id_ex.rs1_op     = ZERO;
+        next_id_ex.rs2_op     = ZERO;
+        next_id_ex.imm        = gen_imm(fetch_instr_i, CSR_IMM);
+        next_id_ex.csr.rs1_x0 = (instr_dec.rs1 == 'h0);
         if ((instr_dec.f3 != 'b000) && (instr_dec.f3 == 'b100)) begin
-          next_id_ex.csr_op = csr_t'(instr_dec.f3);
-          next_id_ex.addr   = instr_dec[31:20];
+          next_id_ex.rs1_op   = REG_RF;
+          next_id_ex.csr.op   = csr_t'(instr_dec.f3);
+          next_id_ex.csr.addr = instr_dec[31:20];
           // When rd != x0
           if (instr_dec.rd != 'h0) begin
             next_id_ex.we_rd  = 1'b1;

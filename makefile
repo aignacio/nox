@@ -51,6 +51,9 @@ _MACROS_VLOG	+=	SIMULATION
 _MACROS_VLOG	+=	RV_COMPLIANCE
 MACROS_VLOG		?=	$(addprefix +define+,$(_MACROS_VLOG))
 
+RUN_CMD				:=	docker run --rm --name verilator_nox \
+									-v $(abspath .):/nox -w /nox verilator
+
 CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall -std=c++11 \
 									-Werror																\
 									-DIRAM_KB_SIZE=\"$(IRAM_KB_SIZE)\"		\
@@ -76,15 +79,17 @@ VERIL_ARGS		:=	-CFLAGS $(CPPFLAGS_VERI) 			\
 help:
 	@echo "Targets:"
 	@echo "all					- run verilator"
+	@echo "build				- build docker image used by nox project"
 	@echo "design				- build design and sim through verilator"
 	@echo "wave					- calls gtkwave"
 	@echo "lint					- calls verible for sv linting"
 
 conv_verilog:
-	sv2v	$(INCS_VLOG)						\
-				-DIRAM_KB_SIZE="128"		\
-				-DDRAM_KB_SIZE="128"		\
-				$(SRC_VERILOG) > design.v
+	$(RUN_CMD)						sv2v \
+		$(INCS_VLOG)						\
+		-DIRAM_KB_SIZE="128"		\
+		-DDRAM_KB_SIZE="128"		\
+		$(SRC_VERILOG) > design.v
 
 wave: $(WAVEFORM_FST)
 	/Applications/gtkwave.app/Contents/Resources/bin/gtkwave $(WAVEFORM_FST) w_tmplt.gtkw
@@ -105,8 +110,12 @@ design: $(VERILATOR_EXE)
 	@echo "$(VERILATOR_EXE) -h"
 	@echo "\n"
 
+build:
+	docker build -t verilator:latest .
+
 $(VERILATOR_EXE): $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk
-	+@make -C $(OUT_VERILATOR) -f V$(ROOT_MOD_VERI).mk VM_PARALLEL_BUILDS=1
+	$(RUN_CMD) make -C $(OUT_VERILATOR)	\
+		-f V$(ROOT_MOD_VERI).mk VM_PARALLEL_BUILDS=1
 
 $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk: $(SRC_VERILOG) $(SRC_CPP) $(TB_VERILATOR)
-	verilator $(VERIL_ARGS)
+	$(RUN_CMD) verilator $(VERIL_ARGS)
