@@ -28,9 +28,6 @@ RUN make install
 WORKDIR /opt/
 RUN wget -c https://github.com/xpack-dev-tools/riscv-none-embed-gcc-xpack/releases/download/v10.2.0-1.2/xpack-riscv-none-embed-gcc-10.2.0-1.2-linux-x64.tar.gz -O - | tar -xz
 RUN ln -s /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/riscv* /usr/bin
-#ENV TZ=Europe/Dublin
-#RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-#ENV XPACKS_REPO_FOLDER=/opt
-#RUN apt-get install curl nodejs npm -y
-#RUN npm install --global xpm@latest
-#RUN xpm install --global @xpack-dev-tools/riscv-none-embed-gcc@latest --verbose
+# Compliance tests
+WORKDIR /opt/
+RUN git clone https://github.com/aignacio/riscv-arch-test.git
