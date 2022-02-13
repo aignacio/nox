@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 12.02.2022
+ * Last Modified Date: 13.02.2022
  */
 module csr(
   input           clk,
@@ -45,7 +45,7 @@ module csr(
       RV_CSR_RC:  wr_val = wr_arg.csr_rd & ~wr_arg.rs1;
       RV_CSR_RWI: wr_val = wr_arg.imm;
       RV_CSR_RSI: wr_val = wr_arg.csr_rd & wr_arg.imm;
-      RV_CSR_RCI: wr_val = wr_arg.csr_Rd & ~wr_arg.imm;
+      RV_CSR_RCI: wr_val = wr_arg.csr_rd & ~wr_arg.imm;
       default:    wr_val = wr_arg.csr_rd;
     endcase
 

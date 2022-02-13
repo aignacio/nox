@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 09.12.2021
+ * Last Modified Date: 12.02.2022
  */
 module fetch
   import utils_pkg::*;
@@ -173,7 +173,7 @@ module fetch
           default:  next_fetch_sm = FETCH_RUN;
         endcase
       end
-      //default:  next_fetch_sm = fetch_st_ff;
+      default:  next_fetch_sm = fetch_st_ff;
     endcase
     /* verilator lint_on CASEINCOMPLETE */
   end : fetch_fsm_comb

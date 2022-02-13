@@ -51,10 +51,14 @@ _MACROS_VLOG	+=	SIMULATION
 _MACROS_VLOG	+=	RV_COMPLIANCE
 MACROS_VLOG		?=	$(addprefix +define+,$(_MACROS_VLOG))
 
-RUN_CMD				:=	docker run --rm --name verilator_nox \
-									-v $(abspath .):/nox -w /nox verilator
-
-CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall -std=c++11 \
+# Be sure to set up correctly the number of
+# resources like memory/cpu for docker to run
+# in case you don't, docker will killed
+# the container and you'll not be able to build
+# the executable nox_sim
+RUN_CMD				:=	docker run --rm --name ship_nox	\
+									-v $(abspath .):/nox_files -w /nox_files nox
+CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
 									-Werror																\
 									-DIRAM_KB_SIZE=\"$(IRAM_KB_SIZE)\"		\
 									-DDRAM_KB_SIZE=\"$(DRAM_KB_SIZE)\"		\
@@ -78,18 +82,27 @@ VERIL_ARGS		:=	-CFLAGS $(CPPFLAGS_VERI) 			\
 .PHONY: verilator clean help
 help:
 	@echo "Targets:"
-	@echo "all					- run verilator"
-	@echo "build				- build docker image used by nox project"
-	@echo "design				- build design and sim through verilator"
-	@echo "wave					- calls gtkwave"
-	@echo "lint					- calls verible for sv linting"
+	@echo "run	- run verilator"
+	@echo "build	- build docker image used by nox project"
+	@echo "all	- build design and sim through verilator"
+	@echo "wave	- calls gtkwave"
+	@echo "lint	- calls verible for sv linting"
 
 conv_verilog:
-	$(RUN_CMD)						sv2v \
-		$(INCS_VLOG)						\
-		-DIRAM_KB_SIZE="128"		\
-		-DDRAM_KB_SIZE="128"		\
-		$(SRC_VERILOG) > design.v
+	$(RUN_CMD) sv2v						 \
+		$(INCS_VLOG)						 \
+		-DIRAM_KB_SIZE="128"		 \
+		-DDRAM_KB_SIZE="128"		 \
+		-DDISPLAY_TEST=0				 \
+		-DENTRY_ADDR=0					 \
+  	-DIRAM_ADDR=0x80000000	 \
+  	-DDRAM_ADDR=0x10000000	 \
+  	-DDISPLAY_TEST=0				 \
+  	-DWAVEFORM_USE=0				 \
+  	-DBP_ADDRS_CHN=0				 \
+  	-DBP_WRDTA_CHN=0				 \
+  	-DBP_BWRES_CHN=0				 \
+		$(_CORE_VERILOG) > design.v
 
 wave: $(WAVEFORM_FST)
 	/Applications/gtkwave.app/Contents/Resources/bin/gtkwave $(WAVEFORM_FST) w_tmplt.gtkw
@@ -99,23 +112,23 @@ lint:
 	ec $(_CORE_VERILOG)
 
 clean:
-	rm -rf $(OUT_VERILATOR) run_dir
+	rm -rf $(OUT_VERILATOR)
 
-all: clean $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk
-	@echo "Verilator build done!"
-
-design: $(VERILATOR_EXE)
+all: clean $(VERILATOR_EXE)
 	@echo "\n"
 	@echo "Design build done, run as follow:"
 	@echo "$(VERILATOR_EXE) -h"
 	@echo "\n"
 
 build:
-	docker build -t verilator:latest .
+	docker build -t nox:latest . --progress tty
+
+run:
+	$(RUN_CMD) ./$(VERILATOR_EXE)
 
 $(VERILATOR_EXE): $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk
 	$(RUN_CMD) make -C $(OUT_VERILATOR)	\
-		-f V$(ROOT_MOD_VERI).mk VM_PARALLEL_BUILDS=1
+		-f V$(ROOT_MOD_VERI).mk
 
 $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk: $(SRC_VERILOG) $(SRC_CPP) $(TB_VERILATOR)
 	$(RUN_CMD) verilator $(VERIL_ARGS)
