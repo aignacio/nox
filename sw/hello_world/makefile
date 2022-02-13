@@ -1,4 +1,7 @@
-PREFIX	?=	/opt/riscv/bin/riscv64-unknown-elf-
+#PREFIX	?=	/opt/riscv/bin/riscv64-unknown-elf-
+PREFIX	?=	docker run --rm --name ship_nox		\
+						-v $(abspath .):/nox_files -w			\
+						/nox_files nox riscv-none-embed-
 CC			:=	$(PREFIX)gcc
 OBJDUMP	:=	$(PREFIX)objdump
 OBJCOPY	:=	$(PREFIX)objcopy

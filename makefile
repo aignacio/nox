@@ -14,14 +14,14 @@ _INCS_VLOG		?=	rtl/inc
 INCS_VLOG			:=	$(addprefix -I,$(_INCS_VLOG))
 
 # Parameters of simulation
-#IRAM_KB_SIZE	?=	256
-IRAM_KB_SIZE	?=	2*1024 #2MB due to J-Tests on RV Compliance tests
-DRAM_KB_SIZE	?=	128
+#IRAM_KB_SIZE	?=	2*1024 #2MB due to J-Tests on RV Compliance tests
+IRAM_KB_SIZE	?=	8
+DRAM_KB_SIZE	?=	8
 ENTRY_ADDR		?=	\'h8000_0000
 IRAM_ADDR			?=	0x80000000
 DRAM_ADDR			?=	0x10000000
 DISPLAY_TEST	?=	0 # Enable $display in axi_mem.sv [compliance test]
-WAVEFORM_USE	?=	0 # Use 0 to not generate waves [compliance test]
+WAVEFORM_USE	?=	1 # Use 0 to not generate waves [compliance test]
 BP_ADDRS_CHN	?=	0 # Insert bp on address chn - aw/raddr [MISO]
 BP_WRDTA_CHN	?=	0 # Insert bp on data chn - wready/rvalid [MISO]
 BP_BWRES_CHN	?=	0 # Insert bp on write resp chn - bvalid [MISO]
@@ -57,7 +57,10 @@ MACROS_VLOG		?=	$(addprefix +define+,$(_MACROS_VLOG))
 # the container and you'll not be able to build
 # the executable nox_sim
 RUN_CMD				:=	docker run --rm --name ship_nox	\
-									-v $(abspath .):/nox_files -w /nox_files nox
+									-v $(abspath .):/nox_files -w		\
+									/nox_files nox
+RUN_SW				:=	sw/hello_world/output/hello_world.elf
+
 CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
 									-Werror																\
 									-DIRAM_KB_SIZE=\"$(IRAM_KB_SIZE)\"		\
@@ -91,21 +94,10 @@ help:
 conv_verilog:
 	$(RUN_CMD) sv2v						 \
 		$(INCS_VLOG)						 \
-		-DIRAM_KB_SIZE="128"		 \
-		-DDRAM_KB_SIZE="128"		 \
-		-DDISPLAY_TEST=0				 \
-		-DENTRY_ADDR=0					 \
-  	-DIRAM_ADDR=0x80000000	 \
-  	-DDRAM_ADDR=0x10000000	 \
-  	-DDISPLAY_TEST=0				 \
-  	-DWAVEFORM_USE=0				 \
-  	-DBP_ADDRS_CHN=0				 \
-  	-DBP_WRDTA_CHN=0				 \
-  	-DBP_BWRES_CHN=0				 \
 		$(_CORE_VERILOG) > design.v
 
 wave: $(WAVEFORM_FST)
-	/Applications/gtkwave.app/Contents/Resources/bin/gtkwave $(WAVEFORM_FST) w_tmplt.gtkw
+	/Applications/gtkwave.app/Contents/Resources/bin/gtkwave $(WAVEFORM_FST) waves.gtkw
 
 lint:
 	verible-verilog-lint --lint_fatal --parse_fatal $(_CORE_VERILOG)
@@ -123,8 +115,11 @@ all: clean $(VERILATOR_EXE)
 build:
 	docker build -t nox:latest . --progress tty
 
-run:
-	$(RUN_CMD) ./$(VERILATOR_EXE)
+$(RUN_SW):
+	make -C sw/hello_world all
+
+run: $(VERILATOR_EXE) $(RUN_SW)
+	$(RUN_CMD) ./$(VERILATOR_EXE) -s 10000 -e $(RUN_SW)
 
 $(VERILATOR_EXE): $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk
 	$(RUN_CMD) make -C $(OUT_VERILATOR)	\

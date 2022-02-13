@@ -17,7 +17,7 @@ RUN apt-get install libfl-dev -y # Ubuntu only (ignore if gives error)
 RUN apt-get install zlibc zlib1g zlib1g-dev -y # Ubuntu only (ignore if gives error)
 #Building verilator
 RUN git clone https://github.com/verilator/verilator
-WORKDIR verilator
+WORKDIR /verilator
 RUN export VERILATOR_ROOT=/verilator
 RUN git checkout stable      # Update latest stable
 RUN autoconf                 # Create ./configure script
@@ -25,8 +25,12 @@ RUN ./configure              # Configure and create Makefile
 RUN make -j4                 # Build Verilator itself (if error, try just 'make')
 RUN make install
 # [riscv-toolchain]
-ENV TZ=Europe/Dublin
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apt-get install curl nodejs npm -y
-RUN npm install --global xpm@latest
-RUN xpm install --global @xpack-dev-tools/riscv-none-embed-gcc@latest --verbose
+WORKDIR /opt/
+RUN wget -c https://github.com/xpack-dev-tools/riscv-none-embed-gcc-xpack/releases/download/v10.2.0-1.2/xpack-riscv-none-embed-gcc-10.2.0-1.2-linux-x64.tar.gz -O - | tar -xz
+RUN ln -s /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/riscv* /usr/bin
+#ENV TZ=Europe/Dublin
+#RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+#ENV XPACKS_REPO_FOLDER=/opt
+#RUN apt-get install curl nodejs npm -y
+#RUN npm install --global xpm@latest
+#RUN xpm install --global @xpack-dev-tools/riscv-none-embed-gcc@latest --verbose

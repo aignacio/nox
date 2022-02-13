@@ -28,8 +28,8 @@ ENTRY( _start_reset )
 
 MEMORY
 {
-  IRAM(rxai!w) : ORIGIN = 0x80000000, LENGTH = 4K
-  DRAM(wxa!ri) : ORIGIN = 0x10000000, LENGTH = 4K
+  IRAM(rxai!w) : ORIGIN = 0x80000000, LENGTH = 8K
+  DRAM(wxa!ri) : ORIGIN = 0x10000000, LENGTH = 8K
 }
 
 _min_stack      = 0x100;
