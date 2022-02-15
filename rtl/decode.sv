@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 31.01.2022
+ * Last Modified Date: 14.02.2022
  */
 module decode
   import utils_pkg::*;
@@ -144,8 +144,7 @@ module decode
         next_id_ex.rs1_op     = ZERO;
         next_id_ex.rs2_op     = ZERO;
         next_id_ex.imm        = gen_imm(fetch_instr_i, CSR_IMM);
-        next_id_ex.csr.rs1_x0 = (instr_dec.rs1 == 'h0);
-        if ((instr_dec.f3 != 'b000) && (instr_dec.f3 == 'b100)) begin
+        if ((instr_dec.f3 != RV_F3_ADD_SUB) && (instr_dec.f3 != RV_F3_XOR)) begin
           next_id_ex.rs1_op   = REG_RF;
           next_id_ex.csr.op   = csr_t'(instr_dec.f3);
           next_id_ex.csr.addr = instr_dec[31:20];

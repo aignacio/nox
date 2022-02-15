@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include "riscv_csr_encoding.h"
 
 #define LEDS_ADDR 0xD0000000
 
@@ -76,6 +77,18 @@ int main(void) {
   /*uint32_t read_byte_3 = read_mbox(0x20000003, 0);*/
   /*uint32_t read_hword_0 = read_mbox(0x20000000, 1);*/
   /*uint32_t read_hword_1 = read_mbox(0x20000004, 1);*/
+
+  /*int mstatus_csr   = read_csr(mstatus);*/
+  /*int mvendorid_csr = read_csr(mvendorid);*/
+  /*int marchid_csr   = read_csr(marchid);*/
+  /*int mimplid_csr   = read_csr(mimpid);*/
+  /*int mhartid_csr   = read_csr(mhartid);*/
+  /*int misa_csr      = read_csr(misa);*/
+  write_csr(mstatus, "TEST");
+  int tmp = swap_csr(mstatus, "OLA!");
+  int time = rdtime();
+  int cycle = rdcycle();
+
   while(true){
     if (i == 500000){
       i = 0;

@@ -173,6 +173,8 @@ int main(int argc, char** argv, char** env){
   cout << "[DRAM] " << STRINGIZE_VALUE_OF(DRAM_KB_SIZE) << "KB" << std::endl;
   parse_input(argc, argv, &setup);
 
+  int sim_cycles_timeout = setup.sim_cycles;
+
   if (WAVEFORM_USE)
     dut->opentrace(STRINGIZE_VALUE_OF(WAVEFORM_FST));
 
@@ -186,8 +188,8 @@ int main(int argc, char** argv, char** env){
     dut->tick();
   }
 
-  cout << "\nRemaining clk cycles: " << setup.sim_cycles+1 << std::endl;
-  cout << "\n" << std::endl;
+  cout << "\nClk cycles elapsed = " << (sim_cycles_timeout-(setup.sim_cycles+1)) << std::endl;
+  cout << "\nRemaining clk cycles = " << setup.sim_cycles+1 << std::endl;
   dut->close();
   exit(EXIT_SUCCESS);
 }

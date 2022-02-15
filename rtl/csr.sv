@@ -3,9 +3,13 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 13.02.2022
+ * Last Modified Date: 14.02.2022
  */
-module csr(
+module csr
+  import utils_pkg::*;
+#(
+  parameter int SUPPORT_DEBUG = 1
+)(
   input           clk,
   input           rst,
   input           stall_i,
@@ -34,7 +38,7 @@ module csr(
           csr_mtval_ff,     next_mtval,
           csr_mip_ff,       next_mip;
 
-  s_wr_csr_t csr_wr_arg;
+  s_wr_csr_t csr_wr_args;
 
   function automatic rdata_t wr_csr_val(s_wr_csr_t wr_arg);
     rdata_t wr_val;
@@ -69,51 +73,51 @@ module csr(
     next_mtval    = csr_mtval_ff;
     next_mip      = csr_mip_ff;
 
-    csr_wr_arg.op     = csr_i.op;
-    csr_wr_arg.imm    = imm_i;
-    csr_wr_arg.rs1    = rs1_data_i;
-    csr_wr_arg.csr_rd = '0;
+    csr_wr_args.op     = csr_i.op;
+    csr_wr_args.imm    = imm_i;
+    csr_wr_args.rs1    = rs1_data_i;
+    csr_wr_args.csr_rd = '0;
 
     case(csr_i.addr)
       RV_CSR_MSTATUS: begin
         csr_rd_o           = csr_mstatus_ff;
         csr_wr_args.csr_rd = csr_rd_o;
-        next_mstatus       = wr_csr_val(csr_wr_arg);
+        next_mstatus       = wr_csr_val(csr_wr_args);
       end
       RV_CSR_MIE: begin
         csr_rd_o           = csr_mie_ff;
         csr_wr_args.csr_rd = csr_rd_o;
-        next_mie           = wr_csr_val(csr_wr_arg);
+        next_mie           = wr_csr_val(csr_wr_args);
       end
       RV_CSR_MTVEC: begin
         csr_rd_o           = csr_mtvec_ff;
         csr_wr_args.csr_rd = csr_rd_o;
-        next_mtvec         = wr_csr_val(csr_wr_arg);
+        next_mtvec         = wr_csr_val(csr_wr_args);
       end
       RV_CSR_MSCRATCH: begin
         csr_rd_o           = csr_mscratch_ff;
         csr_wr_args.csr_rd = csr_rd_o;
-        next_mscratch      = wr_csr_val(csr_wr_arg);
+        next_mscratch      = wr_csr_val(csr_wr_args);
       end
       RV_CSR_MEPC: begin
         csr_rd_o           = csr_mepc_ff;
         csr_wr_args.csr_rd = csr_rd_o;
-        next_mepc          = wr_csr_val(csr_wr_arg);
+        next_mepc          = wr_csr_val(csr_wr_args);
       end
       RV_CSR_MCAUSE: begin
         csr_rd_o           = csr_mcause_ff;
         csr_wr_args.csr_rd = csr_rd_o;
-        next_mcause        = wr_csr_val(csr_wr_arg);
+        next_mcause        = wr_csr_val(csr_wr_args);
       end
       RV_CSR_MTVAL: begin
         csr_rd_o           = csr_mtval_ff;
         csr_wr_args.csr_rd = csr_rd_o;
-        next_mtval         = wr_csr_val(csr_wr_arg);
+        next_mtval         = wr_csr_val(csr_wr_args);
       end
       RV_CSR_MIP: begin
         csr_rd_o           = csr_mip_ff;
         csr_wr_args.csr_rd = csr_rd_o;
-        next_mip           = wr_csr_val(csr_wr_arg);
+        next_mip           = wr_csr_val(csr_wr_args);
       end
       RV_CSR_MCYCLE:    csr_rd_o = csr_cycle_ff[31:0];
       RV_CSR_MCYCLEH:   csr_rd_o = csr_cycle_ff[63:32];
@@ -130,6 +134,7 @@ module csr(
       RV_CSR_MARCHID:   csr_rd_o = `M_ARCH_ID;
       RV_CSR_MIMPLID:   csr_rd_o = `M_IMPL_ID;
       RV_CSR_MHARTID:   csr_rd_o = `M_HART_ID;
+      default:          csr_rd_o = rdata_t'('0);
     endcase
   end : rd_wr_csr
 

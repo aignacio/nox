@@ -62,6 +62,7 @@ RUN_CMD				:=	docker run --rm --name ship_nox	\
 RUN_CMD_2			:=	docker run --rm --name ship_nox	\
 									-v $(abspath .):/nox_files -w		\
 									/opt/riscv-arch-test nox
+
 RUN_SW				:=	sw/hello_world/output/hello_world.elf
 
 CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
@@ -121,9 +122,6 @@ build:
 $(RUN_SW):
 	make -C sw/hello_world all
 
-compliance: $(VERILATOR_EXE)
-	$(RUN_CMD_2) make verify RISCV_PREFIX=riscv-none-embed- TARGET_SIM=/nox_files/output_verilator/nox_sim -j8
-
 run: $(VERILATOR_EXE) $(RUN_SW)
 	$(RUN_CMD) ./$(VERILATOR_EXE) -s 10000 -e $(RUN_SW)
 
@@ -133,3 +131,16 @@ $(VERILATOR_EXE): $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk
 
 $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk: $(SRC_VERILOG) $(SRC_CPP) $(TB_VERILATOR)
 	$(RUN_CMD) verilator $(VERIL_ARGS)
+
+##########################
+#	RISC-V Compliance test #
+##########################
+sim_comp:
+	make all IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
+
+compliance: sim_comp
+	$(RUN_CMD_2) make verify RISCV_PREFIX=riscv-none-embed-	\
+		RISCV_TARGET=nox																			\
+		TARGET_SIM=/nox_files/$(VERILATOR_EXE) -j8
+
+

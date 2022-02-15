@@ -28,7 +28,7 @@
 
   `define M_VENDOR_ID   "None"
   `define M_ARCH_ID     "32I"
-  `define M_IMPL_ID     "4PIO"
+  `define M_IMPL_ID     "4STG"
   `define M_HART_ID     "0"
   `define M_ISA_ID      'h40000100
 

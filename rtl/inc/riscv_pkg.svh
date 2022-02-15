@@ -146,7 +146,6 @@
   typedef struct packed {
     csr_t       op;
     csr_addr_t  addr;
-    logic       rs1_x0;
   } s_csr_t;
 
   typedef struct packed {

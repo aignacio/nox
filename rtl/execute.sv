@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 10.01.2022
+ * Last Modified Date: 14.02.2022
  */
 module execute
   import utils_pkg::*;
@@ -38,6 +38,7 @@ module execute
   logic         jump_or_branch;
   s_branch_t    branch_ff, next_branch;
   s_jump_t      jump_ff, next_jump;
+  rdata_t       csr_rdata;
 
   function automatic branch_dec(branch_t op, rdata_t rs1, rdata_t rs2);
     logic         take_branch;
@@ -129,6 +130,10 @@ module execute
     illegal_ex_o = 'b0;
     trap_info_o = s_trap_info_t'('0);
 
+    if (id_ex_i.csr.op != RV_CSR_NONE) begin
+      next_ex_mem_wb.result = csr_rdata;
+    end
+
     ex_mem_wb_o = ex_mem_wb_ff;
   end : alu_proc
 
@@ -138,9 +143,7 @@ module execute
     next_branch.b_act   = id_ex_i.branch && ~lsu_bp_i;
     next_branch.b_addr  = id_ex_i.pc_dec + id_ex_i.imm;
     next_branch.take_branch  = ~jump_or_branch &&
-                               branch_dec(branch_t'(id_ex_i.f3),
-                                         (rs1_fwd == NO_FWD) ? rs1_data_i : wb_value_i,
-                                         (rs2_fwd == NO_FWD) ? rs2_data_i : wb_value_i);
+                               branch_dec(branch_t'(id_ex_i.f3), op1, op2);
 
     next_jump.j_act  = ~jump_or_branch && id_ex_i.jump && ~lsu_bp_i;
     next_jump.j_addr = {res[31:1], 1'b0};
@@ -175,4 +178,14 @@ module execute
       jump_ff      <= next_jump;
     end
   end
+
+  csr u_csr(
+    .clk        (clk),
+    .rst        (rst),
+    .stall_i    (lsu_bp_i),
+    .csr_i      (id_ex_i.csr),
+    .rs1_data_i (op1),
+    .imm_i      (id_ex_i.imm),
+    .csr_rd_o   (csr_rdata)
+  );
 endmodule

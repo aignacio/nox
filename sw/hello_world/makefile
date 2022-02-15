@@ -1,7 +1,8 @@
 #PREFIX	?=	/opt/riscv/bin/riscv64-unknown-elf-
-PREFIX	?=	docker run --rm --name ship_nox		\
-						-v $(abspath .):/nox_files -w			\
-						/nox_files nox riscv-none-embed-
+PREFIX	?=	docker run --rm --name sw_nox					\
+						-v $(abspath ../..):/nox_files -w			\
+						/nox_files/sw/$(notdir $(shell pwd))	\
+						nox riscv-none-embed-
 CC			:=	$(PREFIX)gcc
 OBJDUMP	:=	$(PREFIX)objdump
 OBJCOPY	:=	$(PREFIX)objcopy
@@ -31,7 +32,9 @@ ODIR				:=	output
 TEMP				:=	output_temp
 TARGET			:=	$(ODIR)/$(TARGET_NAME)
 LD					:=	sections.ld
-INC					:=	../common
+_INC				:=	../common
+_INC				+=	sw/common
+INC					:=	$(addprefix -I,$(_INC))
 _OBJ    		:=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.S)))
 _OBJ    		+=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.c)))
 _OBJ    		+=	$(patsubst src/%,%.o,$(basename $(wildcard src/*.c)))
@@ -66,23 +69,23 @@ $(TARGET).bin:	$(TARGET).elf
 
 $(TARGET).elf:	$(OBJ) $(LD)
 	@echo "Linking $@"
-	$(CC) -T$(LD) -I$(INC) $(OBJ) -o $@ $(LDFLAGS)
+	$(CC) -T$(LD) $(INC) $(OBJ) -o $@ $(LDFLAGS)
 
 $(TEMP)/%.o:	init/%.S
 	@echo "Building $@"
-	$(CC) $(CFLAGS) -save-temps=obj -I$(INC) -c $< -o $@
+	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
 
 $(TEMP)/%.o:	init/%.c
 	@echo "Building $@"
-	$(CC) $(CFLAGS) -save-temps=obj -I$(INC) -c $< -o $@
+	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
 
 $(TEMP)/%.o:  src/%.c
 	@echo "Building $@"
-	$(CC) $(CFLAGS) -save-temps=obj -I$(INC) -c $< -o $@
+	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
 
 $(TEMP)/%.o:
 	@echo "Building $@"
-	$(CC) $(CFLAGS) -save-temps=obj -I$(INC) -c $< -o $@
+	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
 
 dbg:
 	@echo "Use disass /m name_of_the_function to search for a function in assembly/c\n"
