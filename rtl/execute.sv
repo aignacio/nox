@@ -8,7 +8,8 @@
 module execute
   import utils_pkg::*;
 #(
-  parameter int SUPPORT_DEBUG = 1
+  parameter int SUPPORT_DEBUG     = 1,
+  parameter int MTVEC_DEFAULT_VAL = 'h1000 // 4KB
 )(
   input                 clk,
   input                 rst,
@@ -166,14 +167,14 @@ module execute
     fetch_req_o  = '0;
     fetch_addr_o = '0;
 
-    //if (trap_out.active) begin
-      //fetch_req_o  = 'b1;
-      //fetch_addr_o = trap_out.pc_addr;
-    //end
-    //else begin
+    if (trap_out.active) begin
+      fetch_req_o  = 'b1;
+      fetch_addr_o = trap_out.pc_addr;
+    end
+    else begin
       fetch_req_o  = ((branch_ff.b_act && branch_ff.take_branch) || jump_ff.j_act);
       fetch_addr_o = (branch_ff.b_act) ? branch_ff.b_addr : jump_ff.j_addr;
-    //end
+    end
   end : fetch_req
 
   `CLK_PROC(clk, rst) begin
@@ -189,23 +190,28 @@ module execute
     end
   end
 
-  //csr u_csr(
-    //.clk             (clk),
-    //.rst             (rst),
-    //.stall_i         (lsu_bp_i),
-    //.csr_i           (id_ex_i.csr),
-    //.rs1_data_i      (op1),
-    //.imm_i           (id_ex_i.imm),
-    //.csr_rd_o        (csr_rdata),
-    //.pc_addr_i       (id_ex_i.pc_dec),
-    //.irq_i           (irq_i),
-    //.will_jump_i     (will_jump_next_clk),
-    //.dec_trap_i      (dec_trap_i),
-    //.fetch_trap_i    (fetch_trap_i),
-    //.ecall_i         (id_ex_i.ecall),
-    //.ebreak_i        (id_ex_i.ebreak),
-    //.lsu_trap_st_i   (lsu_trap_st_i),
-    //.lsu_trap_ld_i   (lsu_trap_ld_i),
-    //.trap_o          (trap_out)
-  //);
+  csr #(
+    .SUPPORT_DEBUG      (SUPPORT_DEBUG),
+    .MTVEC_DEFAULT_VAL  (MTVEC_DEFAULT_VAL)
+  ) u_csr (
+    .clk             (clk),
+    .rst             (rst),
+    .stall_i         (lsu_bp_i),
+    .csr_i           (id_ex_i.csr),
+    .rs1_data_i      (op1),
+    .imm_i           (id_ex_i.imm),
+    .csr_rd_o        (csr_rdata),
+    .pc_addr_i       (id_ex_i.pc_dec),
+    .irq_i           (irq_i),
+    .will_jump_i     (will_jump_next_clk),
+    .dec_trap_i      (dec_trap_i),
+    .fetch_trap_i    (fetch_trap_i),
+    .ecall_i         (id_ex_i.ecall),
+    .ebreak_i        (id_ex_i.ebreak),
+    .mret_i          (id_ex_i.mret),
+    .wfi_i           (id_ex_i.wfi),
+    .lsu_trap_st_i   (lsu_trap_st_i),
+    .lsu_trap_ld_i   (lsu_trap_ld_i),
+    .trap_o          (trap_out)
+  );
 endmodule

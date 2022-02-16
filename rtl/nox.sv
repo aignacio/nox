@@ -3,11 +3,16 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 15.02.2022
+ * Last Modified Date: 16.02.2022
  */
 module nox
   import utils_pkg::*;
-(
+#(
+  parameter int SUPPORT_DEBUG     = 1,
+  parameter int MTVEC_DEFAULT_VAL = 'h1000, // 4KB
+  parameter int L0_BUFFER_SIZE    = 2, // Max instrs locally stored
+  parameter int MAX_OT_TXN        = 4  // Max outstanding txns, low numbers might impact perf.
+)(
   input                 clk,
   input                 arst,
   // Boot ctrl
@@ -79,7 +84,11 @@ module nox
     .axi_miso_i            (lsu_axi_miso_i)
   );
 
-  fetch u_fetch(
+  fetch #(
+    .SUPPORT_DEBUG         (SUPPORT_DEBUG),
+    .L0_BUFFER_SIZE        (L0_BUFFER_SIZE),
+    .MAX_OT_TXN            (MAX_OT_TXN)
+  ) u_fetch (
     .clk                   (clk),
     .rst                   (rst),
     // Core bus fetch I/F
@@ -100,7 +109,9 @@ module nox
     .trap_info_o           (fetch_trap)
   );
 
-  decode u_decode(
+  decode #(
+    .SUPPORT_DEBUG         (SUPPORT_DEBUG)
+  ) u_decode (
     .clk                   (clk),
     .rst                   (rst),
     // Control signals
@@ -123,7 +134,10 @@ module nox
     .trap_info_o           (dec_trap)
   );
 
-  execute u_execute(
+  execute #(
+    .SUPPORT_DEBUG         (SUPPORT_DEBUG),
+    .MTVEC_DEFAULT_VAL     (MTVEC_DEFAULT_VAL)
+  ) u_execute (
     .clk                   (clk),
     .rst                   (rst),
     // Control signals
@@ -150,7 +164,9 @@ module nox
     .lsu_trap_ld_i         (lsu_trap_ld)
   );
 
-  lsu u_lsu(
+  lsu #(
+    .SUPPORT_DEBUG         (SUPPORT_DEBUG)
+  ) u_lsu (
     .clk                   (clk),
     .rst                   (rst),
     // From EXE stg

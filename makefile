@@ -138,7 +138,7 @@ $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk: $(SRC_VERILOG) $(SRC_CPP) $(TB_VERILATOR)
 sim_comp:
 	make all IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
 
-compliance: sim_comp
+compliance:
 	$(RUN_CMD_2) make verify RISCV_PREFIX=riscv-none-embed-	\
 		RISCV_TARGET=nox																			\
 		TARGET_SIM=/nox_files/$(VERILATOR_EXE) -j8

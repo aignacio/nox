@@ -188,8 +188,9 @@ int main(int argc, char** argv, char** env){
     dut->tick();
   }
 
-  cout << "\nClk cycles elapsed = " << (sim_cycles_timeout-(setup.sim_cycles+1)) << std::endl;
-  cout << "\nRemaining clk cycles = " << setup.sim_cycles+1 << std::endl;
+  cout << "\n[SIM Summary]" << std::endl;
+  cout << "Clk cycles elapsed =\t" << (sim_cycles_timeout-(setup.sim_cycles+1)) << std::endl;
+  cout << "Remaining clk cycles =\t" << setup.sim_cycles+1 << std::endl;
   dut->close();
   exit(EXIT_SUCCESS);
 }

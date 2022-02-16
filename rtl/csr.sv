@@ -26,6 +26,8 @@ module csr
   input   s_trap_info_t fetch_trap_i,
   input                 ecall_i,
   input                 ebreak_i,
+  input                 mret_i,
+  input                 wfi_i,
   input   s_trap_info_t lsu_trap_st_i,
   input   s_trap_info_t lsu_trap_ld_i,
   output  s_trap_info_t trap_o
@@ -163,7 +165,7 @@ module csr
       default:          csr_rd_o = rdata_t'('0);
     endcase
 
-    next_trap = s_trap_info_t'('0);
+    next_trap  = s_trap_info_t'('0);
     // Trap control
     // Priority decoder:
     // 1) IRQS [async traps]
@@ -214,6 +216,9 @@ module csr
         next_mcause      = 'd3;
         next_trap.active = 'b1;
       end
+      mret_i: begin // Fake trap to return program
+        next_trap.active = 'b1;
+      end
       //lsu_trap_st_i.active: begin
         //next_mepc        = pc_addr_i;
         //next_mcause      = 'd6;
@@ -244,7 +249,10 @@ module csr
       endcase
     end
 
-    next_trap.pc_addr = mtvec_base_addr+trap_offset;
+    if (mret_i)
+      next_trap.pc_addr = csr_mepc_ff;
+    else
+      next_trap.pc_addr = mtvec_base_addr+trap_offset;
     trap_o = trap_ff;
   end
 

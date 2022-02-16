@@ -200,6 +200,8 @@
     s_csr_t     csr;
     logic       ecall;
     logic       ebreak;
+    logic       mret;
+    logic       wfi;
   } s_id_ex_t;
 
   typedef struct packed {

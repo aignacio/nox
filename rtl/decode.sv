@@ -52,7 +52,7 @@ module decode
       id_ex_o = id_ex_ff;
     end
 
-    instr_dec  = fetch_instr_i;
+    instr_dec   = fetch_instr_i;
     trap_info_o = s_trap_info_t'('0);
 
     // Defaults
@@ -151,13 +151,36 @@ module decode
             next_id_ex.we_rd  = 1'b1;
           end
         end
-
-        if (instr_dec.f3 == RV_F3_ADD_SUB) begin
-          if (instr_dec.rs2 == 'h0) begin
-            next_id_ex.ecall = 'b1;
-          end
-          else begin
-            next_id_ex.ebreak = 'b1;
+        else if ((instr_dec.f3 == RV_F3_ADD_SUB) &&
+                 (instr_dec.rd == 'h0) &&
+                 (instr_dec.rs1 == 'h0)) begin
+          case (1)
+            (instr_dec.rs2 == 'h0): begin
+                next_id_ex.ecall = 'b1;
+            end
+            (instr_dec.rs2 == 'h1): begin
+              next_id_ex.ebreak = 'b1;
+            end
+            ((instr_dec.rs2 == 'h2) && (instr_dec.f7 == 'h18)): begin
+              next_id_ex.mret = 'b1;
+            end
+            ((instr_dec.rs2 == 'h5) && (instr_dec.f7 == 'h8)): begin
+              next_id_ex.wfi = 'b1;
+            end
+            default: begin
+              if (fetch_valid_i && id_ready_i) begin
+                trap_info_o.pc_addr = next_id_ex.pc_dec;
+                trap_info_o.active = 1'b1;
+                `P_MSG ("DEC", "Instruction non-supported")
+              end
+            end
+          endcase
+        end
+        else begin
+          if (fetch_valid_i && id_ready_i) begin
+            trap_info_o.pc_addr = next_id_ex.pc_dec;
+            trap_info_o.active = 1'b1;
+            `P_MSG ("DEC", "Instruction non-supported")
           end
         end
       end

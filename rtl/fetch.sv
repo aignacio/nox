@@ -3,11 +3,12 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 15.02.2022
+ * Last Modified Date: 16.02.2022
  */
 module fetch
   import utils_pkg::*;
 #(
+  parameter int SUPPORT_DEBUG  = 1,
   parameter int L0_BUFFER_SIZE = 2, // Max instrs locally stored
   parameter int MAX_OT_TXN     = 4  // Max outstanding txns, low numbers might impact perf.
 )(

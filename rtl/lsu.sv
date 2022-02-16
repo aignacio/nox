@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 15.02.2022
+ * Last Modified Date: 16.02.2022
  */
 module lsu
   import utils_pkg::*;
@@ -105,20 +105,20 @@ module lsu
     trap_info_ld_o = s_trap_info_t'('0);
 
     trap = 'b0;
-    if (new_txn) begin
-      if (wr_txn) begin
-        if (lsu_i.addr[1:0] != 'h0) begin
-          trap_info_st_o.active = 'b1;
-          trap = 'b1;
-        end
-      end
-      else begin
-        if (lsu_i.addr[1:0] != 'h0) begin
-          trap_info_ld_o.active = 'b1;
-          trap = 'b1;
-        end
-      end
-    end
+    //if (new_txn) begin
+      //if (wr_txn) begin
+        //if (lsu_i.addr[1:0] != 'h0) begin
+          //trap_info_st_o.active = 'b1;
+          //trap = 'b1;
+        //end
+      //end
+      //else begin
+        //if (lsu_i.addr[1:0] != 'h0) begin
+          //trap_info_ld_o.active = 'b1;
+          //trap = 'b1;
+        //end
+      //end
+    //end
 
     if (new_txn && ~trap) begin : addr_ph
       // 1 - stall execute stg
