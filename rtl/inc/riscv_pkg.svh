@@ -4,6 +4,7 @@
   `define XLEN          32
 
   `define RV_MST_MIE    3
+  `define RV_MST_MPIE   7
   `define RV_MIE_MEIP   11
   `define RV_MIE_MTIP   7
   `define RV_MIE_MSIP   3

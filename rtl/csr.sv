@@ -249,10 +249,28 @@ module csr
       endcase
     end
 
-    if (mret_i)
+    if (next_trap.active && ~mret_i) begin
+      // bkp mstatus[MIE]
+      //To support nested traps, each privilege mode x has a two-level stack of interrupt-enable bits and privilege modes.
+      //xPIE holds the value of the interrupt-enable bit active prior to the trap, and x PP holds the previous privilege mode.
+      //The x PP fields can only hold privilege modes up to x, so MPP is two bits wide, SPP is one bit wide, and
+      //UPP is implicitly zero. When a trap is taken from privilege mode y into privilege mode x, xPIE is set to the value
+      //of xIE; xIE is set to 0; and xPP is set to y.
+      next_mstatus[`RV_MST_MPIE] = csr_mstatus_ff[`RV_MST_MIE];
+      next_mstatus[`RV_MST_MIE]  = 'b0;
+    end
+
+    if (mret_i) begin
       next_trap.pc_addr = csr_mepc_ff;
-    else
+      //The MRET, SRET, or URET instructions are used to return from traps in M-mode, S-mode, or U-mode respectively.
+      //When executing an x RET instruction, supposing x PP holds the value y, x IE is set to xPIE; the privilege mode
+      //is changed to y; xPIE is set to 1; and xPP is set to U (or M if user-mode is not supported).
+      next_mstatus[`RV_MST_MIE] = csr_mstatus_ff[`RV_MST_MPIE];
+      next_mstatus[`RV_MST_MPIE] = 'b1;
+    end
+    else begin
       next_trap.pc_addr = mtvec_base_addr+trap_offset;
+    end
     trap_o = trap_ff;
   end
 

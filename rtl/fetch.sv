@@ -40,7 +40,6 @@ module fetch
   buffer_t      buffer_space;
   pc_t          pc_ff, next_pc;
   instr_raw_t   instr_from_mem;
-  //s_trap_info_t trap_ff, next_trap;
 
   logic fetch_full;
   logic fetch_trig_ff, next_trig;
@@ -130,25 +129,14 @@ module fetch
 
   always_comb begin : trap_ctrl
     trap_info_o = s_trap_info_t'('0);
-
-    if (fetch_req_i && (fetch_addr_i[1:0] != 'h0)) begin
-      trap_info_o.active = 'b1;
-      trap_info_o.pc_addr = '0;
+    if (fetch_req_i) begin
+      trap_info_o.active = (fetch_addr_i[1:0] == 'h0) ? 'b0 : 'b1;
     end
-    //next_trap = trap_ff;
-    //if (instr_access_fault_o) begin
-      //next_trap.pc_addr = pc_ff;
-      //next_trap.active = 'b1;
-    //end
-    //if (fetch_req_trig) begin
-      //next_trap = s_trap_info_t'(0);
-    //end
   end : trap_ctrl
 
   `CLK_PROC(clk, rst) begin : pc_ctrl_seq
     `RST_TYPE(rst) begin
       pc_ff              <= pc_t'('d0);
-      //trap_ff            <= s_trap_info_t'('0);
       ot_cnt_ff          <= 'd0;
       after_clr_valid_ff <= 'b0;
       fetch_trig_ff      <= 'b0;
@@ -156,7 +144,6 @@ module fetch
     end
     else begin
       pc_ff              <= next_pc;
-      //trap_ff            <= next_trap;
       ot_cnt_ff          <= next_ot_cnt;
       after_clr_valid_ff <= next_after_clr_valid;
       fetch_trig_ff      <= next_trig;

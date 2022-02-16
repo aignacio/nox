@@ -89,8 +89,9 @@ int main(void) {
   /*int time = rdtime();*/
   //int cycle = rdcycle();
 
+  *addr_leds = 0x11;
   while(true){
-    if (i == 100){
+    if (i == 500000){
       i = 0;
       *addr_leds = leds_out;
       leds_out = ~leds_out;

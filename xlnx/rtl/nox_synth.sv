@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 19.01.2022
+ * Last Modified Date: 16.02.2022
  */
 module nox_synth
   import utils_pkg::*;
@@ -102,7 +102,7 @@ module nox_synth
   );
 
   axi_mem_wrapper #(
-    .MEM_KB(4)
+    .MEM_KB(8)
   ) u_dram (
     .clk      (clk),
     .rst      (rst_cpu),
@@ -114,6 +114,7 @@ module nox_synth
   nox u_nox(
     .clk              (clk),
     .arst             (rst_cpu),
+    .irq_i            ('0),
     .start_fetch_i    (start_fetch),
     .start_addr_i     ('h8000_0000),
     .instr_axi_mosi_o (masters_axi_mosi[0]),
@@ -121,4 +122,17 @@ module nox_synth
     .lsu_axi_mosi_o   (masters_axi_mosi[1]),
     .lsu_axi_miso_i   (masters_axi_miso[1])
   );
+
+  //ila_nox u_ila (
+    //.clk(clk),
+    //.probe0(slaves_axi_mosi[0].awvalid), // Trigger 1 bit
+    //.probe1(slaves_axi_mosi[0].awaddr),  // 32
+    //.probe2(slaves_axi_mosi[0].wvalid),  // 1
+    //.probe3(slaves_axi_miso[0].wready),  // 1
+    //.probe4(slaves_axi_mosi[0].arvalid), // 1
+    //.probe5(slaves_axi_mosi[0].araddr),  // 32
+    //.probe6(slaves_axi_miso[0].rvalid),  // 1
+    //.probe7(slaves_axi_miso[0].rdata),   // 32
+    //.probe8(slaves_axi_miso[0].arready)  // 1
+  //);
 endmodule
