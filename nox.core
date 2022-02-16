@@ -15,6 +15,7 @@ filesets:
       - rtl/nox.sv
       - rtl/wb.sv
       - rtl/reset_sync.sv
+      - rtl/csr.sv
       - rtl/execute.sv
       - rtl/cb_to_axi.sv
       - rtl/register_file.sv
@@ -27,7 +28,7 @@ filesets:
     files:
       - xlnx/rtl/nox_synth.sv
       - xlnx/rtl/axi_rom_wrapper.sv
-      - xlnx/sw/output/boot_rom.sv
+      - sw/hello_world/output/boot_rom.sv
       - xlnx/rtl/axi_mem_wrapper.sv
       - xlnx/rtl/axi_ram.v
     file_type: systemVerilogSource

@@ -3,6 +3,11 @@
   `define PC_WIDTH      32
   `define XLEN          32
 
+  `define RV_MST_MIE    3
+  `define RV_MIE_MEIP   11
+  `define RV_MIE_MTIP   7
+  `define RV_MIE_MSIP   3
+
   typedef logic [`XLEN-1:0]         instr_raw_t;
   typedef logic [`PC_WIDTH-1:0]     pc_t;
   typedef logic [`XLEN-1:0]         lsu_addr_t;
@@ -49,6 +54,12 @@
     ZERO,
     PC
   } oper_mux_t;
+
+  typedef enum logic [3:0] {
+    RV_M_SW_INT    = 4'd3,
+    RV_M_TIMER_INT = 4'd7,
+    RV_M_EXT_INT   = 4'd11
+  } mcause_int_t;
 
   typedef enum logic [2:0] {
     RV_CSR_NONE = 3'b000,
@@ -158,8 +169,15 @@
   } s_instr_t;
 
   typedef struct packed {
+    logic ext_irq;
+    logic sw_irq;
+    logic timer_irq;
+    //pc_t  pc_addr;
+  } s_irq_t;
+
+  typedef struct packed {
     pc_t        pc_addr;
-    instr_raw_t instr;
+    //instr_raw_t instr;
     logic       active;
   } s_trap_info_t;
 
@@ -180,6 +198,8 @@
     raddr_t     rs1_addr;
     raddr_t     rs2_addr;
     s_csr_t     csr;
+    logic       ecall;
+    logic       ebreak;
   } s_id_ex_t;
 
   typedef struct packed {

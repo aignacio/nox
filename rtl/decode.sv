@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 14.02.2022
+ * Last Modified Date: 16.02.2022
  */
 module decode
   import utils_pkg::*;
@@ -29,14 +29,12 @@ module decode
   output  valid_t       id_valid_o,
   input   ready_t       id_ready_i,
   // Trap - Instruction access fault
-  output  logic         illegal_instr_fault_o,
   output  s_trap_info_t trap_info_o
 );
   valid_t     dec_valid_ff, next_vld_dec;
   s_instr_t   instr_dec;
   logic       wait_inst_ff, next_wait_inst;
 
-  s_trap_info_t trap_info_ff, next_trap;
   s_id_ex_t     id_ex_ff, next_id_ex;
 
   always_comb begin
@@ -55,7 +53,7 @@ module decode
     end
 
     instr_dec  = fetch_instr_i;
-    next_trap  = trap_info_ff;
+    trap_info_o = s_trap_info_t'('0);
 
     // Defaults
     next_id_ex          = s_id_ex_t'('0);
@@ -139,7 +137,7 @@ module decode
         next_id_ex.rs1_op = ZERO;
         next_id_ex.rs2_op = ZERO;
       end
-      RV_SYSTEM: begin // TODO: Create logic for ecall/ebreak
+      RV_SYSTEM: begin
         next_id_ex.f3         = RV_F3_ADD_SUB;
         next_id_ex.rs1_op     = ZERO;
         next_id_ex.rs2_op     = ZERO;
@@ -153,10 +151,22 @@ module decode
             next_id_ex.we_rd  = 1'b1;
           end
         end
+
+        if (instr_dec.f3 == RV_F3_ADD_SUB) begin
+          if (instr_dec.rs2 == 'h0) begin
+            next_id_ex.ecall = 'b1;
+          end
+          else begin
+            next_id_ex.ebreak = 'b1;
+          end
+        end
       end
       default: begin
-        next_trap.active = 1'b1;
-        `P_MSG ("DEC", "Instruction non-supported")
+        if (fetch_valid_i && id_ready_i) begin
+          trap_info_o.pc_addr = next_id_ex.pc_dec;
+          trap_info_o.active = 1'b1;
+          `P_MSG ("DEC", "Instruction non-supported")
+        end
       end
     endcase
 

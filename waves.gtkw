@@ -1,37 +1,40 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Sat Jan  8 11:13:42 2022
+[*] Wed Feb 16 12:22:12 2022
 [*]
 [dumpfile] "/Users/aignacio/projects/nox/nox_waves.fst"
-[dumpfile_mtime] "Sat Jan  8 11:05:06 2022"
-[dumpfile_size] 1179097
+[dumpfile_mtime] "Wed Feb 16 12:02:21 2022"
+[dumpfile_size] 176481
 [savefile] "/Users/aignacio/projects/nox/waves.gtkw"
-[timestart] 1
-[size] 3318 1727
-[pos] -1 -1
-*-6.652027 152 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 205
+[size] 3318 1359
+[pos] 131 583
+*-5.654182 245 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.nox_sim.
 [treeopen] TOP.nox_sim.u_dram.
-[treeopen] TOP.nox_sim.u_nox.
-[treeopen] TOP.nox_sim.u_nox.u_decode.
 [treeopen] TOP.nox_sim.u_nox.u_decode.u_register_file.
 [treeopen] TOP.nox_sim.u_nox.u_execute.
-[treeopen] TOP.nox_sim.u_nox.u_fetch.
-[treeopen] TOP.nox_sim.u_nox.u_lsu.
-[treeopen] TOP.nox_sim.u_nox.u_wb.
 [sst_width] 271
 [signals_width] 350
 [sst_expanded] 1
-[sst_vpaned_height] 1459
+[sst_vpaned_height] 672
 @28
 TOP.nox_sim.u_nox.arst
 TOP.nox_sim.u_nox.clk
-@c00200
+@800200
 -instr_if
 @28
+[color] 1
+TOP.nox_sim.u_nox.u_fetch.fetch_req_i
+@22
+[color] 1
+TOP.nox_sim.u_nox.u_fetch.fetch_addr_i[31:0]
+@28
 TOP.nox_sim.u_nox.u_fetch.fetch_full
+@29
 TOP.nox_sim.u_nox.u_fetch.instr_cb_mosi_o.rd_ready
+@28
 TOP.nox_sim.u_nox.u_fetch.write_instr
 @22
 TOP.nox_sim.u_nox.start_addr_i[31:0]
@@ -51,7 +54,7 @@ TOP.nox_sim.u_nox.instr_axi_miso_i.rvalid
 TOP.nox_sim.u_nox.instr_axi_mosi_o.rready
 @22
 TOP.nox_sim.u_nox.instr_axi_miso_i.rdata[31:0]
-@1401200
+@1000200
 -instr_if
 @800200
 -data_if[LSU]
@@ -111,7 +114,7 @@ TOP.nox_sim.u_nox.u_execute.next_branch.take_branch
 TOP.nox_sim.u_nox.u_execute.next_branch.b_addr[31:0]
 [color] 7
 TOP.nox_sim.u_nox.u_decode.next_id_ex.pc_dec[31:0]
-@100000029
+@100000028
 [color] 7
 TOP.nox_sim.u_nox.u_decode.instr_dec.op[6:0]
 @800200
@@ -130,7 +133,7 @@ TOP.nox_sim.u_nox.u_decode.id_valid_o
 TOP.nox_sim.u_nox.u_decode.id_ready_i
 @1000200
 -dec_send_if
-@800200
+@c00200
 -reg_file
 @22
 +{x1_ra} TOP.nox_sim.u_nox.u_decode.u_register_file.reg_file_ff[1][31:0]
@@ -242,12 +245,14 @@ TOP.nox_sim.u_nox.u_decode.id_ready_i
 +{x29_t4} TOP.nox_sim.u_nox.u_decode.u_register_file.reg_file_ff[29][31:0]
 +{x30_t5} TOP.nox_sim.u_nox.u_decode.u_register_file.reg_file_ff[30][31:0]
 +{x31_t6} TOP.nox_sim.u_nox.u_decode.u_register_file.reg_file_ff[31][31:0]
-@1000200
+@1401200
 -reg_file
 @28
 TOP.nox_sim.u_nox.u_lsu.bp_addr
 TOP.nox_sim.u_nox.u_lsu.bp_data
 TOP.nox_sim.u_nox.u_lsu.bp_wr_resp
 TOP.nox_sim.u_nox.u_lsu.lsu_bp_o
+@22
+TOP.nox_sim.u_dram.csr_o[7:0]
 [pattern_trace] 1
 [pattern_trace] 0

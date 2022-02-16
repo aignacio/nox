@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 14.02.2022
+ * Last Modified Date: 16.02.2022
  */
 module execute
   import utils_pkg::*;
@@ -24,12 +24,16 @@ module execute
   output  s_ex_mem_wb_t ex_mem_wb_o,
   output  s_lsu_op_t    lsu_o,
   input                 lsu_bp_i,
+  // IRQs
+  input   s_irq_t       irq_i,
   // To FETCH stg
   output  logic         fetch_req_o,
   output  pc_t          fetch_addr_o,
-  // Trap - Instruction access fault
-  output  logic         illegal_ex_o,
-  output  s_trap_info_t trap_info_o
+  // Trap signals
+  input   s_trap_info_t fetch_trap_i,
+  input   s_trap_info_t dec_trap_i,
+  input   s_trap_info_t lsu_trap_st_i,
+  input   s_trap_info_t lsu_trap_ld_i
 );
   s_ex_mem_wb_t ex_mem_wb_ff, next_ex_mem_wb;
   alu_t         op1, op2, res;
@@ -39,6 +43,8 @@ module execute
   s_branch_t    branch_ff, next_branch;
   s_jump_t      jump_ff, next_jump;
   rdata_t       csr_rdata;
+  s_trap_info_t trap_out;
+  logic         will_jump_next_clk;
 
   function automatic branch_dec(branch_t op, rdata_t rs1, rdata_t rs2);
     logic         take_branch;
@@ -123,12 +129,7 @@ module execute
 
     if (jump_or_branch) begin
       next_ex_mem_wb.we_rd = 'b0;
-      illegal_ex_o = 'b0;
-      trap_info_o = s_trap_info_t'('0);
     end
-
-    illegal_ex_o = 'b0;
-    trap_info_o = s_trap_info_t'('0);
 
     if (id_ex_i.csr.op != RV_CSR_NONE) begin
       next_ex_mem_wb.result = csr_rdata;
@@ -157,13 +158,22 @@ module execute
     lsu_o.width  = id_ex_i.lsu_w;
     lsu_o.addr   = res;
     lsu_o.wdata  = (fwd_wdata) ? wb_value_i : rs2_data_i;
+
+    will_jump_next_clk = next_branch.b_act || next_jump.j_act;
   end : jump_lsu_mgmt
 
   always_comb begin : fetch_req
-    // To FETCH / DEC (flush_i)
-    fetch_req_o  = ((branch_ff.b_act && branch_ff.take_branch) || jump_ff.j_act);
-    // To FETCH / DEC (pc_jump_i)
-    fetch_addr_o = (branch_ff.b_act) ? branch_ff.b_addr : jump_ff.j_addr;
+    fetch_req_o  = '0;
+    fetch_addr_o = '0;
+
+    //if (trap_out.active) begin
+      //fetch_req_o  = 'b1;
+      //fetch_addr_o = trap_out.pc_addr;
+    //end
+    //else begin
+      fetch_req_o  = ((branch_ff.b_act && branch_ff.take_branch) || jump_ff.j_act);
+      fetch_addr_o = (branch_ff.b_act) ? branch_ff.b_addr : jump_ff.j_addr;
+    //end
   end : fetch_req
 
   `CLK_PROC(clk, rst) begin
@@ -179,13 +189,23 @@ module execute
     end
   end
 
-  csr u_csr(
-    .clk        (clk),
-    .rst        (rst),
-    .stall_i    (lsu_bp_i),
-    .csr_i      (id_ex_i.csr),
-    .rs1_data_i (op1),
-    .imm_i      (id_ex_i.imm),
-    .csr_rd_o   (csr_rdata)
-  );
+  //csr u_csr(
+    //.clk             (clk),
+    //.rst             (rst),
+    //.stall_i         (lsu_bp_i),
+    //.csr_i           (id_ex_i.csr),
+    //.rs1_data_i      (op1),
+    //.imm_i           (id_ex_i.imm),
+    //.csr_rd_o        (csr_rdata),
+    //.pc_addr_i       (id_ex_i.pc_dec),
+    //.irq_i           (irq_i),
+    //.will_jump_i     (will_jump_next_clk),
+    //.dec_trap_i      (dec_trap_i),
+    //.fetch_trap_i    (fetch_trap_i),
+    //.ecall_i         (id_ex_i.ecall),
+    //.ebreak_i        (id_ex_i.ebreak),
+    //.lsu_trap_st_i   (lsu_trap_st_i),
+    //.lsu_trap_ld_i   (lsu_trap_ld_i),
+    //.trap_o          (trap_out)
+  //);
 endmodule

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 23.01.2022
+ * Last Modified Date: 15.02.2022
  */
 module nox
   import utils_pkg::*;
@@ -13,6 +13,8 @@ module nox
   // Boot ctrl
   input                 start_fetch_i,
   input   pc_t          start_addr_i,
+  // IRQs
+  input   s_irq_t       irq_i,
   // Read-only interface
   output  s_axi_mosi_t  instr_axi_mosi_o,
   input   s_axi_miso_t  instr_axi_miso_i,
@@ -42,6 +44,10 @@ module nox
   pc_t          fetch_addr;
   s_wb_t        wb_dec;
   logic         lsu_bp_data;
+  s_trap_info_t fetch_trap;
+  s_trap_info_t dec_trap;
+  s_trap_info_t lsu_trap_st;
+  s_trap_info_t lsu_trap_ld;
 
 `ifdef TARGET_FPGA
   reset_sync#(
@@ -91,7 +97,7 @@ module nox
     .fetch_instr_o         (fetch_instr),
     // Trap - Instruction access fault
     .instr_access_fault_o  (),
-    .trap_info_o           ()
+    .trap_info_o           (fetch_trap)
   );
 
   decode u_decode(
@@ -114,8 +120,7 @@ module nox
     .id_valid_o            (id_valid),
     .id_ready_i            (id_ready),
     // Trap - Instruction access fault
-    .illegal_instr_fault_o (),
-    .trap_info_o           ()
+    .trap_info_o           (dec_trap)
   );
 
   execute u_execute(
@@ -133,12 +138,16 @@ module nox
     .ex_mem_wb_o           (ex_mem_wb),
     .lsu_o                 (lsu_op),
     .lsu_bp_i              (lsu_bp),
+    // IRQs
+    .irq_i                 (irq_i),
     // To FETCH stg
     .fetch_req_o           (fetch_req),
     .fetch_addr_o          (fetch_addr),
-    // Trap - Instruction access fault
-    .illegal_ex_o          (),
-    .trap_info_o           ()
+    // From diff stgs
+    .fetch_trap_i          (fetch_trap),
+    .dec_trap_i            (dec_trap),
+    .lsu_trap_st_i         (lsu_trap_st),
+    .lsu_trap_ld_i         (lsu_trap_ld)
   );
 
   lsu u_lsu(
@@ -157,7 +166,8 @@ module nox
     .data_cb_miso_i        (lsu_cb_miso),
     // Trap - MEM access fault
     .txn_error_o           (),
-    .trap_info_o           ()
+    .trap_info_st_o        (lsu_trap_st),
+    .trap_info_ld_o        (lsu_trap_ld)
   );
 
   wb u_wb(

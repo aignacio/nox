@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 11.01.2022
+ * Last Modified Date: 15.02.2022
  */
 module lsu
   import utils_pkg::*;
@@ -25,7 +25,8 @@ module lsu
   input   s_cb_miso_t   data_cb_miso_i,
   // Trap - MEM access fault
   output  logic         txn_error_o,
-  output  s_trap_info_t trap_info_o
+  output  s_trap_info_t trap_info_st_o,
+  output  s_trap_info_t trap_info_ld_o
 );
   s_lsu_op_t lsu_ff, next_lsu;
   logic req_ff, next_req;
@@ -35,6 +36,7 @@ module lsu
   logic rd_txn;
   logic wr_txn;
   logic wr_txn_dp;
+  logic trap;
 
   function automatic cb_size_t size_txn(lsu_w_t size);
     cb_size_t sz;
@@ -99,7 +101,26 @@ module lsu
 
     lsu_bp_data_o = bp_data;
 
-    if (new_txn) begin : addr_ph
+    trap_info_st_o = s_trap_info_t'('0);
+    trap_info_ld_o = s_trap_info_t'('0);
+
+    trap = 'b0;
+    if (new_txn) begin
+      if (wr_txn) begin
+        if (lsu_i.addr[1:0] != 'h0) begin
+          trap_info_st_o.active = 'b1;
+          trap = 'b1;
+        end
+      end
+      else begin
+        if (lsu_i.addr[1:0] != 'h0) begin
+          trap_info_ld_o.active = 'b1;
+          trap = 'b1;
+        end
+      end
+    end
+
+    if (new_txn && ~trap) begin : addr_ph
       // 1 - stall execute stg
       // 0 - don't stall
       if (wr_txn) begin
@@ -129,7 +150,7 @@ module lsu
 
     // Moves to data ph. in case we have a txn
     // and no bp on execute stage OR back to no txn
-    if (~lsu_bp_o) begin
+    if (~lsu_bp_o && ~trap) begin
       next_lsu = lsu_i;
       next_req = new_txn;
     end
@@ -140,9 +161,8 @@ module lsu
 
     txn_error_o = req_ff ? ((data_cb_miso_i.wr_resp_error != CB_OKAY) ||
                             (data_cb_miso_i.rd_resp != CB_OKAY)) : 'b0;
-    trap_info_o = s_trap_info_t'('0);
-    wb_lsu_o = lsu_ff;
 
+    wb_lsu_o = lsu_ff;
     lsu_data_o = data_cb_miso_i.rd_data;
   end
 

@@ -84,13 +84,13 @@ int main(void) {
   /*int mimplid_csr   = read_csr(mimpid);*/
   /*int mhartid_csr   = read_csr(mhartid);*/
   /*int misa_csr      = read_csr(misa);*/
-  write_csr(mstatus, "TEST");
-  int tmp = swap_csr(mstatus, "OLA!");
-  int time = rdtime();
-  int cycle = rdcycle();
+  //write_csr(mstatus, "TEST");
+  //int tmp = swap_csr(mstatus, "OLA!");
+  /*int time = rdtime();*/
+  //int cycle = rdcycle();
 
   while(true){
-    if (i == 500000){
+    if (i == 100){
       i = 0;
       *addr_leds = leds_out;
       leds_out = ~leds_out;

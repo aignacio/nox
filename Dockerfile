@@ -31,3 +31,4 @@ RUN ln -s /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/riscv* /usr/bin
 # Compliance tests
 WORKDIR /opt/
 RUN git clone https://github.com/aignacio/riscv-arch-test.git
+RUN cd riscv-arch-test && git pull
