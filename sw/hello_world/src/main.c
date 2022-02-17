@@ -82,8 +82,6 @@ int main(void) {
   int mstatus_csr   = read_csr(mstatus);
   int misa_csr      = read_csr(misa);
   int mhartid_csr   = read_csr(mhartid);
-  //write_csr(mstatus, "TEST");
-  //int tmp = swap_csr(mstatus, "OLA!");
   /*int time = rdtime();*/
   //int cycle = rdcycle();
 
@@ -93,7 +91,8 @@ int main(void) {
 //      test++;
 //      asm volatile("ebreak");
 //    }
-    asm volatile (".word 0x2f71763");
+    /*asm volatile (".word 0x02f71763");*/
+    asm volatile (".word 0x0");
     if (i == 10){
       test++;
       i = 0;

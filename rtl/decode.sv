@@ -170,7 +170,6 @@ module decode
             end
             default: begin
               if (fetch_valid_i && id_ready_i) begin
-                trap_info_o.pc_addr = next_id_ex.pc_dec;
                 trap_info_o.active  = 1'b1;
                 trap_info_o.mtval   = fetch_instr_i;
                 `P_MSG ("DEC", "Instruction non-supported")
@@ -180,7 +179,6 @@ module decode
         end
         else begin
           if (fetch_valid_i && id_ready_i) begin
-            trap_info_o.pc_addr = next_id_ex.pc_dec;
             trap_info_o.active  = 1'b1;
             trap_info_o.mtval   = fetch_instr_i;
             `P_MSG ("DEC", "Instruction non-supported")
@@ -189,7 +187,6 @@ module decode
       end
       default: begin
         if (fetch_valid_i && id_ready_i) begin
-          trap_info_o.pc_addr = next_id_ex.pc_dec;
           trap_info_o.active  = 1'b1;
           trap_info_o.mtval   = fetch_instr_i;
           `P_MSG ("DEC", "Instruction non-supported")
@@ -207,6 +204,8 @@ module decode
     if (jump_i) begin
       next_id_ex.pc_dec  = pc_jump_i;
     end
+
+    trap_info_o.pc_addr = next_id_ex.pc_dec;
 
     next_wait_inst = wait_inst_ff;
     if (~wait_inst_ff) begin
