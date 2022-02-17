@@ -89,11 +89,11 @@ int main(void) {
 
   *addr_leds = leds_out;
   while(true){
-    if (test == 3){
-      test++;
-      asm volatile("ebreak");
-    }
-
+//    if (test == 3){
+//      test++;
+//      asm volatile("ebreak");
+//    }
+    asm volatile (".word 0x2f71763");
     if (i == 10){
       test++;
       i = 0;

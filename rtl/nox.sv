@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 16.02.2022
+ * Last Modified Date: 17.02.2022
  */
 module nox
   import utils_pkg::*;
@@ -104,8 +104,7 @@ module nox
     .fetch_valid_o         (fetch_valid),
     .fetch_ready_i         (fetch_ready),
     .fetch_instr_o         (fetch_instr),
-    // Trap - Instruction access fault
-    .instr_access_fault_o  (),
+    // TODO: Trap error fetching
     .trap_info_o           (fetch_trap)
   );
 

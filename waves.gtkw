@@ -1,25 +1,24 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Thu Feb 17 14:15:26 2022
+[*] Thu Feb 17 16:12:08 2022
 [*]
 [dumpfile] "/Users/aignacio/projects/nox/nox_waves.fst"
-[dumpfile_mtime] "Thu Feb 17 14:08:13 2022"
-[dumpfile_size] 231913
+[dumpfile_mtime] "Thu Feb 17 16:09:10 2022"
+[dumpfile_size] 176917
 [savefile] "/Users/aignacio/projects/nox/waves.gtkw"
 [timestart] 1
-[size] 2617 1521
-[pos] 293 457
-*-8.625935 1130 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 2815 1661
+[pos] 95 317
+*-7.334001 327 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.nox_sim.
 [treeopen] TOP.nox_sim.u_nox.
 [treeopen] TOP.nox_sim.u_nox.u_decode.u_register_file.
 [treeopen] TOP.nox_sim.u_nox.u_execute.
-[treeopen] TOP.nox_sim.u_nox.u_execute.u_csr.
 [sst_width] 271
 [signals_width] 350
 [sst_expanded] 1
-[sst_vpaned_height] 761
+[sst_vpaned_height] 837
 @28
 TOP.nox_sim.u_nox.arst
 TOP.nox_sim.u_nox.clk
@@ -246,17 +245,20 @@ TOP.nox_sim.u_nox.u_decode.id_ready_i
 +{x31_t6} TOP.nox_sim.u_nox.u_decode.u_register_file.reg_file_ff[31][31:0]
 @1401200
 -reg_file
-@800201
+@800200
 -trap
 @29
+[color] 2
+TOP.nox_sim.u_nox.u_execute.trap_out.active
+@28
 TOP.nox_sim.u_nox.u_execute.id_ex_i.mret
 TOP.nox_sim.u_nox.u_execute.id_ex_i.ecall
 TOP.nox_sim.u_nox.u_execute.id_ex_i.ebreak
 TOP.nox_sim.u_nox.u_execute.id_ex_i.wfi
 +{fetch_trap} TOP.nox_sim.u_nox.u_execute.fetch_trap_i.active
++{b_or_j_misaligned} TOP.nox_sim.u_nox.u_execute.instr_addr_misaligned.active
 +{dec_trap} TOP.nox_sim.u_nox.u_execute.dec_trap_i.active
-TOP.nox_sim.u_nox.u_execute.trap_out.active
-@23
+@22
 TOP.nox_sim.u_nox.u_execute.trap_out.pc_addr[31:0]
 TOP.nox_sim.u_nox.u_execute.u_csr.csr_mcause_ff[31:0]
 TOP.nox_sim.u_nox.u_execute.u_csr.csr_mepc_ff[31:0]
@@ -266,7 +268,7 @@ TOP.nox_sim.u_nox.u_execute.u_csr.csr_mscratch_ff[31:0]
 TOP.nox_sim.u_nox.u_execute.u_csr.csr_mstatus_ff[31:0]
 TOP.nox_sim.u_nox.u_execute.u_csr.csr_mtvec_ff[31:0]
 TOP.nox_sim.u_nox.u_execute.u_csr.csr_mtval_ff[31:0]
-@1000201
+@1000200
 -trap
 @28
 TOP.nox_sim.u_nox.u_lsu.bp_addr

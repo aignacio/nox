@@ -147,6 +147,7 @@ module decode
           next_id_ex.csr.op   = csr_t'(instr_dec.f3);
           next_id_ex.csr.addr = instr_dec[31:20];
           // When rd != x0
+          next_id_ex.csr.rs1_is_x0 = (instr_dec.rs1 == 'h0) ? 'b1 : 'b0;
           if (instr_dec.rd != 'h0) begin
             next_id_ex.we_rd  = 1'b1;
           end

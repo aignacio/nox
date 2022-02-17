@@ -28,7 +28,6 @@ module fetch
   input   ready_t       fetch_ready_i,
   output  instr_raw_t   fetch_instr_o,
   // Trap - Instruction access fault
-  output  logic         instr_access_fault_o,
   output  s_trap_info_t trap_info_o
 );
   typedef logic [$clog2(L0_BUFFER_SIZE>1?L0_BUFFER_SIZE:2):0] buffer_t;
@@ -51,6 +50,7 @@ module fetch
   logic clear_buffer;
   logic write_instr;
   logic after_clr_valid_ff, next_after_clr_valid;
+  logic instr_access_fault;
 
   always_comb begin : cb_fetch
     instr_cb_mosi_o = s_cb_mosi_t'('0);
@@ -66,9 +66,9 @@ module fetch
     fetch_full = (buffer_space == buffer_t'(L0_BUFFER_SIZE));
     clear_buffer = fetch_req_trig;
     write_instr = 'b0;
-    instr_access_fault_o = 'b0;
     instr_from_mem = 'd0;
     next_after_clr_valid = after_clr_valid_ff;
+    instr_access_fault = 'b0;
 
     instr_cb_mosi_o.rd_ready = ~fetch_full;
 
@@ -81,7 +81,7 @@ module fetch
         instr_from_mem = instr_cb_miso_i.rd_data;
       end
       else begin
-        instr_access_fault_o = 'b1;
+        instr_access_fault = 'b1;
       end
     end
 
@@ -129,9 +129,9 @@ module fetch
 
   always_comb begin : trap_ctrl
     trap_info_o = s_trap_info_t'('0);
-    if (fetch_req_i) begin
-      trap_info_o.active = (fetch_addr_i[1:0] == 'h0) ? 'b0 : 'b1;
-      trap_info_o.mtval  = fetch_addr_i;
+    if (instr_access_fault) begin
+      trap_info_o.active  = 'b1;
+      trap_info_o.pc_addr = pc_ff-'d4;
     end
   end : trap_ctrl
 

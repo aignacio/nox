@@ -46,6 +46,7 @@ module execute
   rdata_t       csr_rdata;
   s_trap_info_t trap_out;
   logic         will_jump_next_clk;
+  s_trap_info_t instr_addr_misaligned;
 
   function automatic branch_dec(branch_t op, rdata_t rs1, rdata_t rs2);
     logic         take_branch;
@@ -140,6 +141,8 @@ module execute
   end : alu_proc
 
   always_comb begin : jump_lsu_mgmt
+    instr_addr_misaligned = s_trap_info_t'('0);
+
     jump_or_branch = ((branch_ff.b_act && branch_ff.take_branch) || jump_ff.j_act);
 
     next_branch.b_act   = id_ex_i.branch && ~lsu_bp_i;
@@ -161,6 +164,16 @@ module execute
     lsu_o.wdata  = (fwd_wdata) ? wb_value_i : rs2_data_i;
 
     will_jump_next_clk = next_branch.b_act || next_jump.j_act;
+    if (will_jump_next_clk) begin
+      if (next_jump.j_act) begin
+        instr_addr_misaligned.active = (next_jump.j_addr[1:0] != 'h0) ? 'b1 : 'b0;
+        instr_addr_misaligned.mtval  = next_jump.j_addr;
+      end
+      else begin
+        instr_addr_misaligned.active = (next_branch.b_addr[1:0] != 'h0) ? 'b1 : 'b0;
+        instr_addr_misaligned.mtval  = next_branch.b_addr;
+      end
+    end
   end : jump_lsu_mgmt
 
   always_comb begin : fetch_req
@@ -195,24 +208,25 @@ module execute
     .SUPPORT_DEBUG      (SUPPORT_DEBUG),
     .MTVEC_DEFAULT_VAL  (MTVEC_DEFAULT_VAL)
   ) u_csr (
-    .clk             (clk),
-    .rst             (rst),
-    .stall_i         (lsu_bp_i),
-    .csr_i           (id_ex_i.csr),
-    .rs1_data_i      (op1),
-    .imm_i           (id_ex_i.imm),
-    .csr_rd_o        (csr_rdata),
-    .pc_addr_i       (id_ex_i.pc_dec),
-    .irq_i           (irq_i),
-    .will_jump_i     (will_jump_next_clk),
-    .dec_trap_i      (dec_trap_i),
-    .fetch_trap_i    (fetch_trap_i),
-    .ecall_i         (id_ex_i.ecall),
-    .ebreak_i        (id_ex_i.ebreak),
-    .mret_i          (id_ex_i.mret),
-    .wfi_i           (id_ex_i.wfi),
-    .lsu_trap_st_i   (lsu_trap_st_i),
-    .lsu_trap_ld_i   (lsu_trap_ld_i),
-    .trap_o          (trap_out)
+    .clk                (clk),
+    .rst                (rst),
+    .stall_i            (lsu_bp_i),
+    .csr_i              (id_ex_i.csr),
+    .rs1_data_i         (op1),
+    .imm_i              (id_ex_i.imm),
+    .csr_rd_o           (csr_rdata),
+    .pc_addr_i          (id_ex_i.pc_dec),
+    .irq_i              (irq_i),
+    .will_jump_i        (will_jump_next_clk),
+    .dec_trap_i         (dec_trap_i),
+    .instr_addr_mis_i   (instr_addr_misaligned),
+    .fetch_trap_i       (fetch_trap_i),
+    .ecall_i            (id_ex_i.ecall),
+    .ebreak_i           (id_ex_i.ebreak),
+    .mret_i             (id_ex_i.mret),
+    .wfi_i              (id_ex_i.wfi),
+    .lsu_trap_st_i      (lsu_trap_st_i),
+    .lsu_trap_ld_i      (lsu_trap_ld_i),
+    .trap_o             (trap_out)
   );
 endmodule

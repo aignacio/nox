@@ -23,6 +23,7 @@ module csr
   input   s_irq_t       irq_i,
   input                 will_jump_i,
   input   s_trap_info_t dec_trap_i,
+  input   s_trap_info_t instr_addr_mis_i,
   input   s_trap_info_t fetch_trap_i,
   input                 ecall_i,
   input                 ebreak_i,
@@ -34,6 +35,7 @@ module csr
 );
   typedef struct packed {
     csr_t   op;
+    logic   rs1_is_x0;
     imm_t   imm;
     rdata_t rs1;
     rdata_t csr_rd;
@@ -76,6 +78,11 @@ module csr
       RV_CSR_RCI: wr_val = wr_arg.csr_rd & ~wr_arg.imm;
       default:    wr_val = wr_arg.csr_rd;
     endcase
+
+    if ((wr_arg.op != RV_CSR_RW) && (wr_arg.op != RV_CSR_RWI)) begin
+      wr_val = wr_arg.rs1_is_x0 ? wr_arg.csr_rd : wr_val;
+    end
+
     wr_val = (wr_val & wr_arg.mask);
     wr_val = stall_i ? wr_arg.csr_rd : wr_val;
     return wr_val;
@@ -97,11 +104,12 @@ module csr
     next_mtval    = csr_mtval_ff;
     next_mip      = csr_mip_ff;
 
-    csr_wr_args.op     = csr_i.op;
-    csr_wr_args.imm    = imm_i;
-    csr_wr_args.rs1    = rs1_data_i;
-    csr_wr_args.csr_rd = '0;
-    csr_wr_args.mask   = '1;
+    csr_wr_args.op        = csr_i.op;
+    csr_wr_args.rs1_is_x0 = csr_i.rs1_is_x0;
+    csr_wr_args.imm       = imm_i;
+    csr_wr_args.rs1       = rs1_data_i;
+    csr_wr_args.csr_rd    = '0;
+    csr_wr_args.mask      = '1;
 
     case(csr_i.addr)
       RV_CSR_MSTATUS: begin
@@ -205,10 +213,10 @@ module csr
         next_mtval       = dec_trap_i.mtval;
         next_trap.active = 'b1;
       end
-      fetch_trap_i.active: begin
+      instr_addr_mis_i.active: begin
         next_mepc        = pc_addr_i;
         next_mcause      = 'd0;
-        next_mtval       = fetch_trap_i.mtval;
+        next_mtval       = instr_addr_mis_i.mtval;
         next_trap.active = 'b1;
       end
       ecall_i: begin
