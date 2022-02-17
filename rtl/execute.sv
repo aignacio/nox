@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 16.02.2022
+ * Last Modified Date: 17.02.2022
  */
 module execute
   import utils_pkg::*;
@@ -167,13 +167,14 @@ module execute
     fetch_req_o  = '0;
     fetch_addr_o = '0;
 
-    if (trap_out.active) begin
+    fetch_req_o  = ((branch_ff.b_act && branch_ff.take_branch) || jump_ff.j_act);
+    fetch_addr_o = (branch_ff.b_act) ? branch_ff.b_addr : jump_ff.j_addr;
+
+    // Only take the trap if we don't have any
+    // on the fly LSU operations
+    if (trap_out.active && ~lsu_bp_i) begin
       fetch_req_o  = 'b1;
       fetch_addr_o = trap_out.pc_addr;
-    end
-    else begin
-      fetch_req_o  = ((branch_ff.b_act && branch_ff.take_branch) || jump_ff.j_act);
-      fetch_addr_o = (branch_ff.b_act) ? branch_ff.b_addr : jump_ff.j_addr;
     end
   end : fetch_req
 

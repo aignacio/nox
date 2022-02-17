@@ -56,7 +56,7 @@ MACROS_VLOG		?=	$(addprefix +define+,$(_MACROS_VLOG))
 # in case you don't, docker will killed
 # the container and you'll not be able to build
 # the executable nox_sim
-RUN_CMD				:=	docker run --rm --name ship_nox2	\
+RUN_CMD				:=	docker run --rm --name ship_nox	\
 									-v $(abspath .):/nox_files -w		\
 									/nox_files nox
 RUN_CMD_2			:=	docker run --rm --name ship_nox	\

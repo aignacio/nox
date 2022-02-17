@@ -23,6 +23,7 @@ module axi_mem import utils_pkg::*; #(
   logic axi_wr_vld_ff, next_axi_wr;
   logic csr_decode_ff, next_dec_csr;
   logic [7:0] csr_output_ff, next_csr;
+  logic raw_hit;
 
   axi_addr_t  wr_addr_ff, next_wr_addr;
   axi_size_t  size_wr_ff, next_wr_size;
@@ -240,6 +241,7 @@ module axi_mem import utils_pkg::*; #(
     byte_sel_rd  = 'h0;
     rd_addr      = axi_mosi.araddr[2+:ADDR_RAM];
     axi_miso.arready = 'b1;
+    raw_hit = (axi_mosi.arvalid && we_mem && (axi_mosi.araddr == wr_addr_ff));
 
     if (axi_rd_vld_ff) begin
       next_axi_rd  = ~axi_mosi.rready;
@@ -248,7 +250,16 @@ module axi_mem import utils_pkg::*; #(
     if (axi_mosi.arvalid && axi_miso.arready) begin
       next_axi_rd  = 'b1;
       byte_sel_rd  = axi_mosi.araddr[1:0];
-      next_rd_data = mask_axi(mem_ff[rd_addr], byte_sel_rd, axi_mosi.arsize);
+
+      if (raw_hit) begin
+        for (int i=0;i<4;i++) begin
+          if (axi_mosi.wstrb[i])
+            next_rd_data[i*8+:8] = axi_mosi.wdata[i*8+:8];
+        end
+      end
+      else begin
+        next_rd_data = mask_axi(mem_ff[rd_addr], byte_sel_rd, axi_mosi.arsize);
+      end
     end
 
     axi_miso.rid    = 1'b0;

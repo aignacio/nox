@@ -69,6 +69,7 @@ uint32_t read_mbox(uint32_t addr, uint8_t hsize){
 
 int main(void) {
   int i = 0;
+  int test = 0;
   uint8_t leds_out = 0x0F;
 
   /*uint32_t read_byte_0 = read_mbox(0x20000000, 0);*/
@@ -78,12 +79,9 @@ int main(void) {
   /*uint32_t read_hword_0 = read_mbox(0x20000000, 1);*/
   /*uint32_t read_hword_1 = read_mbox(0x20000004, 1);*/
 
-  /*int mstatus_csr   = read_csr(mstatus);*/
-  /*int mvendorid_csr = read_csr(mvendorid);*/
-  /*int marchid_csr   = read_csr(marchid);*/
-  /*int mimplid_csr   = read_csr(mimpid);*/
-  /*int mhartid_csr   = read_csr(mhartid);*/
-  /*int misa_csr      = read_csr(misa);*/
+  int mstatus_csr   = read_csr(mstatus);
+  int misa_csr      = read_csr(misa);
+  int mhartid_csr   = read_csr(mhartid);
   //write_csr(mstatus, "TEST");
   //int tmp = swap_csr(mstatus, "OLA!");
   /*int time = rdtime();*/
@@ -91,7 +89,13 @@ int main(void) {
 
   *addr_leds = leds_out;
   while(true){
-    if (i == 500000){
+    if (test == 3){
+      test++;
+      asm volatile("ebreak");
+    }
+
+    if (i == 10){
+      test++;
       i = 0;
       *addr_leds = leds_out;
       leds_out = ~leds_out;

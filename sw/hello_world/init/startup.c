@@ -24,7 +24,7 @@
  */
 
 #include <stdint.h>
-/*#include "encoding.h"*/
+#include "riscv_csr_encoding.h"
 
 /*volatile uint32_t* const mtime_addr = (uint32_t*) MTIME_ADDR;*/
 
@@ -54,7 +54,7 @@ void _reset(void) {
     // asm volatile("la gp, _my_global_pointer");
     // asm volatile("la sp, _end_stack");
     /* Set up vectored interrupt, with starting at offset 0x100 */
-    //asm volatile("csrw mtvec, %0":: "r"((uint8_t *)(&_start_vector) + 1));
+    asm volatile("csrw mtvec, %0":: "r"((uint8_t *)(&_start_vector) + 1));
 
     src = (uint32_t *) &_stored_data;
     dst = (uint32_t *) &_start_data;
@@ -81,30 +81,33 @@ static uint32_t synctrap_cause = 0;
 
 void isr_synctrap(void)
 {
-  /*write_csr(mip, (0 << IRQ_M_EXT));*/
+  write_csr(mip, (0 << IRQ_M_EXT));
+  uint32_t mepc_return = read_csr(mepc)+0x4;
+  write_csr(mepc, mepc_return);
   /*irq_callback();*/
-
   /*[>asm volatile("csrr %0,mcause" : "=r"(synctrap_cause));<]*/
   /*[>asm volatile("ebreak");<]*/
+
+  return;
 }
 
 void __attribute__((weak)) isr_m_software(void)
 {
-  /*write_csr(mip, (0 << IRQ_M_SOFT));*/
+  write_csr(mip, (0 << IRQ_M_SOFT));
   while(1);
 }
 
 void __attribute__((weak)) isr_m_timer(void)
 {
   /**mtime_addr = 0;*/
-  /*write_csr(mip, (0 << IRQ_M_TIMER));*/
+  write_csr(mip, (0 << IRQ_M_TIMER));
   return;
   while(1);
 }
 
 void __attribute__((weak)) isr_m_external(void)
 {
-  /*write_csr(mip, (0 << IRQ_M_EXT));*/
+  write_csr(mip, (0 << IRQ_M_EXT));
   /*irq_callback();*/
   return;
   while(1);

@@ -29,7 +29,7 @@
   //`define M_VENDOR_ID   "None" //needs to follow JEDEC
   //`define M_ARCH_ID     "32I"  //needs to follow JEDEC
   //`define M_IMPL_ID     "4STG"
-  //`define M_HART_ID     "0"
+  `define M_HART_ID     0
   `define M_ISA_ID      'h40000100
 
   // Reset Macros for different sets

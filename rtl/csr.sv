@@ -161,7 +161,7 @@ module csr
       //RV_CSR_MVENDORID: csr_rd_o = `M_VENDOR_ID;
       //RV_CSR_MARCHID:   csr_rd_o = `M_ARCH_ID;
       //RV_CSR_MIMPLID:   csr_rd_o = `M_IMPL_ID;
-      //RV_CSR_MHARTID:   csr_rd_o = `M_HART_ID;
+      RV_CSR_MHARTID:   csr_rd_o = `M_HART_ID;
       default:          csr_rd_o = rdata_t'('0);
     endcase
 
@@ -178,6 +178,7 @@ module csr
         next_mip[`RV_MIE_MEIP] = 'b1;
         next_mepc              = pc_addr_i;
         next_mcause            = 'h8000_000B;
+        next_mtval             = rdata_t'('h0);
         next_trap.active       = 'b1;
       end
       (csr_mstatus_ff[`RV_MST_MIE] &&
@@ -186,6 +187,7 @@ module csr
         next_mip[`RV_MIE_MSIP] = 'b1;
         next_mepc              = pc_addr_i;
         next_mcause            = 'h8000_0003;
+        next_mtval             = rdata_t'('h0);
         next_trap.active       = 'b1;
       end
       (csr_mstatus_ff[`RV_MST_MIE] &&
@@ -194,6 +196,7 @@ module csr
         next_mip[`RV_MIE_MTIP] = 'b1;
         next_mepc              = pc_addr_i;
         next_mcause            = 'h8000_0007;
+        next_mtval             = rdata_t'('h0);
         next_trap.active       = 'b1;
       end
       (dec_trap_i.active && ~will_jump_i): begin
@@ -211,14 +214,17 @@ module csr
       ecall_i: begin
         next_mepc        = pc_addr_i;
         next_mcause      = 'd11;
+        next_mtval       = rdata_t'('h0);
         next_trap.active = 'b1;
       end
       ebreak_i: begin
         next_mepc        = pc_addr_i;
         next_mcause      = 'd3;
+        next_mtval       = rdata_t'('h0);
         next_trap.active = 'b1;
       end
       mret_i: begin // Fake trap to return program
+        next_mtval       = rdata_t'('h0);
         next_trap.active = 'b1;
       end
       //lsu_trap_st_i.active: begin
@@ -280,7 +286,7 @@ module csr
 
   `CLK_PROC(clk, rst) begin
     `RST_TYPE(rst) begin
-      csr_mstatus_ff  <=  `OP_RST_L;
+      csr_mstatus_ff  <=  'h1880;
       csr_mie_ff      <=  `OP_RST_L;
       csr_mtvec_ff    <=  MTVEC_DEFAULT_VAL;
       csr_mscratch_ff <=  `OP_RST_L;
