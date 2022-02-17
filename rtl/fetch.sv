@@ -132,6 +132,7 @@ module fetch
     if (instr_access_fault) begin
       trap_info_o.active  = 'b1;
       trap_info_o.pc_addr = pc_ff-'d4;
+      trap_info_o.mtval   = fetch_start_trig ? fetch_start_addr_i : fetch_addr_i;
     end
   end : trap_ctrl
 

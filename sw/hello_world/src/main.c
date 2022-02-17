@@ -92,7 +92,7 @@ int main(void) {
 //      asm volatile("ebreak");
 //    }
     /*asm volatile (".word 0x02f71763");*/
-    asm volatile (".word 0x0");
+    /*asm volatile (".word 0x0");*/
     if (i == 10){
       test++;
       i = 0;

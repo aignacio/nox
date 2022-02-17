@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 16.02.2022
+ * Last Modified Date: 17.02.2022
  */
 module lsu
   import utils_pkg::*;
@@ -36,7 +36,6 @@ module lsu
   logic rd_txn;
   logic wr_txn;
   logic wr_txn_dp;
-  logic trap;
 
   function automatic cb_size_t size_txn(lsu_w_t size);
     cb_size_t sz;
@@ -104,23 +103,13 @@ module lsu
     trap_info_st_o = s_trap_info_t'('0);
     trap_info_ld_o = s_trap_info_t'('0);
 
-    trap = 'b0;
-    //if (new_txn) begin
-      //if (wr_txn) begin
-        //if (lsu_i.addr[1:0] != 'h0) begin
-          //trap_info_st_o.active = 'b1;
-          //trap = 'b1;
-        //end
-      //end
-      //else begin
-        //if (lsu_i.addr[1:0] != 'h0) begin
-          //trap_info_ld_o.active = 'b1;
-          //trap = 'b1;
-        //end
-      //end
-    //end
+    if (data_cb_miso_i.wr_resp_error != CB_OKAY)
+      trap_info_st_o.active = 'b1;
 
-    if (new_txn && ~trap) begin : addr_ph
+    if (data_cb_miso_i.rd_resp != CB_OKAY)
+      trap_info_ld_o.active = 'b1;
+
+    if (new_txn) begin : addr_ph
       // 1 - stall execute stg
       // 0 - don't stall
       if (wr_txn) begin
@@ -150,7 +139,7 @@ module lsu
 
     // Moves to data ph. in case we have a txn
     // and no bp on execute stage OR back to no txn
-    if (~lsu_bp_o && ~trap) begin
+    if (~lsu_bp_o) begin
       next_lsu = lsu_i;
       next_req = new_txn;
     end

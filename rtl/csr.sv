@@ -207,6 +207,12 @@ module csr
         next_mtval             = rdata_t'('h0);
         next_trap.active       = 'b1;
       end
+      fetch_trap_i.active: begin
+        next_mepc        = pc_addr_i;
+        next_mcause      = 'd1;
+        next_mtval       = fetch_trap_i.mtval;
+        next_trap.active = 'b1;
+      end
       (dec_trap_i.active && ~will_jump_i): begin
         next_mepc        = dec_trap_i.pc_addr;
         next_mcause      = 'd2;
@@ -235,16 +241,16 @@ module csr
         next_mtval       = rdata_t'('h0);
         next_trap.active = 'b1;
       end
-      //lsu_trap_st_i.active: begin
-        //next_mepc        = pc_addr_i;
-        //next_mcause      = 'd6;
-        //next_trap.active = 'b1;
-      //end
-      //lsu_trap_ld_i.active: begin
-        //next_mepc        = pc_addr_i;
-        //next_mcause      = 'd4;
-        //next_trap.active = 'b1;
-      //end
+      lsu_trap_st_i.active: begin
+        next_mepc        = pc_addr_i;
+        next_mcause      = 'd7;
+        next_trap.active = 'b1;
+      end
+      lsu_trap_ld_i.active: begin
+        next_mepc        = pc_addr_i;
+        next_mcause      = 'd5;
+        next_trap.active = 'b1;
+      end
       // Added the below statement due to error while synthesizing on vivado
       default: next_trap  = s_trap_info_t'('0);
     endcase
