@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 16.02.2022
+ * Last Modified Date: 17.02.2022
  */
 module fetch
   import utils_pkg::*;
@@ -131,6 +131,7 @@ module fetch
     trap_info_o = s_trap_info_t'('0);
     if (fetch_req_i) begin
       trap_info_o.active = (fetch_addr_i[1:0] == 'h0) ? 'b0 : 'b1;
+      trap_info_o.mtval  = fetch_addr_i;
     end
   end : trap_ctrl
 

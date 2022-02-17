@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 16.02.2022
+ * Last Modified Date: 17.02.2022
  */
 module csr
   import utils_pkg::*;
@@ -136,11 +136,11 @@ module csr
       RV_CSR_MCAUSE: begin
         csr_rd_o = csr_mcause_ff;
       end
-      //RV_CSR_MTVAL: begin
-        //csr_rd_o           = csr_mtval_ff;
-        //csr_wr_args.csr_rd = csr_rd_o;
-        //next_mtval         = wr_csr_val(csr_wr_args);
-      //end
+      RV_CSR_MTVAL: begin
+        csr_rd_o           = csr_mtval_ff;
+        csr_wr_args.csr_rd = csr_rd_o;
+        next_mtval         = wr_csr_val(csr_wr_args);
+      end
       RV_CSR_MIP: begin
         csr_wr_args.mask   = 'h8;
         csr_rd_o           = csr_mip_ff;
@@ -199,11 +199,13 @@ module csr
       (dec_trap_i.active && ~will_jump_i): begin
         next_mepc        = dec_trap_i.pc_addr;
         next_mcause      = 'd2;
+        next_mtval       = dec_trap_i.mtval;
         next_trap.active = 'b1;
       end
       fetch_trap_i.active: begin
         next_mepc        = pc_addr_i;
         next_mcause      = 'd0;
+        next_mtval       = fetch_trap_i.mtval;
         next_trap.active = 'b1;
       end
       ecall_i: begin
@@ -229,6 +231,8 @@ module csr
         //next_mcause      = 'd4;
         //next_trap.active = 'b1;
       //end
+      // Added the below statement due to error while synthesizing on vivado
+      default: next_trap  = s_trap_info_t'('0);
     endcase
 
     // Define trap address
@@ -282,7 +286,7 @@ module csr
       csr_mscratch_ff <=  `OP_RST_L;
       csr_mepc_ff     <=  `OP_RST_L;
       csr_mcause_ff   <=  `OP_RST_L;
-      //csr_mtval_ff    <=  `OP_RST_L;
+      csr_mtval_ff    <=  `OP_RST_L;
       csr_mip_ff      <=  `OP_RST_L;
       csr_cycle_ff    <=  `OP_RST_L;
       //csr_time_ff     <=  `OP_RST_L;
@@ -296,7 +300,7 @@ module csr
       csr_mscratch_ff <=  next_mscratch;
       csr_mepc_ff     <=  next_mepc;
       csr_mcause_ff   <=  next_mcause;
-      //csr_mtval_ff    <=  next_mtval;
+      csr_mtval_ff    <=  next_mtval;
       csr_mip_ff      <=  next_mip;
       csr_cycle_ff    <=  next_cycle;
       //csr_time_ff     <=  next_time;

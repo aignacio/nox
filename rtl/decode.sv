@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 16.02.2022
+ * Last Modified Date: 17.02.2022
  */
 module decode
   import utils_pkg::*;
@@ -170,7 +170,8 @@ module decode
             default: begin
               if (fetch_valid_i && id_ready_i) begin
                 trap_info_o.pc_addr = next_id_ex.pc_dec;
-                trap_info_o.active = 1'b1;
+                trap_info_o.active  = 1'b1;
+                trap_info_o.mtval   = fetch_instr_i;
                 `P_MSG ("DEC", "Instruction non-supported")
               end
             end
@@ -179,7 +180,8 @@ module decode
         else begin
           if (fetch_valid_i && id_ready_i) begin
             trap_info_o.pc_addr = next_id_ex.pc_dec;
-            trap_info_o.active = 1'b1;
+            trap_info_o.active  = 1'b1;
+            trap_info_o.mtval   = fetch_instr_i;
             `P_MSG ("DEC", "Instruction non-supported")
           end
         end
@@ -187,7 +189,8 @@ module decode
       default: begin
         if (fetch_valid_i && id_ready_i) begin
           trap_info_o.pc_addr = next_id_ex.pc_dec;
-          trap_info_o.active = 1'b1;
+          trap_info_o.active  = 1'b1;
+          trap_info_o.mtval   = fetch_instr_i;
           `P_MSG ("DEC", "Instruction non-supported")
         end
       end

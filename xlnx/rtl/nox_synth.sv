@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 16.02.2022
+ * Last Modified Date: 17.02.2022
  */
 module nox_synth
   import utils_pkg::*;
@@ -125,14 +125,19 @@ module nox_synth
 
   //ila_nox u_ila (
     //.clk(clk),
-    //.probe0(slaves_axi_mosi[0].awvalid), // Trigger 1 bit
-    //.probe1(slaves_axi_mosi[0].awaddr),  // 32
-    //.probe2(slaves_axi_mosi[0].wvalid),  // 1
-    //.probe3(slaves_axi_miso[0].wready),  // 1
-    //.probe4(slaves_axi_mosi[0].arvalid), // 1
-    //.probe5(slaves_axi_mosi[0].araddr),  // 32
-    //.probe6(slaves_axi_miso[0].rvalid),  // 1
-    //.probe7(slaves_axi_miso[0].rdata),   // 32
-    //.probe8(slaves_axi_miso[0].arready)  // 1
+    //.probe0(slaves_axi_mosi[0].arvalid),                // 1
+    //.probe1(slaves_axi_mosi[0].araddr),                 // 32
+    //.probe2(slaves_axi_miso[0].rvalid),                 // 1
+    //.probe3(slaves_axi_miso[0].rdata),                  // 32
+    //.probe4(u_nox.u_execute.u_csr.ecall_i),             // 1
+    //.probe5(u_nox.u_execute.u_csr.ebreak_i),            // 1
+    //.probe6(u_nox.u_execute.u_csr.mret_i),              // 1
+    //.probe7(u_nox.u_execute.u_csr.fetch_trap_i.active), // 1
+    //.probe8(u_nox.u_execute.u_csr.dec_trap_i.active),   // 1
+    //.probe9(u_nox.u_execute.u_csr.will_jump_i),         // 1
+    //.probe10(u_nox.u_execute.u_csr.csr_mcause_ff),      // 32
+    //.probe11(u_nox.u_fetch.fetch_req_i),                // 1
+    //.probe12(u_nox.u_fetch.fetch_addr_i),               // 32
+    //.probe13(u_nox.u_execute.u_csr.trap_ff.active)      // 1
   //);
 endmodule

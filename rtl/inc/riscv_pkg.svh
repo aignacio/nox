@@ -173,12 +173,11 @@
     logic ext_irq;
     logic sw_irq;
     logic timer_irq;
-    //pc_t  pc_addr;
   } s_irq_t;
 
   typedef struct packed {
     pc_t        pc_addr;
-    //instr_raw_t instr;
+    instr_raw_t mtval;
     logic       active;
   } s_trap_info_t;
 
