@@ -164,15 +164,14 @@ module execute
     lsu_o.wdata  = (fwd_wdata) ? wb_value_i : rs2_data_i;
 
     will_jump_next_clk = next_branch.b_act || next_jump.j_act;
-    if (will_jump_next_clk) begin
-      if (next_jump.j_act) begin
-        instr_addr_misaligned.active = (next_jump.j_addr[1:0] != 'h0) ? 'b1 : 'b0;
-        instr_addr_misaligned.mtval  = next_jump.j_addr;
-      end
-      else begin
-        instr_addr_misaligned.active = (next_branch.b_addr[1:0] != 'h0) ? 'b1 : 'b0;
-        instr_addr_misaligned.mtval  = next_branch.b_addr;
-      end
+
+    if (will_jump_next_clk && next_jump.j_act) begin
+      instr_addr_misaligned.active = next_jump.j_addr[1];
+      instr_addr_misaligned.mtval  = next_jump.j_addr;
+    end
+    if (will_jump_next_clk && next_branch.b_act) begin
+      instr_addr_misaligned.active = next_branch.b_addr[1] || next_branch.b_addr[0];
+      instr_addr_misaligned.mtval  = next_branch.b_addr;
     end
   end : jump_lsu_mgmt
 
@@ -185,7 +184,7 @@ module execute
 
     // Only take the trap if we don't have any
     // on the fly LSU operations
-    if (trap_out.active && ~lsu_bp_i) begin
+    if (trap_out.active) begin // && ~lsu_bp_i) begin
       fetch_req_o  = 'b1;
       fetch_addr_o = trap_out.pc_addr;
     end

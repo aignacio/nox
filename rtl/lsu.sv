@@ -103,11 +103,13 @@ module lsu
     trap_info_st_o = s_trap_info_t'('0);
     trap_info_ld_o = s_trap_info_t'('0);
 
-    if (data_cb_miso_i.wr_resp_error != CB_OKAY)
+    if (data_cb_miso_i.wr_resp_valid && (data_cb_miso_i.wr_resp_error != CB_OKAY)) begin
       trap_info_st_o.active = 'b1;
+    end
 
-    if (data_cb_miso_i.rd_resp != CB_OKAY)
+    if (data_cb_miso_i.rd_valid && (data_cb_miso_i.rd_resp != CB_OKAY)) begin
       trap_info_ld_o.active = 'b1;
+    end
 
     if (new_txn) begin : addr_ph
       // 1 - stall execute stg
@@ -131,7 +133,8 @@ module lsu
           if (lsu_ff.addr[1:0]==i[1:0]) begin
             data_cb_mosi_o.wr_data = lsu_ff.wdata << (8*i);
           end
-          data_cb_mosi_o.wr_data[(i*8)+:8] = data_cb_mosi_o.wr_strobe[i] ? data_cb_mosi_o.wr_data[(i*8)+:8] : 8'h0;
+          data_cb_mosi_o.wr_data[(i*8)+:8] = data_cb_mosi_o.wr_strobe[i] ?
+                                             data_cb_mosi_o.wr_data[(i*8)+:8] : 8'h0;
         end
         data_cb_mosi_o.wr_data_valid = 'b1;
       end

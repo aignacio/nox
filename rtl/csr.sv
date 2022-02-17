@@ -207,12 +207,12 @@ module csr
         next_mtval             = rdata_t'('h0);
         next_trap.active       = 'b1;
       end
-      fetch_trap_i.active: begin
-        next_mepc        = pc_addr_i;
-        next_mcause      = 'd1;
-        next_mtval       = fetch_trap_i.mtval;
-        next_trap.active = 'b1;
-      end
+      //fetch_trap_i.active: begin
+        //next_mepc        = pc_addr_i;
+        //next_mcause      = 'd1;
+        //next_mtval       = fetch_trap_i.mtval;
+        //next_trap.active = 'b1;
+      //end
       (dec_trap_i.active && ~will_jump_i): begin
         next_mepc        = dec_trap_i.pc_addr;
         next_mcause      = 'd2;

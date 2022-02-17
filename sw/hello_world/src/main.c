@@ -93,7 +93,7 @@ int main(void) {
 //    }
     /*asm volatile (".word 0x02f71763");*/
     /*asm volatile (".word 0x0");*/
-    if (i == 10){
+    if (i == 500000){
       test++;
       i = 0;
       *addr_leds = leds_out;
