@@ -83,6 +83,9 @@ targets:
   nv_synth:
     <<: *default
     default_tool : vivado
+    parameters:
+      - NEXYS_VIDEO_70MHz
+      - DISPLAY_TEST
     description : Nexys Video board synthesis
     filesets_append:
       - synth_nox
@@ -92,11 +95,13 @@ targets:
       vivado:
         part : xc7a200tsbg484-1
     toplevel: nox_synth
-    parameters: [DISPLAY_TEST=false,NEXYS_VIDEO_70MHz]
 
   x7_synth:
     <<: *default
     default_tool : vivado
+    parameters:
+      - QMTECH_KINTEX_7_100MHz
+      - DISPLAY_TEST
     description : Kintex 7 board synthesis
     filesets_append:
       - synth_nox
@@ -106,4 +111,3 @@ targets:
       vivado:
         part : xc7k325tffg676-1
     toplevel: nox_synth
-    parameters: [DISPLAY_TEST=false,QMTECH_KINTEX_7_100MHz]
