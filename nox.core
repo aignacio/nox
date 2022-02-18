@@ -59,6 +59,12 @@ parameters:
     datatype: bool
     default : false
     paramtype: vlogdefine
+  NEXYS_VIDEO_70MHz:
+    datatype: bool
+    paramtype: vlogdefine
+  QMTECH_KINTEX_7_100MHz:
+    datatype: bool
+    paramtype: vlogdefine
 
 targets:
   default: &default
@@ -86,7 +92,7 @@ targets:
       vivado:
         part : xc7a200tsbg484-1
     toplevel: nox_synth
-    parameters: [DISPLAY_TEST=false]
+    parameters: [DISPLAY_TEST=false,NEXYS_VIDEO_70MHz]
 
   x7_synth:
     <<: *default
@@ -100,4 +106,4 @@ targets:
       vivado:
         part : xc7k325tffg676-1
     toplevel: nox_synth
-    parameters: [DISPLAY_TEST=false]
+    parameters: [DISPLAY_TEST=false,QMTECH_KINTEX_7_100MHz]
