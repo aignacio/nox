@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 17.02.2022
+ * Last Modified Date: 18.02.2022
  */
 module fetch
   import utils_pkg::*;
@@ -81,7 +81,9 @@ module fetch
         instr_from_mem = instr_cb_miso_i.rd_data;
       end
       else begin
-        instr_access_fault = 'b1;
+        if (instr_cb_miso_i.rd_resp != CB_OKAY) begin
+          instr_access_fault = 'b1;
+        end
       end
     end
 
@@ -125,16 +127,14 @@ module fetch
     else begin
       next_after_clr_valid = (next_ot_cnt == 'd0);
     end
-  end : cb_fetch
 
-  always_comb begin : trap_ctrl
     trap_info_o = s_trap_info_t'('0);
     if (instr_access_fault) begin
       trap_info_o.active  = 'b1;
-      trap_info_o.pc_addr = pc_ff-'d4;
-      trap_info_o.mtval   = fetch_start_trig ? fetch_start_addr_i : fetch_addr_i;
+      trap_info_o.pc_addr = pc_ff;
+      trap_info_o.mtval   = fetch_addr_i;
     end
-  end : trap_ctrl
+  end : cb_fetch
 
   `CLK_PROC(clk, rst) begin : pc_ctrl_seq
     `RST_TYPE(rst) begin

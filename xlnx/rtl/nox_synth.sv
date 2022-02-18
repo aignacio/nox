@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 17.02.2022
+ * Last Modified Date: 18.02.2022
  */
 module nox_synth
   import utils_pkg::*;
@@ -174,7 +174,7 @@ module nox_synth
     //.probe6(u_nox.u_execute.u_csr.mret_i),              // 1
     //.probe7(u_nox.u_execute.u_csr.fetch_trap_i.active), // 1
     //.probe8(u_nox.u_execute.u_csr.dec_trap_i.active),   // 1
-    //.probe9(u_nox.u_execute.u_csr.will_jump_i),         // 1
+    //.probe9(u_nox.u_execute.u_csr.fetch_trap_i.active), // 1
     //.probe10(u_nox.u_execute.u_csr.csr_mcause_ff),      // 32
     //.probe11(u_nox.u_fetch.fetch_req_i),                // 1
     //.probe12(u_nox.u_fetch.fetch_addr_i),               // 32

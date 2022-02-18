@@ -53,11 +53,11 @@ all: $(ODIR)/boot_rom.sv $(TARGET).asm
 
 $(ODIR)/boot_rom.sv: $(TARGET).data
 	@echo "Generating behavioral ROM in verilog with hex file"
-	python scripts/gen_rom.py --in_hex $< --out_v $@
+	python3 scripts/gen_rom.py --in_hex $< --out_v $@
 
 $(TARGET).data: $(TARGET).bin
 	@echo "Generating hex format from elf to run in digital simulations..."
-	python scripts/freedom-bin2hex.py --bit-width 32 $< $@
+	python3 scripts/freedom-bin2hex.py --bit-width 32 $< $@
 
 $(TARGET).asm:	$(TARGET).elf
 	@echo "Generating disassembly of the code..."

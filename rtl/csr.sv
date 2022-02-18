@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 17.02.2022
+ * Last Modified Date: 18.02.2022
  */
 module csr
   import utils_pkg::*;
@@ -28,7 +28,7 @@ module csr
   input                 ecall_i,
   input                 ebreak_i,
   input                 mret_i,
-  input                 wfi_i,
+  input                 wfi_i, // TODO: Implement WFI
   input   s_trap_info_t lsu_trap_st_i,
   input   s_trap_info_t lsu_trap_ld_i,
   output  s_trap_info_t trap_o
@@ -46,6 +46,9 @@ module csr
   pc_t  mtvec_base_addr;
   logic mtvec_vectored;
   rdata_t trap_offset;
+  logic   dbg_irq_mtime;
+  logic   dbg_irq_msoft;
+  logic   dbg_irq_mext;
 
   mcause_int_t async_int;
 
@@ -71,10 +74,10 @@ module csr
 
     case (wr_arg.op)
       RV_CSR_RW:  wr_val = wr_arg.rs1;
-      RV_CSR_RS:  wr_val = wr_arg.csr_rd & wr_arg.rs1;
+      RV_CSR_RS:  wr_val = wr_arg.csr_rd | wr_arg.rs1;
       RV_CSR_RC:  wr_val = wr_arg.csr_rd & ~wr_arg.rs1;
       RV_CSR_RWI: wr_val = wr_arg.imm;
-      RV_CSR_RSI: wr_val = wr_arg.csr_rd & wr_arg.imm;
+      RV_CSR_RSI: wr_val = wr_arg.csr_rd | wr_arg.imm;
       RV_CSR_RCI: wr_val = wr_arg.csr_rd & ~wr_arg.imm;
       default:    wr_val = wr_arg.csr_rd;
     endcase
@@ -113,7 +116,7 @@ module csr
 
     case(csr_i.addr)
       RV_CSR_MSTATUS: begin
-        csr_wr_args.mask   = ~('h7FC00644);
+        csr_wr_args.mask   = 'h807FF9BB;
         csr_rd_o           = csr_mstatus_ff;
         csr_wr_args.csr_rd = csr_rd_o;
         next_mstatus       = wr_csr_val(csr_wr_args);
@@ -174,6 +177,10 @@ module csr
     endcase
 
     next_trap  = s_trap_info_t'('0);
+    dbg_irq_mtime = 'b0;
+    dbg_irq_msoft = 'b0;
+    dbg_irq_mext  = 'b0;
+
     // Trap control
     // Priority decoder:
     // 1) IRQS [async traps]
@@ -188,6 +195,7 @@ module csr
         next_mcause            = 'h8000_000B;
         next_mtval             = rdata_t'('h0);
         next_trap.active       = 'b1;
+        dbg_irq_mext           = 'b1;
       end
       (csr_mstatus_ff[`RV_MST_MIE] &&
        irq_i.sw_irq                &&
@@ -197,6 +205,7 @@ module csr
         next_mcause            = 'h8000_0003;
         next_mtval             = rdata_t'('h0);
         next_trap.active       = 'b1;
+        dbg_irq_msoft          = 'b1;
       end
       (csr_mstatus_ff[`RV_MST_MIE] &&
        irq_i.timer_irq             &&
@@ -206,13 +215,14 @@ module csr
         next_mcause            = 'h8000_0007;
         next_mtval             = rdata_t'('h0);
         next_trap.active       = 'b1;
+        dbg_irq_mtime          = 'b1;
       end
-      //fetch_trap_i.active: begin
-        //next_mepc        = pc_addr_i;
-        //next_mcause      = 'd1;
-        //next_mtval       = fetch_trap_i.mtval;
-        //next_trap.active = 'b1;
-      //end
+      fetch_trap_i.active: begin  // TODO: test this feature
+        next_mepc        = pc_addr_i;
+        next_mcause      = 'd1;
+        next_mtval       = fetch_trap_i.mtval;
+        next_trap.active = 'b1;
+      end
       (dec_trap_i.active && ~will_jump_i): begin
         next_mepc        = dec_trap_i.pc_addr;
         next_mcause      = 'd2;
@@ -241,12 +251,12 @@ module csr
         next_mtval       = rdata_t'('h0);
         next_trap.active = 'b1;
       end
-      lsu_trap_st_i.active: begin
+      lsu_trap_st_i.active: begin // TODO: test this feature
         next_mepc        = pc_addr_i;
         next_mcause      = 'd7;
         next_trap.active = 'b1;
       end
-      lsu_trap_ld_i.active: begin
+      lsu_trap_ld_i.active: begin // TODO: test this feature
         next_mepc        = pc_addr_i;
         next_mcause      = 'd5;
         next_trap.active = 'b1;

@@ -48,7 +48,7 @@ static int toggle = 0;
 extern void irq_callback(void);
 extern void main(void);
 
-void _reset(void) {
+void __attribute__((section(".init"),naked)) _reset(void) {
     register uint32_t *src, *dst;
 
     // asm volatile("la gp, _my_global_pointer");
@@ -93,13 +93,15 @@ void isr_synctrap(void)
 
 void __attribute__((weak)) isr_m_software(void)
 {
+  clear_csr(mie,1<<IRQ_M_SOFT);
   write_csr(mip, (0 << IRQ_M_SOFT));
+  return;
   while(1);
 }
 
 void __attribute__((weak)) isr_m_timer(void)
 {
-  /**mtime_addr = 0;*/
+  clear_csr(mie,1<<IRQ_M_TIMER);
   write_csr(mip, (0 << IRQ_M_TIMER));
   return;
   while(1);
@@ -107,6 +109,7 @@ void __attribute__((weak)) isr_m_timer(void)
 
 void __attribute__((weak)) isr_m_external(void)
 {
+  clear_csr(mie,1<<IRQ_M_EXT);
   write_csr(mip, (0 << IRQ_M_EXT));
   /*irq_callback();*/
   return;
