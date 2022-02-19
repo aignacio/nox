@@ -122,8 +122,8 @@ build:
 $(RUN_SW):
 	make -C sw/hello_world all
 
-run: $(VERILATOR_EXE) $(RUN_SW)
-	$(RUN_CMD) ./$(VERILATOR_EXE) -s 10000 -e $(RUN_SW)
+run: $(RUN_SW)
+	$(RUN_CMD) ./$(VERILATOR_EXE) -s 10000 -e $<
 
 $(VERILATOR_EXE): $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk
 	$(RUN_CMD) make -C $(OUT_VERILATOR)	\

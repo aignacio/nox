@@ -13,7 +13,7 @@ int main(void) {
   int test = 0;
   int irq_type = 0;
   uint8_t leds_out = 0x0F;
-
+  int global = 0;
   int mstatus_csr   = read_csr(mstatus);
   int misa_csr      = read_csr(misa);
   int mhartid_csr   = read_csr(mhartid);
@@ -35,6 +35,8 @@ int main(void) {
           set_csr(mie,1<<IRQ_M_EXT);
         break;
       }
+      /*asm volatile ("csrrsi x0,mie,8");*/
+      /*asm volatile ("addi t6,t6,1");*/
       if (irq_type < 2){
         irq_type++;
       }
