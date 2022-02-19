@@ -267,6 +267,10 @@ module csr
     endcase
 
     if (~eval_trap_i) begin
+      next_mepc        = csr_mepc_ff;
+      next_mip         = csr_mip_ff;
+      next_mcause      = csr_mcause_ff;
+      next_mtval       = csr_mtval_ff;
       next_trap.active = 'b0;
     end
 
