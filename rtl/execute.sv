@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 18.02.2022
+ * Last Modified Date: 19.02.2022
  */
 module execute
   import utils_pkg::*;
@@ -46,6 +46,7 @@ module execute
   rdata_t       csr_rdata;
   s_trap_info_t trap_out;
   logic         will_jump_next_clk;
+  logic         eval_trap;
   s_trap_info_t instr_addr_misaligned;
 
   function automatic branch_dec(branch_t op, rdata_t rs1, rdata_t rs2);
@@ -186,6 +187,8 @@ module execute
       fetch_req_o  = 'b1;
       fetch_addr_o = trap_out.pc_addr;
     end
+
+    eval_trap = id_ready_o && id_valid_i && ~fetch_req_o;
   end : fetch_req
 
   `CLK_PROC(clk, rst) begin
@@ -215,6 +218,7 @@ module execute
     .pc_addr_i          (id_ex_i.pc_dec),
     .irq_i              (irq_i),
     .will_jump_i        (will_jump_next_clk),
+    .eval_trap_i        (eval_trap),
     .dec_trap_i         (dec_trap_i),
     .instr_addr_mis_i   (instr_addr_misaligned),
     .fetch_trap_i       (fetch_trap_i),

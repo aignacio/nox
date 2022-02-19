@@ -22,6 +22,7 @@ module csr
   input   pc_t          pc_addr_i,
   input   s_irq_t       irq_i,
   input                 will_jump_i,
+  input                 eval_trap_i,
   input   s_trap_info_t dec_trap_i,
   input   s_trap_info_t instr_addr_mis_i,
   input   s_trap_info_t fetch_trap_i,
@@ -265,6 +266,10 @@ module csr
       default: next_trap  = s_trap_info_t'('0);
     endcase
 
+    if (~eval_trap_i) begin
+      next_trap.active = 'b0;
+    end
+
     // Define trap address
     mtvec_base_addr   = {csr_mtvec_ff[31:2],2'h0};
     mtvec_vectored    = csr_mtvec_ff[0];
@@ -305,6 +310,7 @@ module csr
     else begin
       next_trap.pc_addr = mtvec_base_addr+trap_offset;
     end
+
     trap_o = trap_ff;
   end
 

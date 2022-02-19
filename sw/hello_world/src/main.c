@@ -12,7 +12,7 @@ int main(void) {
   int i = 0;
   int test = 0;
   int irq_type = 0;
-  uint8_t leds_out = 0x0F;
+  uint8_t leds_out = 0x0;
   int global = 0;
   int mstatus_csr   = read_csr(mstatus);
   int misa_csr      = read_csr(misa);
@@ -44,9 +44,11 @@ int main(void) {
         irq_type = 0;
       }
     }
+    // Illegal jump
     /*asm volatile (".word 0x02f71763");*/
+    // Illegal instruction
     /*asm volatile (".word 0x0");*/
-    if (i == 5){
+    if (i == 2){
       i = 0;
       *addr_leds = leds_out;
       leds_out = ~leds_out;

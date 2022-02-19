@@ -91,6 +91,10 @@ void isr_synctrap(void)
   return;
 }
 
+// Using the attr below it'll bkp a5 and use
+// mret in the return, as we do that manually
+// in asm, it's not needed to use this
+/*__attribute__ ((interrupt ("machine"))) */
 void __attribute__((weak)) isr_m_software(void)
 {
   clear_csr(mie,1<<IRQ_M_SOFT);
