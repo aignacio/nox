@@ -83,11 +83,17 @@ void isr_synctrap(void)
 {
   write_csr(mip, (0 << IRQ_M_EXT));
   uint32_t mepc_return = read_csr(mepc)+0x4;
+  // If not vectored IRQ, do not add 4 to the MEPC
   write_csr(mepc, mepc_return);
   /*irq_callback();*/
   /*[>asm volatile("csrr %0,mcause" : "=r"(synctrap_cause));<]*/
   /*[>asm volatile("ebreak");<]*/
-
+  /*clear_csr(mie,1<<IRQ_M_SOFT);*/
+  /*write_csr(mip, (0 << IRQ_M_SOFT));*/
+  /*clear_csr(mie,1<<IRQ_M_TIMER);*/
+  /*write_csr(mip, (0 << IRQ_M_TIMER));*/
+  /*clear_csr(mie,1<<IRQ_M_EXT);*/
+  /*write_csr(mip, (0 << IRQ_M_EXT));*/
   return;
 }
 

@@ -20,7 +20,7 @@ int main(void) {
   /*int time = rdtime();*/
   //int cycle = rdcycle();
 
-  set_csr(mstatus,MSTATUS_MIE);
+  /*set_csr(mstatus,MSTATUS_MIE);*/
   *addr_leds = leds_out;
   while(true){
     if (test%10 == 0){
@@ -35,8 +35,8 @@ int main(void) {
           set_csr(mie,1<<IRQ_M_EXT);
         break;
       }
-      /*asm volatile ("csrrsi x0,mie,8");*/
-      /*asm volatile ("addi t6,t6,1");*/
+      /*[>asm volatile ("csrrsi x0,mie,8");<]*/
+      /*[>asm volatile ("addi t6,t6,1");<]*/
       if (irq_type < 2){
         irq_type++;
       }
@@ -48,7 +48,7 @@ int main(void) {
     /*asm volatile (".word 0x02f71763");*/
     // Illegal instruction
     /*asm volatile (".word 0x0");*/
-    if (i == 2){
+    if (i == 5){
       i = 0;
       *addr_leds = leds_out;
       leds_out = ~leds_out;

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 19.02.2022
+ * Last Modified Date: 20.02.2022
  */
 module nox_sim import utils_pkg::*; (
   input               clk,
@@ -88,12 +88,12 @@ module irq_stim(
 
   always_comb begin
     next_msoft =  msoft_cnt_ff+'d1; //msoft_cnt_ff[5] ? '0 : msoft_cnt_ff+'d1;
-    next_mtime =  mtime_cnt_ff+'d1; //mtime_cnt_ff[6] ? '0 : mtime_cnt_ff+'d1;
+    next_mtime =  mtime_cnt_ff+'d2; //mtime_cnt_ff[6] ? '0 : mtime_cnt_ff+'d1;
     next_mext  =  mext_cnt_ff+'d1;  //mext_cnt_ff[7]  ? '0 : mext_cnt_ff+'d1;
 
-    irq_o.sw_irq    = msoft_cnt_ff[5];
-    irq_o.timer_irq = mtime_cnt_ff[6];
-    irq_o.ext_irq   = mext_cnt_ff[7];
+    irq_o.sw_irq    = msoft_cnt_ff[4];
+    irq_o.timer_irq = mtime_cnt_ff[5];
+    irq_o.ext_irq   = mext_cnt_ff[6];
   end
 
   always_ff @ (posedge clk) begin

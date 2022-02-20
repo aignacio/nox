@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 19.02.2022
+ * Last Modified Date: 20.02.2022
  */
 module csr
   import utils_pkg::*;
@@ -245,7 +245,7 @@ module csr
       ebreak_i: begin
         next_mepc        = pc_addr_i;
         next_mcause      = 'd3;
-        next_mtval       = rdata_t'('h0);
+        next_mtval       = pc_addr_i;
         next_trap.active = 'b1;
       end
       mret_i: begin // Fake trap to return program
@@ -255,11 +255,13 @@ module csr
       lsu_trap_st_i.active: begin // TODO: test this feature
         next_mepc        = pc_addr_i;
         next_mcause      = 'd7;
+        next_mtval       = pc_addr_i;
         next_trap.active = 'b1;
       end
       lsu_trap_ld_i.active: begin // TODO: test this feature
         next_mepc        = pc_addr_i;
         next_mcause      = 'd5;
+        next_mtval       = pc_addr_i;
         next_trap.active = 'b1;
       end
       // Added the below statement due to error while synthesizing on vivado
