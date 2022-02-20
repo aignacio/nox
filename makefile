@@ -140,7 +140,7 @@ sim_comp:
 
 compliance:
 	$(RUN_CMD_2) make verify RISCV_PREFIX=riscv-none-embed-	\
-		RISCV_TARGET=nox RISCV_DEVICE=privilege  										\
+		RISCV_TARGET=nox RISCV_DEVICE=I		 										\
 		TARGET_SIM=/nox_files/$(VERILATOR_EXE) -j8
 
 	#$(RUN_CMD_2) make all_variant RISCV_PREFIX=riscv-none-embed-	\
