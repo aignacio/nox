@@ -89,9 +89,9 @@ VERIL_ARGS		:=	-CFLAGS $(CPPFLAGS_VERI) 			\
 .PHONY: verilator clean help
 help:
 	@echo "Targets:"
-	@echo "run	- run verilator"
-	@echo "build	- build docker image used by nox project"
 	@echo "all	- build design and sim through verilator"
+	@echo "run	- run sw/hello_world app through nox_sim"
+	@echo "build	- build docker image used by nox project"
 	@echo "wave	- calls gtkwave"
 	@echo "lint	- calls verible for sv linting"
 
