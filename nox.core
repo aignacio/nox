@@ -48,11 +48,15 @@ filesets:
 
   nexysV_constraints:
     files:
-      - xlnx/nexys_video.xdc: {file_type: xdc}
+      - xlnx/xdc/nexys_video.xdc: {file_type: xdc}
 
   kintex7_constraints:
     files:
-      - xlnx/kintex7_qmtech.xdc: {file_type: xdc}
+      - xlnx/xdc/kintex7_qmtech.xdc: {file_type: xdc}
+
+  arty7_constraints:
+    files:
+      - xlnx/xdc/arty_7.xdc: {file_type: xdc}
 
 parameters:
   DISPLAY_TEST:
@@ -64,6 +68,10 @@ parameters:
     default : true
     paramtype: vlogdefine
   QMTECH_KINTEX_7_100MHz:
+    datatype: bool
+    default : true
+    paramtype: vlogdefine
+  ARTY_A7_70MHz:
     datatype: bool
     default : true
     paramtype: vlogdefine
@@ -112,4 +120,20 @@ targets:
     tools:
       vivado:
         part : xc7k325tffg676-1
+    toplevel: nox_synth
+
+  a7_synth:
+    <<: *default
+    default_tool : vivado
+    parameters:
+      - ARTY_A7_70MHz
+      - DISPLAY_TEST
+    description : Arty A7 - 35 board synthesis
+    filesets_append:
+      - synth_nox
+      - arty7_constraints
+      - files_tcl
+    tools:
+      vivado:
+        part : xc7a35ticsg324-1L
     toplevel: nox_synth
