@@ -61,9 +61,11 @@ parameters:
     paramtype: vlogdefine
   NEXYS_VIDEO_70MHz:
     datatype: bool
+    default : true
     paramtype: vlogdefine
   QMTECH_KINTEX_7_100MHz:
     datatype: bool
+    default : true
     paramtype: vlogdefine
 
 targets:
