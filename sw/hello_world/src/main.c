@@ -20,7 +20,7 @@ int main(void) {
   /*int time = rdtime();*/
   //int cycle = rdcycle();
 
-  /*set_csr(mstatus,MSTATUS_MIE);*/
+  set_csr(mstatus,MSTATUS_MIE);
   *addr_leds = leds_out;
   while(true){
     if (test%10 == 0){
@@ -48,7 +48,7 @@ int main(void) {
     /*asm volatile (".word 0x02f71763");*/
     // Illegal instruction
     /*asm volatile (".word 0x0");*/
-    if (i == 50000){
+    if (i == 10){
       i = 0;
       *addr_leds = leds_out;
       leds_out = ~leds_out;

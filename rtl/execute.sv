@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 19.02.2022
+ * Last Modified Date: 21.02.2022
  */
 module execute
   import utils_pkg::*;
@@ -188,7 +188,10 @@ module execute
       fetch_addr_o = trap_out.pc_addr;
     end
 
-    eval_trap = id_ready_o && id_valid_i && ~fetch_req_o;
+    eval_trap = id_ready_o &&
+                id_valid_i &&
+                ~fetch_req_o &&
+                (lsu_o.op_typ == NO_LSU);
   end : fetch_req
 
   `CLK_PROC(clk, rst) begin
