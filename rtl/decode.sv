@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 17.02.2022
+ * Last Modified Date: 22.02.2022
  */
 module decode
   import utils_pkg::*;
@@ -27,9 +27,7 @@ module decode
   output  rdata_t       rs1_data_o,
   output  rdata_t       rs2_data_o,
   output  valid_t       id_valid_o,
-  input   ready_t       id_ready_i,
-  // Trap - Instruction access fault
-  output  s_trap_info_t trap_info_o
+  input   ready_t       id_ready_i
 );
   valid_t     dec_valid_ff, next_vld_dec;
   s_instr_t   instr_dec;
@@ -53,10 +51,10 @@ module decode
     end
 
     instr_dec   = fetch_instr_i;
-    trap_info_o = s_trap_info_t'('0);
 
     // Defaults
     next_id_ex          = s_id_ex_t'('0);
+    next_id_ex.trap     = s_trap_info_t'('0);
     next_id_ex.rd_addr  = instr_dec.rd;
     next_id_ex.rs1_addr = instr_dec.rs1;
     next_id_ex.rs2_addr = instr_dec.rs2;
@@ -170,8 +168,8 @@ module decode
             end
             default: begin
               if (fetch_valid_i && id_ready_i) begin
-                trap_info_o.active  = 1'b1;
-                trap_info_o.mtval   = fetch_instr_i;
+                next_id_ex.trap.active  = 1'b1;
+                next_id_ex.trap.mtval   = fetch_instr_i;
                 `P_MSG ("DEC", "Instruction non-supported")
               end
             end
@@ -179,16 +177,16 @@ module decode
         end
         else begin
           if (fetch_valid_i && id_ready_i) begin
-            trap_info_o.active  = 1'b1;
-            trap_info_o.mtval   = fetch_instr_i;
+            next_id_ex.trap.active  = 1'b1;
+            next_id_ex.trap.mtval   = fetch_instr_i;
             `P_MSG ("DEC", "Instruction non-supported")
           end
         end
       end
       default: begin
         if (fetch_valid_i && id_ready_i) begin
-          trap_info_o.active  = 1'b1;
-          trap_info_o.mtval   = fetch_instr_i;
+          next_id_ex.trap.active  = 1'b1;
+          next_id_ex.trap.mtval   = fetch_instr_i;
           `P_MSG ("DEC", "Instruction non-supported")
         end
       end
@@ -205,7 +203,7 @@ module decode
       next_id_ex.pc_dec  = pc_jump_i;
     end
 
-    trap_info_o.pc_addr = next_id_ex.pc_dec;
+    next_id_ex.trap.pc_addr = next_id_ex.pc_dec;
 
     next_wait_inst = wait_inst_ff;
     if (~wait_inst_ff) begin

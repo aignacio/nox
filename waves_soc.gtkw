@@ -1,0 +1,199 @@
+[*]
+[*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
+[*] Tue Feb 22 14:29:37 2022
+[*]
+[dumpfile] "/Users/aignacio/projects/nox/nox_waves.fst"
+[dumpfile_mtime] "Tue Feb 22 14:21:53 2022"
+[dumpfile_size] 148555
+[savefile] "/Users/aignacio/projects/nox/waves_soc.gtkw"
+[timestart] 1
+[size] 2837 1481
+[pos] 152 671
+*-5.886300 10 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.nox_soc.
+[treeopen] TOP.nox_soc.u_iram.
+[sst_width] 271
+[signals_width] 350
+[sst_expanded] 1
+[sst_vpaned_height] 739
+@28
+TOP.nox_soc.clk_in
+TOP.nox_soc.clk
+TOP.nox_soc.rst_cpu
+TOP.nox_soc.start_fetch
+@c00200
+-nox_instr_miso
+@28
+TOP.nox_soc.masters_axi_miso[0].arready
+TOP.nox_soc.masters_axi_miso[0].awready
+TOP.nox_soc.masters_axi_miso[0].bid
+@100000028
+TOP.nox_soc.masters_axi_miso[0].bresp[1:0]
+@28
+TOP.nox_soc.masters_axi_miso[0].buser[1:0]
+TOP.nox_soc.masters_axi_miso[0].bvalid
+@22
+TOP.nox_soc.masters_axi_miso[0].rdata[31:0]
+@28
+TOP.nox_soc.masters_axi_miso[0].rid
+TOP.nox_soc.masters_axi_miso[0].rlast
+@100000028
+TOP.nox_soc.masters_axi_miso[0].rresp[1:0]
+@28
+TOP.nox_soc.masters_axi_miso[0].ruser[1:0]
+TOP.nox_soc.masters_axi_miso[0].rvalid
+TOP.nox_soc.masters_axi_miso[0].wready
+@1401200
+-nox_instr_miso
+@800200
+-nox_instr_mosi
+@22
+TOP.nox_soc.masters_axi_mosi[0].araddr[31:0]
+@100000028
+TOP.nox_soc.masters_axi_mosi[0].arburst[1:0]
+@22
+TOP.nox_soc.masters_axi_mosi[0].arcache[3:0]
+@28
+TOP.nox_soc.masters_axi_mosi[0].arid
+@22
+TOP.nox_soc.masters_axi_mosi[0].arlen[7:0]
+@28
+TOP.nox_soc.masters_axi_mosi[0].arlock
+@100000028
+TOP.nox_soc.masters_axi_mosi[0].arprot[2:0]
+@22
+TOP.nox_soc.masters_axi_mosi[0].arqos[3:0]
+TOP.nox_soc.masters_axi_mosi[0].arregion[3:0]
+@100000028
+TOP.nox_soc.masters_axi_mosi[0].arsize[2:0]
+@28
+TOP.nox_soc.masters_axi_mosi[0].aruser[1:0]
+TOP.nox_soc.masters_axi_mosi[0].arvalid
+@22
+TOP.nox_soc.masters_axi_mosi[0].awaddr[31:0]
+@100000028
+TOP.nox_soc.masters_axi_mosi[0].awburst[1:0]
+@22
+TOP.nox_soc.masters_axi_mosi[0].awcache[3:0]
+@28
+TOP.nox_soc.masters_axi_mosi[0].awid
+@22
+TOP.nox_soc.masters_axi_mosi[0].awlen[7:0]
+@28
+TOP.nox_soc.masters_axi_mosi[0].awlock
+@100000028
+TOP.nox_soc.masters_axi_mosi[0].awprot[2:0]
+@22
+TOP.nox_soc.masters_axi_mosi[0].awqos[3:0]
+TOP.nox_soc.masters_axi_mosi[0].awregion[3:0]
+@100000028
+TOP.nox_soc.masters_axi_mosi[0].awsize[2:0]
+@28
+TOP.nox_soc.masters_axi_mosi[0].awuser[1:0]
+TOP.nox_soc.masters_axi_mosi[0].awvalid
+TOP.nox_soc.masters_axi_mosi[0].bready
+TOP.nox_soc.masters_axi_mosi[0].rready
+@22
+TOP.nox_soc.masters_axi_mosi[0].wdata[31:0]
+@28
+TOP.nox_soc.masters_axi_mosi[0].wlast
+@22
+TOP.nox_soc.masters_axi_mosi[0].wstrb[3:0]
+@28
+TOP.nox_soc.masters_axi_mosi[0].wuser[1:0]
+TOP.nox_soc.masters_axi_mosi[0].wvalid
+@1000200
+-nox_instr_mosi
+@c00200
+-nox_lsu_miso
+@28
+TOP.nox_soc.masters_axi_miso[1].arready
+TOP.nox_soc.masters_axi_miso[1].awready
+TOP.nox_soc.masters_axi_miso[1].bid
+@100000028
+TOP.nox_soc.masters_axi_miso[1].bresp[1:0]
+@28
+TOP.nox_soc.masters_axi_miso[1].buser[1:0]
+TOP.nox_soc.masters_axi_miso[1].bvalid
+@22
+TOP.nox_soc.masters_axi_miso[1].rdata[31:0]
+@28
+TOP.nox_soc.masters_axi_miso[1].rid
+TOP.nox_soc.masters_axi_miso[1].rlast
+@100000028
+TOP.nox_soc.masters_axi_miso[1].rresp[1:0]
+@28
+TOP.nox_soc.masters_axi_miso[1].ruser[1:0]
+TOP.nox_soc.masters_axi_miso[1].rvalid
+TOP.nox_soc.masters_axi_miso[1].wready
+@1401200
+-nox_lsu_miso
+@c00200
+-nox_lsu_mosi
+@22
+TOP.nox_soc.masters_axi_mosi[1].araddr[31:0]
+@100000028
+TOP.nox_soc.masters_axi_mosi[1].arburst[1:0]
+@22
+TOP.nox_soc.masters_axi_mosi[1].arcache[3:0]
+@28
+TOP.nox_soc.masters_axi_mosi[1].arid
+@22
+TOP.nox_soc.masters_axi_mosi[1].arlen[7:0]
+@28
+TOP.nox_soc.masters_axi_mosi[1].arlock
+@100000028
+TOP.nox_soc.masters_axi_mosi[1].arprot[2:0]
+@22
+TOP.nox_soc.masters_axi_mosi[1].arqos[3:0]
+TOP.nox_soc.masters_axi_mosi[1].arregion[3:0]
+@100000028
+TOP.nox_soc.masters_axi_mosi[1].arsize[2:0]
+@28
+TOP.nox_soc.masters_axi_mosi[1].aruser[1:0]
+TOP.nox_soc.masters_axi_mosi[1].arvalid
+@22
+TOP.nox_soc.masters_axi_mosi[1].awaddr[31:0]
+@100000028
+TOP.nox_soc.masters_axi_mosi[1].awburst[1:0]
+@22
+TOP.nox_soc.masters_axi_mosi[1].awcache[3:0]
+@28
+TOP.nox_soc.masters_axi_mosi[1].awid
+@22
+TOP.nox_soc.masters_axi_mosi[1].awlen[7:0]
+@28
+TOP.nox_soc.masters_axi_mosi[1].awlock
+@100000028
+TOP.nox_soc.masters_axi_mosi[1].awprot[2:0]
+@22
+TOP.nox_soc.masters_axi_mosi[1].awqos[3:0]
+TOP.nox_soc.masters_axi_mosi[1].awregion[3:0]
+@100000028
+TOP.nox_soc.masters_axi_mosi[1].awsize[2:0]
+@28
+TOP.nox_soc.masters_axi_mosi[1].awuser[1:0]
+TOP.nox_soc.masters_axi_mosi[1].awvalid
+TOP.nox_soc.masters_axi_mosi[1].bready
+TOP.nox_soc.masters_axi_mosi[1].rready
+@22
+TOP.nox_soc.masters_axi_mosi[1].wdata[31:0]
+@28
+TOP.nox_soc.masters_axi_mosi[1].wlast
+@22
+TOP.nox_soc.masters_axi_mosi[1].wstrb[3:0]
+@28
+TOP.nox_soc.masters_axi_mosi[1].wuser[1:0]
+TOP.nox_soc.masters_axi_mosi[1].wvalid
+@1401200
+-nox_lsu_mosi
+@22
+TOP.nox_soc.u_dram.csr_o[7:0]
+TOP.nox_soc.u_iram.u_ram.mem[0][31:0]
+TOP.nox_soc.u_iram.u_ram.mem[1][31:0]
+TOP.nox_soc.u_iram.u_ram.mem[2][31:0]
+@23
+TOP.nox_soc.u_iram.mem_loading[0][31:0]
+[pattern_trace] 1
+[pattern_trace] 0

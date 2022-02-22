@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 21.02.2022
+ * Last Modified Date: 22.02.2022
  */
 module execute
   import utils_pkg::*;
@@ -32,7 +32,6 @@ module execute
   output  pc_t          fetch_addr_o,
   // Trap signals
   input   s_trap_info_t fetch_trap_i,
-  input   s_trap_info_t dec_trap_i,
   input   s_trap_info_t lsu_trap_st_i,
   input   s_trap_info_t lsu_trap_ld_i
 );
@@ -222,7 +221,7 @@ module execute
     .irq_i              (irq_i),
     .will_jump_i        (will_jump_next_clk),
     .eval_trap_i        (eval_trap),
-    .dec_trap_i         (dec_trap_i),
+    .dec_trap_i         (id_ex_i.trap),
     .instr_addr_mis_i   (instr_addr_misaligned),
     .fetch_trap_i       (fetch_trap_i),
     .ecall_i            (id_ex_i.ecall),

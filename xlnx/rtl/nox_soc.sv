@@ -1,11 +1,11 @@
 /**
- * File              : nox_synth.sv
+ * File              : nox_soc.sv
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 21.02.2022
+ * Last Modified Date: 22.02.2022
  */
-module nox_synth
+module nox_soc
   import utils_pkg::*;
 (
   input               clk_in,
@@ -16,36 +16,26 @@ module nox_synth
   s_axi_mosi_t  [1:0] masters_axi_mosi;
   s_axi_miso_t  [1:0] masters_axi_miso;
 
-  s_axi_mosi_t  [1:0] slaves_axi_mosi;
-  s_axi_miso_t  [1:0] slaves_axi_miso;
-
-  assign slaves_axi_mosi[0]  = masters_axi_mosi[0];
-  assign slaves_axi_mosi[1]  = masters_axi_mosi[1];
-  assign masters_axi_miso[0] = slaves_axi_miso[0];
-  assign masters_axi_miso[1] = slaves_axi_miso[1];
+  s_axi_mosi_t  [3:0] slaves_axi_mosi;
+  s_axi_miso_t  [3:0] slaves_axi_miso;
 
   logic start_fetch;
-  logic reset_clk;
+  logic clk;
+  logic rst_int;
   logic [7:0] csr_out_int;
 
   assign csr_out[3:0] = csr_out_int[3:0];
-
-  // 100MHz (in) -> 80MHz (clk out)
-  logic clk_in_clk_gen;
-  logic clkfbout_buf_clk_gen;
-  logic clkfbout_clk_gen;
-
-  IBUF clkin_ibufg(
-    .O (clk_in_clk_gen),
-    .I (clk_in)
-  );
 
 `ifdef ARTY_A7_70MHz
   `define NEXYS_VIDEO_70MHz
 `endif
 
 `ifdef NEXYS_VIDEO_70MHz
-  assign rst_cpu_int = rst_cpu;
+  logic clk_in_clk_gen;
+  logic clkfbout_buf_clk_gen;
+  logic clkfbout_clk_gen;
+
+  assign rst_int = rst_cpu;
 
   PLLE2_ADV #(
     .BANDWIDTH           ("OPTIMIZED"),
@@ -86,10 +76,25 @@ module nox_synth
     .PWRDWN              (1'b0),
     .RST                 (rst_clk)
   );
+
+  IBUF clkin_ibufg(
+    .O  (clk_in_clk_gen),
+    .I  (clk_in)
+  );
+
+  BUFG u_clkf_buf(
+    .O  (clkfbout_buf_clk_gen),
+    .I  (clkfbout_clk_gen)
+  );
+
+  BUFG u_clkout_buf(
+    .O  (clk),
+    .I  (clk_out_clk_gen)
+  );
 `endif
 
 `ifdef QMTECH_KINTEX_7_100MHz
-  assign rst_cpu_int = rst_cpu;
+  assign rst_int = rst_cpu;
   //clk_mmcm u_mmcm(
     //.clk_out  (clk_out_clk_gen),
     //.reset    (rst_clk),
@@ -98,36 +103,15 @@ module nox_synth
   //);
 `endif
 
-  BUFG u_clkf_buf(
-    .O (clkfbout_buf_clk_gen),
-    .I (clkfbout_clk_gen)
-  );
-
-  BUFG u_clkout_buf(
-    .O   (clk),
-    .I   (clk_out_clk_gen)
-  );
-
-  axi_rom_wrapper u_irom(
-    .clk      (clk),
-    .rst      (rst_cpu_int),
-    .axi_mosi (slaves_axi_mosi[0]),
-    .axi_miso (slaves_axi_miso[0])
-  );
-
-  axi_mem_wrapper #(
-    .MEM_KB(8)
-  ) u_dram (
-    .clk      (clk),
-    .rst      (rst_cpu_int),
-    .axi_mosi (slaves_axi_mosi[1]),
-    .axi_miso (slaves_axi_miso[1]),
-    .csr_o    (csr_out_int)
-  );
+`ifdef SIMULATION
+  assign rst_int = rst_cpu;
+  assign clk = clk_in;
+  assign start_fetch = 'b1;
+`endif
 
   nox u_nox(
     .clk              (clk),
-    .arst             (rst_cpu_int),
+    .arst             (rst_int),
     .irq_i            ('0),
     .start_fetch_i    (start_fetch),
     .start_addr_i     ('h8000_0000),
@@ -136,6 +120,84 @@ module nox_synth
     .lsu_axi_mosi_o   (masters_axi_mosi[1]),
     .lsu_axi_miso_i   (masters_axi_miso[1])
   );
+
+  axi_mem_wrapper #(
+    .MEM_KB(8)
+  ) u_dram (
+    .clk              (clk),
+    .rst              (rst_int),
+    .axi_mosi         (slaves_axi_mosi[0]),
+    .axi_miso         (slaves_axi_miso[0]),
+    .csr_o            (csr_out_int)
+  );
+
+`ifdef SIMULATION
+  axi_mem_wrapper #(
+    .MEM_KB(8)
+  ) u_iram (
+    .clk              (clk),
+    .rst              (rst_int),
+    .axi_mosi         (slaves_axi_mosi[1]),
+    .axi_miso         (slaves_axi_miso[1]),
+    .csr_o            ()
+  );
+`else
+  axi_rom_wrapper u_irom(
+    .clk              (clk),
+    .rst              (rst_int),
+    .axi_mosi         (slaves_axi_mosi[1]),
+    .axi_miso         (slaves_axi_miso[1])
+  );
+`endif
+
+  axi_mem_wrapper #(
+    .MEM_KB(1)
+  ) u_dram_1 (
+    .clk              (clk),
+    .rst              (rst_int),
+    .axi_mosi         (slaves_axi_mosi[2]),
+    .axi_miso         (slaves_axi_miso[2]),
+    .csr_o            ()
+  );
+
+  axi_mem_wrapper #(
+    .MEM_KB(1)
+  ) u_dram_2 (
+    .clk              (clk),
+    .rst              (rst_int),
+    .axi_mosi         (slaves_axi_mosi[3]),
+    .axi_miso         (slaves_axi_miso[3]),
+    .csr_o            ()
+  );
+
+  axi_interconnect_wrapper #(
+    .N_MASTERS        (2),
+    .N_SLAVES         (4),
+    .M_BASE_ADDR      ({32'hB000_0000, 32'hA000_0000, 32'h8000_0000, 32'h1000_0000}),
+    .M_ADDR_WIDTH     ({32'd17, 32'd17, 32'd17, 32'd17})
+  ) u_axi_intcon (
+    .clk              (clk),
+    .arst             (rst_int),
+    .*
+  );
+
+`ifdef SIMULATION
+  // synthesis translate_off
+  function automatic void writeWordIRAM(addr_val, word_val);
+    /*verilator public*/
+    logic [31:0] addr_val;
+    logic [31:0] word_val;
+    u_iram.mem_loading[addr_val] = word_val;
+  endfunction
+
+  function automatic void writeWordDRAM(addr_val, word_val);
+    /*verilator public*/
+    logic [31:0] addr_val;
+    logic [31:0] word_val;
+    u_dram.mem_loading[addr_val] = word_val;
+  endfunction
+  // synthesis translate_on
+`endif
 
   //ila_nox u_ila (
     //.clk(clk),

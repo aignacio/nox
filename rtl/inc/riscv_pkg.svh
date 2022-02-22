@@ -183,26 +183,27 @@
   } s_trap_info_t;
 
   typedef struct packed {
-    logic       we_rd;
-    pc_t        pc_dec;
-    oper_mux_t  rs1_op;
-    oper_mux_t  rs2_op;
-    lsu_t       lsu;
-    lsu_w_t     lsu_w;
-    logic       branch;
-    logic       jump;
-    sfunct7_t   f7;
-    raddr_t     rd_addr;
-    funct3_t    f3;
-    rshift_t    rshift;
-    imm_t       imm;
-    raddr_t     rs1_addr;
-    raddr_t     rs2_addr;
-    s_csr_t     csr;
-    logic       ecall;
-    logic       ebreak;
-    logic       mret;
-    logic       wfi;
+    logic         we_rd;
+    pc_t          pc_dec;
+    oper_mux_t    rs1_op;
+    oper_mux_t    rs2_op;
+    lsu_t         lsu;
+    lsu_w_t       lsu_w;
+    logic         branch;
+    logic         jump;
+    sfunct7_t     f7;
+    raddr_t       rd_addr;
+    funct3_t      f3;
+    rshift_t      rshift;
+    imm_t         imm;
+    raddr_t       rs1_addr;
+    raddr_t       rs2_addr;
+    s_csr_t       csr;
+    logic         ecall;
+    logic         ebreak;
+    logic         mret;
+    logic         wfi;
+    s_trap_info_t trap;
   } s_id_ex_t;
 
   typedef struct packed {

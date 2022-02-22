@@ -24,9 +24,56 @@ filesets:
       - rtl/decode.sv
     file_type: systemVerilogSource
 
+  verilog_axi:
+    files:
+      - xlnx/rtl/verilog-axi/rtl/axi_dma_rd.v
+      - xlnx/rtl/verilog-axi/rtl/axi_dma_wr.v
+      - xlnx/rtl/verilog-axi/rtl/axi_ram_wr_if.v
+      - xlnx/rtl/verilog-axi/rtl/axi_axil_adapter.v
+      - xlnx/rtl/verilog-axi/rtl/axi_adapter_rd.v
+      - xlnx/rtl/verilog-axi/rtl/axi_dma.v
+      - xlnx/rtl/verilog-axi/rtl/axi_register_wr.v
+      - xlnx/rtl/verilog-axi/rtl/priority_encoder.v
+      - xlnx/rtl/verilog-axi/rtl/axi_dp_ram.v
+      - xlnx/rtl/verilog-axi/rtl/axi_adapter_wr.v
+      - xlnx/rtl/verilog-axi/rtl/axi_ram.v
+      - xlnx/rtl/verilog-axi/rtl/axi_register_rd.v
+      - xlnx/rtl/verilog-axi/rtl/axil_register_wr.v
+      - xlnx/rtl/verilog-axi/rtl/axil_interconnect.v
+      - xlnx/rtl/verilog-axi/rtl/axi_crossbar_rd.v
+      - xlnx/rtl/verilog-axi/rtl/axil_adapter_rd.v
+      - xlnx/rtl/verilog-axi/rtl/axi_crossbar_wr.v
+      - xlnx/rtl/verilog-axi/rtl/axil_register_rd.v
+      - xlnx/rtl/verilog-axi/rtl/axi_crossbar.v
+      - xlnx/rtl/verilog-axi/rtl/axi_cdma.v
+      - xlnx/rtl/verilog-axi/rtl/axil_adapter_wr.v
+      - xlnx/rtl/verilog-axi/rtl/axi_cdma_desc_mux.v
+      - xlnx/rtl/verilog-axi/rtl/axil_dp_ram.v
+      - xlnx/rtl/verilog-axi/rtl/axi_fifo.v
+      - xlnx/rtl/verilog-axi/rtl/axil_register.v
+      - xlnx/rtl/verilog-axi/rtl/axi_adapter.v
+      - xlnx/rtl/verilog-axi/rtl/axil_adapter.v
+      - xlnx/rtl/verilog-axi/rtl/axi_fifo_wr.v
+      - xlnx/rtl/verilog-axi/rtl/axi_ram_rd_if.v
+      - xlnx/rtl/verilog-axi/rtl/axi_fifo_rd.v
+      - xlnx/rtl/verilog-axi/rtl/axi_crossbar_addr.v
+      - xlnx/rtl/verilog-axi/rtl/axi_ram_wr_rd_if.v
+      - xlnx/rtl/verilog-axi/rtl/arbiter.v
+      - xlnx/rtl/verilog-axi/rtl/axil_cdc_wr.v
+      - xlnx/rtl/verilog-axi/rtl/axil_ram.v
+      - xlnx/rtl/verilog-axi/rtl/axil_cdc.v
+      - xlnx/rtl/verilog-axi/rtl/axil_cdc_rd.v
+      - xlnx/rtl/verilog-axi/rtl/axi_axil_adapter_rd.v
+      - xlnx/rtl/verilog-axi/rtl/axi_interconnect.v
+      - xlnx/rtl/verilog-axi/rtl/axi_register.v
+      - xlnx/rtl/verilog-axi/rtl/axi_dma_desc_mux.v
+      - xlnx/rtl/verilog-axi/rtl/axi_axil_adapter_wr.v
+    file_type: verilogSource
+
+
   synth_nox:
     files:
-      - xlnx/rtl/nox_synth.sv
+      - xlnx/rtl/nox_soc.sv
       - xlnx/rtl/axi_rom_wrapper.sv
       - sw/hello_world/output/boot_rom.sv
       - xlnx/rtl/axi_mem_wrapper.sv
@@ -78,8 +125,8 @@ parameters:
 
 targets:
   default: &default
-    filesets: [rtl_nox]
-    toplevel: nox_sim
+    filesets: [rtl_nox,verilog_axi]
+    toplevel: nox_soc
 
   lint:
     default_tool: verilator
@@ -88,7 +135,7 @@ targets:
       verilator:
         mode: lint-only
         verilator_options: ["--Wno-UNOPTFLAT"]
-    toplevel: nox_sim
+    toplevel: nox_soc
 
   nv_synth:
     <<: *default
@@ -104,7 +151,7 @@ targets:
     tools:
       vivado:
         part : xc7a200tsbg484-1
-    toplevel: nox_synth
+    toplevel: nox_soc
 
   x7_synth:
     <<: *default
@@ -120,7 +167,7 @@ targets:
     tools:
       vivado:
         part : xc7k325tffg676-1
-    toplevel: nox_synth
+    toplevel: nox_soc
 
   a7_synth:
     <<: *default
@@ -136,4 +183,4 @@ targets:
     tools:
       vivado:
         part : xc7a35ticsg324-1L
-    toplevel: nox_synth
+    toplevel: nox_soc

@@ -9,7 +9,10 @@ module axi_mem_wrapper import utils_pkg::*; #(
 );
   s_axi_mosi_t  axi_mosi_int;
   s_axi_miso_t  axi_miso_int;
-
+`ifdef SIMULATION
+  localparam NUM_WORDS = (MEM_KB*1024)/4;
+  logic [NUM_WORDS-1:0][31:0] mem_loading;
+`endif
   localparam ADDR_RAM = $clog2(MEM_KB*1024);
 
   /* verilator lint_off WIDTH */
@@ -102,5 +105,18 @@ module axi_mem_wrapper import utils_pkg::*; #(
     .s_axi_rvalid (axi_miso_int.rvalid),
     .s_axi_rready (axi_mosi_int.rready)
   );
+
+`ifdef SIMULATION
+  initial begin
+    `ifdef ACT_H_RESET
+    if (rst) begin
+    `else
+    if (~rst) begin
+    `endif
+      for (int i=0;i<NUM_WORDS;i++)
+        u_ram.mem[i] = mem_loading[i];
+    end
+  end
+`endif
 endmodule
 /* verilator lint_on WIDTH */

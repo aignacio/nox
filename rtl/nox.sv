@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 17.02.2022
+ * Last Modified Date: 22.02.2022
  */
 module nox
   import utils_pkg::*;
@@ -104,7 +104,7 @@ module nox
     .fetch_valid_o         (fetch_valid),
     .fetch_ready_i         (fetch_ready),
     .fetch_instr_o         (fetch_instr),
-    // TODO: Trap error fetching
+    // Trap error fetching
     .trap_info_o           (fetch_trap)
   );
 
@@ -128,9 +128,7 @@ module nox
     .rs1_data_o            (rs1_data),
     .rs2_data_o            (rs2_data),
     .id_valid_o            (id_valid),
-    .id_ready_i            (id_ready),
-    // Trap - Instruction access fault
-    .trap_info_o           (dec_trap)
+    .id_ready_i            (id_ready)
   );
 
   execute #(
@@ -158,7 +156,6 @@ module nox
     .fetch_addr_o          (fetch_addr),
     // From diff stgs
     .fetch_trap_i          (fetch_trap),
-    .dec_trap_i            (dec_trap),
     .lsu_trap_st_i         (lsu_trap_st),
     .lsu_trap_ld_i         (lsu_trap_ld)
   );

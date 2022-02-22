@@ -9,6 +9,17 @@ _CORE_VERILOG :=	$(_SRC_VERILOG)
 _SRC_VERILOG 	+=	$(shell find tb/  -type f -iname *.sv)
 SRC_VERILOG 	?=	$(_SRC_VERILOG)
 
+# SoC design files
+_SOC_VERILOG	?=	rtl/inc/axi_pkg.svh
+_SOC_VERILOG	+=	rtl/inc/nox_pkg.svh
+_SOC_VERILOG 	+=	rtl/inc/core_bus_pkg.svh
+_SOC_VERILOG 	+=	rtl/inc/riscv_pkg.svh
+_SOC_VERILOG 	+=	rtl/inc/utils_pkg.sv
+_SOC_VERILOG 	+=	$(_CORE_VERILOG)
+_SOC_VERILOG 	+=	$(shell find xlnx/rtl/verilog-axi/rtl -type f -iname *.v)
+_SOC_VERILOG 	+=	$(shell find xlnx/rtl/ -type f -iname *.sv)
+SOC_VERILOG		:=	$(_SOC_VERILOG)
+
 # Design include files
 _INCS_VLOG		?=	rtl/inc
 INCS_VLOG			:=	$(addprefix -I,$(_INCS_VLOG))
@@ -31,10 +42,13 @@ VERILATOR_TB	:=	tb
 WAVEFORM_FST	?=	nox_waves.fst
 OUT_VERILATOR	:=	output_verilator
 ROOT_MOD_VERI	:=	nox_sim
+ROOT_MOD_SOC	:=	nox_soc
 VERILATOR_EXE	:=	$(OUT_VERILATOR)/$(ROOT_MOD_VERI)
+VERI_EXE_SOC	:=	$(OUT_VERILATOR)/$(ROOT_MOD_SOC)
 
 # Testbench files
-SRC_CPP				:=	$(wildcard $(VERILATOR_TB)/cpp/*.cpp)
+SRC_CPP				:=	$(wildcard $(VERILATOR_TB)/cpp/testbench.cpp)
+SRC_CPP_SOC		:=	$(wildcard $(VERILATOR_TB)/cpp/testbench_soc.cpp)
 _INC_CPPS			:=	../tb/cpp/elfio
 _INC_CPPS			+=	../tb/cpp/inc
 INCS_CPP			:=	$(addprefix -I,$(_INC_CPPS))
@@ -64,6 +78,7 @@ RUN_CMD_2			:=	docker run --rm --name ship_nox	\
 									/opt/riscv-arch-test nox
 
 RUN_SW				:=	sw/hello_world/output/hello_world.elf
+RUN_SW_SOC		:=	sw/soc_hello_world/output/soc_hello_world.elf
 
 CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
 									-Werror																\
@@ -85,6 +100,17 @@ VERIL_ARGS		:=	-CFLAGS $(CPPFLAGS_VERI) 			\
 									$(SRC_CPP) 										\
 									-o 														\
 									$(ROOT_MOD_VERI)
+
+VERIL_ARGS_SOC:=	-CFLAGS $(CPPFLAGS_VERI) 			\
+									--top-module $(ROOT_MOD_SOC)	\
+									--Mdir $(OUT_VERILATOR)				\
+									-f verilator.flags			  		\
+									$(INCS_VLOG)									\
+									$(MACROS_VLOG)							 	\
+									$(SOC_VERILOG) 								\
+									$(SRC_CPP_SOC)								\
+									-o 														\
+									$(ROOT_MOD_SOC)
 
 .PHONY: verilator clean help
 help:
@@ -131,6 +157,32 @@ $(VERILATOR_EXE): $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk
 
 $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk: $(SRC_VERILOG) $(SRC_CPP) $(TB_VERILATOR)
 	$(RUN_CMD) verilator $(VERIL_ARGS)
+
+##########################
+#				 SoC test			   #
+##########################
+wave_soc: $(WAVEFORM_FST)
+	/Applications/gtkwave.app/Contents/Resources/bin/gtkwave $(WAVEFORM_FST) waves_soc.gtkw
+
+$(VERI_EXE_SOC): $(OUT_VERILATOR)/V$(ROOT_MOD_SOC).mk
+	$(RUN_CMD) make -C $(OUT_VERILATOR)	\
+		-f V$(ROOT_MOD_SOC).mk
+
+$(OUT_VERILATOR)/V$(ROOT_MOD_SOC).mk: $(SOC_VERILOG) $(SRC_CPP_SOC) $(TB_VERILATOR)
+	$(RUN_CMD) verilator $(VERIL_ARGS_SOC)
+
+
+soc: clean $(VERI_EXE_SOC)
+	@echo "\n"
+	@echo "Design build done, run as follow:"
+	@echo "$(VERI_EXE_SOC) -h"
+	@echo "\n"
+
+$(RUN_SW_SOC):
+	make -C sw/soc_hello_world all
+
+run_soc: $(RUN_SW_SOC)
+	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 10000 -e $<
 
 ##########################
 #	RISC-V Compliance test #
