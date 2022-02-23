@@ -2,6 +2,7 @@
 lint_off -rule CASEINCOMPLETE -file "xlnx/rtl/verilog-axi/rtl/axi_ram.v"
 lint_off -rule PINMISSING     -file "xlnx/rtl/verilog-axi/rtl/axi_ram.v"
 lint_off -rule IMPLICIT       -file "xlnx/rtl/axi_interconnect_wrapper.sv"
+lint_off -rule WIDTH          -file "xlnx/rtl/axi_mem_wrapper_2.sv"
 lint_off -rule WIDTH          -file "xlnx/rtl/axi_interconnect_wrapper.sv"
 lint_off -rule WIDTH          -file "xlnx/rtl/verilog-axi/rtl/axi_ram.v"
 lint_off -rule WIDTH          -file "xlnx/rtl/verilog-axi/rtl/axi_interconnect.v"

@@ -15,6 +15,7 @@ _SOC_VERILOG	+=	rtl/inc/nox_pkg.svh
 _SOC_VERILOG 	+=	rtl/inc/core_bus_pkg.svh
 _SOC_VERILOG 	+=	rtl/inc/riscv_pkg.svh
 _SOC_VERILOG 	+=	rtl/inc/utils_pkg.sv
+_SOC_VERILOG 	+=	tb/axi_mem.sv
 _SOC_VERILOG 	+=	$(_CORE_VERILOG)
 _SOC_VERILOG 	+=	$(shell find xlnx/rtl/verilog-axi/rtl -type f -iname *.v)
 _SOC_VERILOG 	+=	$(shell find xlnx/rtl/ -type f -iname *.sv)

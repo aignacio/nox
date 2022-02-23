@@ -30,7 +30,7 @@ module axi_mem_wrapper import utils_pkg::*; #(
     next_csr = csr_output_ff;
     next_bvalid = 'b0;
 
-    if ((axi_mosi.awaddr == 'hD000_0000) && axi_mosi.awvalid) begin
+    if ((axi_mosi.awaddr == 'hA001_FC00) && axi_mosi.awvalid) begin
       axi_mosi_int.awvalid = '0;
       next_dec_csr = 'b1;
     end
@@ -65,7 +65,7 @@ module axi_mem_wrapper import utils_pkg::*; #(
     // Width of ID signal
     .ID_WIDTH(1),
     // Extra pipeline register on output
-    .PIPELINE_OUTPUT(1)
+    .PIPELINE_OUTPUT(0)
   ) u_ram (
     .clk          (clk),
     .rst          (~rst),
@@ -113,8 +113,9 @@ module axi_mem_wrapper import utils_pkg::*; #(
     `else
     if (~rst) begin
     `endif
-      for (int i=0;i<NUM_WORDS;i++)
-        u_ram.mem[i] = mem_loading[i];
+      for (int i=0;i<NUM_WORDS;i++) begin
+        u_ram.mem[i][31:0] = mem_loading[i][31:0];
+      end
     end
   end
 `endif

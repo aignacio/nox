@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 22.02.2022
+ * Last Modified Date: 23.02.2022
  */
 module nox_soc
   import utils_pkg::*;
@@ -109,7 +109,7 @@ module nox_soc
   assign start_fetch = 'b1;
 `endif
 
-  nox u_nox(
+  nox u_nox (
     .clk              (clk),
     .arst             (rst_int),
     .irq_i            ('0),
@@ -122,18 +122,18 @@ module nox_soc
   );
 
   axi_mem_wrapper #(
-    .MEM_KB(8)
+    .MEM_KB           (8)
   ) u_dram (
     .clk              (clk),
     .rst              (rst_int),
     .axi_mosi         (slaves_axi_mosi[0]),
     .axi_miso         (slaves_axi_miso[0]),
-    .csr_o            (csr_out_int)
+    .csr_o            ()
   );
 
 `ifdef SIMULATION
-  axi_mem_wrapper #(
-    .MEM_KB(8)
+  axi_mem #(
+    .MEM_KB           (8)
   ) u_iram (
     .clk              (clk),
     .rst              (rst_int),
@@ -151,8 +151,8 @@ module nox_soc
 `endif
 
   axi_mem_wrapper #(
-    .MEM_KB(1)
-  ) u_dram_1 (
+    .MEM_KB           (1)
+  ) u_slave_1_mem (
     .clk              (clk),
     .rst              (rst_int),
     .axi_mosi         (slaves_axi_mosi[2]),
@@ -161,8 +161,8 @@ module nox_soc
   );
 
   axi_mem_wrapper #(
-    .MEM_KB(1)
-  ) u_dram_2 (
+    .MEM_KB           (1)
+  ) u_slave_2_mem (
     .clk              (clk),
     .rst              (rst_int),
     .axi_mosi         (slaves_axi_mosi[3]),
@@ -194,7 +194,7 @@ module nox_soc
     /*verilator public*/
     logic [31:0] addr_val;
     logic [31:0] word_val;
-    u_dram.mem_loading[addr_val] = word_val;
+    //u_dram.mem_loading[addr_val] = word_val;
   endfunction
   // synthesis translate_on
 `endif
