@@ -3,11 +3,13 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.10.2021
- * Last Modified Date: 10.01.2022
+ * Last Modified Date: 23.02.2022
  */
 module cb_to_axi
   import utils_pkg::*;
-(
+#(
+  parameter AXI_ID = 0
+)(
   // Core bus Master I/F
   input   s_cb_mosi_t   cb_mosi_i,
   output  s_cb_miso_t   cb_miso_o,
@@ -20,11 +22,14 @@ module cb_to_axi
     cb_miso_o  = s_cb_miso_t'('0);
 
     // MOSI
+    axi_mosi_o.awid     = AXI_ID;
+    axi_mosi_o.arid     = AXI_ID;
     axi_mosi_o.awaddr   = axi_addr_t'(cb_mosi_i.wr_addr);
     axi_mosi_o.awsize   = axi_size_t'(cb_mosi_i.wr_size);
     axi_mosi_o.awvalid  = cb_mosi_i.wr_addr_valid;
     axi_mosi_o.wdata    = axi_data_t'(cb_mosi_i.wr_data);
     axi_mosi_o.wvalid   = cb_mosi_i.wr_data_valid;
+    axi_mosi_o.wlast    = cb_mosi_i.wr_data_valid;
     axi_mosi_o.wstrb    = axi_wr_strb_t'(cb_mosi_i.wr_strobe);
     axi_mosi_o.bready   = cb_mosi_i.wr_resp_ready;
     axi_mosi_o.araddr   = axi_addr_t'(cb_mosi_i.rd_addr);
