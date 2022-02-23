@@ -228,9 +228,9 @@ module axi_mem import utils_pkg::*; #(
       next_bvalid = ~axi_mosi.bready;
     end
 
-    if (axi_wr_vld_ff) begin
-      next_axi_wr = ~(axi_mosi.wvalid && axi_mosi.wlast);
-    end
+    //if (axi_wr_vld_ff) begin
+      //next_axi_wr = ~(axi_mosi.wvalid && axi_mosi.wlast);
+    //end
 
     axi_miso.bvalid = bvalid_ff;
   end : axi_wr_datapath
