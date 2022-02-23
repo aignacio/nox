@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 20.02.2022
+ * Last Modified Date: 23.02.2022
  */
 module csr
   import utils_pkg::*;
@@ -50,6 +50,7 @@ module csr
   logic   dbg_irq_mtime;
   logic   dbg_irq_msoft;
   logic   dbg_irq_mext;
+  logic   traps_can_happen_wo_exec;
 
   mcause_int_t async_int;
 
@@ -268,12 +269,21 @@ module csr
       default: next_trap  = s_trap_info_t'('0);
     endcase
 
-    if (~eval_trap_i) begin
-      next_mepc        = csr_mepc_ff;
-      next_mip         = csr_mip_ff;
-      next_mcause      = csr_mcause_ff;
-      next_mtval       = csr_mtval_ff;
-      next_trap.active = 'b0;
+    // In case we have one of the following traps
+    // we don't need to wait till it's in the exec
+    // stage to evaluate
+    traps_can_happen_wo_exec = (fetch_trap_i.active  ||
+                                lsu_trap_st_i.active ||
+                                lsu_trap_ld_i.active);
+
+    if (~traps_can_happen_wo_exec) begin
+      if (~eval_trap_i) begin
+        next_mepc        = csr_mepc_ff;
+        next_mip         = csr_mip_ff;
+        next_mcause      = csr_mcause_ff;
+        next_mtval       = csr_mtval_ff;
+        next_trap.active = 'b0;
+      end
     end
 
     // Define trap address
