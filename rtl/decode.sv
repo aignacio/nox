@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 22.02.2022
+ * Last Modified Date: 23.02.2022
  */
 module decode
   import utils_pkg::*;

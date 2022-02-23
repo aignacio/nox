@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 18.02.2022
+ * Last Modified Date: 23.02.2022
  */
 module fetch
   import utils_pkg::*;
@@ -40,6 +40,7 @@ module fetch
   pc_t          pc_ff, next_pc;
   instr_raw_t   instr_from_mem;
 
+  logic wait_answer_ff, next_wait_answer;
   logic fetch_full;
   logic fetch_trig_ff, next_trig;
   logic fetch_start_ff, next_fetch_start;
@@ -92,13 +93,14 @@ module fetch
     // 2) AND we are not in the fetch clear
     // 3) AND we didn't reach the max OT limits
     // 4) AND previous answers were cleared
-      /* verilator lint_off WIDTH */
-    if ((fetch_st_ff != IDLE) && ~fetch_full && ~fetch_req_trig &&
-        (ot_cnt_ff < MAX_OT_TXN) && (after_clr_valid_ff)) begin
+    /* verilator lint_off WIDTH */
+    //if ((fetch_st_ff != IDLE) && ~fetch_full && ~fetch_req_trig &&
+    if (wait_answer_ff ||
+        ((fetch_st_ff != IDLE) && ~fetch_req_trig &&
+        (ot_cnt_ff < MAX_OT_TXN) && (after_clr_valid_ff))) begin
     /* verilator lint_on WIDTH */
       instr_cb_mosi_o.rd_addr_valid = 'b1;
       instr_cb_mosi_o.rd_size = cb_size_t'(CB_WORD);
-      instr_cb_mosi_o.rd_addr = cb_addr_t'({next_pc[31:2],2'd0});
       instr_cb_mosi_o.rd_addr = cb_addr_t'({next_pc[31:2],2'd0});
     end
 
@@ -134,6 +136,10 @@ module fetch
       trap_info_o.pc_addr = pc_ff;
       trap_info_o.mtval   = fetch_addr_i;
     end
+
+    next_wait_answer = 'b0;
+    if (instr_cb_mosi_o.rd_addr_valid && ~instr_cb_miso_i.rd_addr_ready)
+      next_wait_answer = 'b1;
   end : cb_fetch
 
   `CLK_PROC(clk, rst) begin : pc_ctrl_seq
@@ -143,6 +149,7 @@ module fetch
       after_clr_valid_ff <= 'b0;
       fetch_trig_ff      <= 'b0;
       fetch_start_ff     <= 'b0;
+      wait_answer_ff     <= 'b0;
     end
     else begin
       pc_ff              <= next_pc;
@@ -150,6 +157,7 @@ module fetch
       after_clr_valid_ff <= next_after_clr_valid;
       fetch_trig_ff      <= next_trig;
       fetch_start_ff     <= next_fetch_start;
+      wait_answer_ff     <= next_wait_answer;
     end
   end : pc_ctrl_seq
 

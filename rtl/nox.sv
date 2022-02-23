@@ -3,15 +3,16 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 22.02.2022
+ * Last Modified Date: 23.02.2022
  */
 module nox
   import utils_pkg::*;
 #(
   parameter int SUPPORT_DEBUG     = 1,
   parameter int MTVEC_DEFAULT_VAL = 'h1000, // 4KB
-  parameter int L0_BUFFER_SIZE    = 2, // Max instrs locally stored
-  parameter int MAX_OT_TXN        = 4  // Max outstanding txns, low numbers might impact perf.
+  parameter int L0_BUFFER_SIZE    = 2,  // Max instrs locally stored
+  parameter int MAX_OT_TXN        = 4,  // Max outstanding txns, low numbers might impact perf.
+  parameter int SUPPORT_WR_RESP   = 1   // IF I/F supports wr_resp
 )(
   input                 clk,
   input                 arst,
@@ -53,6 +54,8 @@ module nox
   s_trap_info_t dec_trap;
   s_trap_info_t lsu_trap_st;
   s_trap_info_t lsu_trap_ld;
+  rdata_t       wb_fwd_load;
+  logic         lock_wb;
 
 `ifdef TARGET_FPGA
   reset_sync#(
@@ -66,7 +69,9 @@ module nox
   assign rst = arst;
 `endif
 
-  cb_to_axi u_instr_cb_to_axi(
+  cb_to_axi #(
+    .AXI_ID                (0)
+  ) u_instr_cb_to_axi (
     // Core bus Master I/F
     .cb_mosi_i             (instr_cb_mosi),
     .cb_miso_o             (instr_cb_miso),
@@ -75,7 +80,9 @@ module nox
     .axi_miso_i            (instr_axi_miso_i)
   );
 
-  cb_to_axi u_lsu_cb_to_axi(
+  cb_to_axi  #(
+    .AXI_ID                (1)
+  ) u_lsu_cb_to_axi(
     // Core bus Master I/F
     .cb_mosi_i             (lsu_cb_mosi),
     .cb_miso_o             (lsu_cb_miso),
@@ -139,6 +146,8 @@ module nox
     .rst                   (rst),
     // Control signals
     .wb_value_i            (wb_dec.rd_data),
+    .wb_load_i             (wb_fwd_load),
+    .lock_wb_i             (lock_wb),
     // From DEC stg I/F
     .id_ex_i               (id_ex),
     .rs1_data_i            (rs1_data),
@@ -161,7 +170,8 @@ module nox
   );
 
   lsu #(
-    .SUPPORT_DEBUG         (SUPPORT_DEBUG)
+    .SUPPORT_DEBUG         (SUPPORT_DEBUG),
+    .SUPPORT_WR_RESP       (SUPPORT_WR_RESP)
   ) u_lsu (
     .clk                   (clk),
     .rst                   (rst),
@@ -177,7 +187,6 @@ module nox
     .data_cb_mosi_o        (lsu_cb_mosi),
     .data_cb_miso_i        (lsu_cb_miso),
     // Trap - MEM access fault
-    .txn_error_o           (),
     .trap_info_st_o        (lsu_trap_st),
     .trap_info_ld_o        (lsu_trap_ld)
   );
@@ -193,6 +202,9 @@ module nox
     .lsu_bp_i              (lsu_bp),
     .lsu_bp_data_i         (lsu_bp_data),
     // To DEC stg
-    .wb_dec_o              (wb_dec)
+    .wb_dec_o              (wb_dec),
+    // To EXE stg
+    .wb_fwd_load_o         (wb_fwd_load),
+    .lock_wb_o             (lock_wb)
   );
 endmodule

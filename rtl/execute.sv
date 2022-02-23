@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 22.02.2022
+ * Last Modified Date: 23.02.2022
  */
 module execute
   import utils_pkg::*;
@@ -15,6 +15,8 @@ module execute
   input                 rst,
   // Control signals
   input   rdata_t       wb_value_i,
+  input   rdata_t       wb_load_i,
+  input                 lock_wb_i,
   // From DEC stg I/F
   input   s_id_ex_t     id_ex_i,
   input   rdata_t       rs1_data_i,
@@ -161,8 +163,13 @@ module execute
     lsu_o.op_typ = id_ex_i.lsu;
     lsu_o.width  = id_ex_i.lsu_w;
     lsu_o.addr   = res;
-    lsu_o.wdata  = (fwd_wdata) ? wb_value_i : rs2_data_i;
-
+    lsu_o.wdata  = rs2_data_i;
+    if (fwd_wdata) begin
+      // Lock means that we had a load but we had
+      // to stall due to bp from the bus, thus we need
+      // to use a store value of the load
+      lsu_o.wdata  = (lock_wb_i) ? wb_load_i : wb_value_i;
+    end
     will_jump_next_clk = next_branch.b_act || next_jump.j_act;
 
     if (will_jump_next_clk && next_jump.j_act) begin

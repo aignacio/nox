@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 07.01.2022
- * Last Modified Date: 07.01.2022
+ * Last Modified Date: 23.02.2022
  */
 module wb
   import utils_pkg::*;
@@ -18,9 +18,12 @@ module wb
   input                 lsu_bp_i,
   input                 lsu_bp_data_i,
   // To DEC stg
-  output  s_wb_t        wb_dec_o
+  output  s_wb_t        wb_dec_o,
+  output  rdata_t       wb_fwd_load_o,
+  output                lock_wb_o
 );
-  logic lock_wr_ff, next_lock;
+  logic   lock_wr_ff, next_lock;
+  rdata_t bkp_load_ff, next_bkp;
 
   function automatic rdata_t fmt_load(s_lsu_op_t load, rdata_t rdata);
     rdata_t data;
@@ -58,12 +61,23 @@ module wb
     end
   end : mux_for_w_rf
 
+  always_comb begin : bkp_load_for_fwd
+    lock_wb_o = lock_wr_ff;
+    next_bkp  = bkp_load_ff;
+    if (wb_dec_o.we_rd) begin
+      next_bkp = wb_dec_o.rd_data;
+    end
+    wb_fwd_load_o = bkp_load_ff;
+  end : bkp_load_for_fwd
+
   `CLK_PROC(clk, rst) begin
     `RST_TYPE(rst) begin
       lock_wr_ff  <= `OP_RST_L;
+      bkp_load_ff <= `OP_RST_L;
     end
     else begin
       lock_wr_ff  <= next_lock;
+      bkp_load_ff <= next_bkp;
     end
   end
 endmodule
