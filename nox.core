@@ -75,9 +75,9 @@ filesets:
     files:
       - xlnx/rtl/nox_soc.sv
       - xlnx/rtl/axi_rom_wrapper.sv
-      - sw/hello_world/output/boot_rom.sv
+      - sw/soc_hello_world/output/boot_rom.sv
       - xlnx/rtl/axi_mem_wrapper.sv
-      - xlnx/rtl/axi_ram.v
+      - xlnx/rtl/axi_interconnect_wrapper.sv
     file_type: systemVerilogSource
 
   tb:

@@ -168,7 +168,7 @@ module axi_interconnect_wrapper
       slaves_axi_mosi[s_idx].awburst = axi_burst_t'(to_s_axi_awburst [s_idx*2            +: 2]);
       slaves_axi_mosi[s_idx].awlock  = to_s_axi_awlock  [s_idx*1            +: 1];
       slaves_axi_mosi[s_idx].awcache = to_s_axi_awcache [s_idx*4            +: 4];
-      slaves_axi_mosi[s_idx].awprot  = to_s_axi_awprot  [s_idx*3            +: 3];
+      slaves_axi_mosi[s_idx].awprot  = axi_prot_t'(to_s_axi_awprot  [s_idx*3            +: 3]);
       slaves_axi_mosi[s_idx].awqos   = to_s_axi_awqos   [s_idx*4            +: 4];
       slaves_axi_mosi[s_idx].awuser  = to_s_axi_awuser  [s_idx*AWUSER_WIDTH +: AWUSER_WIDTH];
       slaves_axi_mosi[s_idx].awvalid = to_s_axi_awvalid [s_idx*1            +: 1];
@@ -191,7 +191,7 @@ module axi_interconnect_wrapper
       slaves_axi_mosi[s_idx].arburst  = axi_burst_t'(to_s_axi_arburst [s_idx*2            +: 2]);
       slaves_axi_mosi[s_idx].arlock   = to_s_axi_arlock  [s_idx*1            +: 1];
       slaves_axi_mosi[s_idx].arcache  = to_s_axi_arcache [s_idx*4            +: 4];
-      slaves_axi_mosi[s_idx].arprot   = to_s_axi_arprot  [s_idx*3            +: 3];
+      slaves_axi_mosi[s_idx].arprot   = axi_prot_t'(to_s_axi_arprot  [s_idx*3            +: 3]);
       slaves_axi_mosi[s_idx].arqos    = to_s_axi_arqos   [s_idx*4            +: 4];
       slaves_axi_mosi[s_idx].aruser   = to_s_axi_aruser  [s_idx*ARUSER_WIDTH +: ARUSER_WIDTH];
       slaves_axi_mosi[s_idx].arvalid  = to_s_axi_arvalid [s_idx*1            +: 1];

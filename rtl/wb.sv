@@ -20,7 +20,7 @@ module wb
   // To DEC stg
   output  s_wb_t        wb_dec_o,
   output  rdata_t       wb_fwd_load_o,
-  output                lock_wb_o
+  output  logic         lock_wb_o
 );
   logic   lock_wr_ff, next_lock;
   rdata_t bkp_load_ff, next_bkp;

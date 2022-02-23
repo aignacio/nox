@@ -35,7 +35,7 @@ module nox_soc
   logic clkfbout_buf_clk_gen;
   logic clkfbout_clk_gen;
 
-  assign rst_int = rst_cpu;
+  assign rst_int = ~rst_cpu;
 
   PLLE2_ADV #(
     .BANDWIDTH           ("OPTIMIZED"),
@@ -157,7 +157,7 @@ module nox_soc
     .rst              (rst_int),
     .axi_mosi         (slaves_axi_mosi[2]),
     .axi_miso         (slaves_axi_miso[2]),
-    .csr_o            ()
+    .csr_o            (csr_out_int)
   );
 
   axi_mem_wrapper #(
