@@ -17,6 +17,7 @@ module axi_mem_wrapper import utils_pkg::*; #(
 
   /* verilator lint_off WIDTH */
   logic [7:0] csr_output_ff, next_csr;
+  logic print_ff, next_print;
   logic csr_decode_ff, next_dec_csr;
   logic bvalid_ff, next_bvalid;
 
@@ -29,10 +30,24 @@ module axi_mem_wrapper import utils_pkg::*; #(
     next_dec_csr = csr_decode_ff;
     next_csr = csr_output_ff;
     next_bvalid = 'b0;
+    next_print = print_ff;
 
     if ((axi_mosi.awaddr == 'hA001_FC00) && axi_mosi.awvalid) begin
       axi_mosi_int.awvalid = '0;
       next_dec_csr = 'b1;
+    end
+
+    if ((axi_mosi.awaddr == 'hA001_F800) && axi_mosi.awvalid) begin
+      axi_mosi_int.awvalid = '0;
+      next_print = 'b1;
+    end
+
+    if (axi_mosi.wvalid && print_ff) begin
+      axi_mosi_int.wvalid = '0;
+      axi_miso.wready = 'b1;
+      $write("%c",axi_mosi.wdata[7:0]);
+      next_print = 'b0;
+      next_bvalid = 'b1;
     end
 
     if (axi_mosi.wvalid && csr_decode_ff) begin
@@ -49,11 +64,13 @@ module axi_mem_wrapper import utils_pkg::*; #(
       csr_decode_ff <= '0;
       csr_output_ff <= '0;
       bvalid_ff     <= '0;
+      print_ff      <= '0;
     end
     else begin
       csr_decode_ff <= next_dec_csr;
       csr_output_ff <= next_csr;
       bvalid_ff     <= next_bvalid;
+      print_ff      <= next_print;
     end
   end
 
