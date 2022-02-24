@@ -134,7 +134,7 @@ module lsu
     trap_info_st_o = s_trap_info_t'('0);
     trap_info_ld_o = s_trap_info_t'('0);
 
-    if (data_cb_miso_i.wr_resp_valid && (data_cb_miso_i.wr_resp_error != CB_OKAY)) begin
+    if ((SUPPORT_WR_RESP == 1) && data_cb_miso_i.wr_resp_valid && (data_cb_miso_i.wr_resp_error != CB_OKAY)) begin
       trap_info_st_o.active = 'b1;
     end
 
