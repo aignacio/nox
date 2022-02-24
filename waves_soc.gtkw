@@ -1,33 +1,32 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Wed Feb 23 16:45:11 2022
+[*] Wed Feb 23 23:37:54 2022
 [*]
 [dumpfile] "/Users/aignacio/projects/nox/nox_waves.fst"
-[dumpfile_mtime] "Wed Feb 23 16:44:34 2022"
-[dumpfile_size] 287488
+[dumpfile_mtime] "Wed Feb 23 23:22:09 2022"
+[dumpfile_size] 171849
 [savefile] "/Users/aignacio/projects/nox/waves_soc.gtkw"
-[timestart] 1
-[size] 2875 1048
-[pos] 213 924
-*-10.852516 4945 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 181
+[size] 2809 1687
+[pos] 279 285
+*-4.475826 257 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.nox_soc.
 [treeopen] TOP.nox_soc.u_nox.
-[treeopen] TOP.nox_soc.u_nox.u_decode.
-[sst_width] 271
-[signals_width] 350
+[sst_width] 225
+[signals_width] 389
 [sst_expanded] 1
-[sst_vpaned_height] 503
+[sst_vpaned_height] 851
 @28
 TOP.nox_soc.clk_in
 TOP.nox_soc.clk
 TOP.nox_soc.rst_cpu
 TOP.nox_soc.start_fetch
-@8023
+@8022
 TOP.nox_soc.csr_out[3:0]
 @28
 +{enter_in_a_trap} TOP.nox_soc.u_nox.u_execute.trap_out.active
-@c00200
+@800200
 -nox_instr_mosi
 @28
 TOP.nox_soc.u_nox.instr_axi_mosi_o.arid
@@ -101,9 +100,9 @@ TOP.nox_soc.masters_axi_mosi[0].wlast
 TOP.nox_soc.masters_axi_mosi[0].wstrb[3:0]
 @28
 TOP.nox_soc.masters_axi_mosi[0].wvalid
-@1401200
+@1000200
 -nox_instr_mosi
-@c00200
+@800200
 -nox_instr_miso
 @28
 TOP.nox_soc.masters_axi_miso[0].arready
@@ -123,7 +122,7 @@ TOP.nox_soc.masters_axi_miso[0].rresp[1:0]
 TOP.nox_soc.masters_axi_miso[0].ruser[1:0]
 TOP.nox_soc.masters_axi_miso[0].rvalid
 TOP.nox_soc.masters_axi_miso[0].wready
-@1401200
+@1000200
 -nox_instr_miso
 @800200
 -nox_lsu_mosi
@@ -135,8 +134,10 @@ TOP.nox_soc.masters_axi_mosi[1].awaddr[31:0]
 TOP.nox_soc.masters_axi_mosi[1].awvalid
 [color] 2
 TOP.nox_soc.masters_axi_miso[1].awready
+TOP.nox_soc.u_nox.lsu_axi_mosi_o.wlast
 [color] 2
 TOP.nox_soc.masters_axi_mosi[1].wvalid
+@29
 [color] 2
 TOP.nox_soc.masters_axi_miso[1].wready
 @c00022
@@ -307,8 +308,3 @@ TOP.nox_soc.u_nox.u_decode.wb_dec_i.rd_data[31:0]
 TOP.nox_soc.u_nox.u_decode.wb_dec_i.we_rd
 [pattern_trace] 1
 [pattern_trace] 0
-!100000@@
-?"10001FEC
-@23
-TOP.nox_soc.masters_axi_mosi[1].araddr[31:0]
-!!

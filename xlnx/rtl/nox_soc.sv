@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 23.02.2022
+ * Last Modified Date: 24.02.2022
  */
 module nox_soc
   import utils_pkg::*;
@@ -180,6 +180,17 @@ module nox_soc
     .arst             (rst_int),
     .*
   );
+
+  //axi_crossbar_wrapper #(
+    //.N_MASTERS        (2),
+    //.N_SLAVES         (4),
+    //.M_BASE_ADDR      ({32'hB000_0000, 32'hA000_0000, 32'h8000_0000, 32'h1000_0000}),
+    //.M_ADDR_WIDTH     ({32'd17, 32'd17, 32'd17, 32'd17})
+  //) u_axi_crossbar (
+    //.clk              (clk),
+    //.arst             (rst_int),
+    //.*
+  //);
 
 `ifdef SIMULATION
   // synthesis translate_off

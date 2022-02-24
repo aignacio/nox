@@ -91,6 +91,15 @@ CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
 									-DWAVEFORM_FST=\"$(WAVEFORM_FST)\""
 									#-Wunknown-warning-option"
 
+CPPFLAGS_SOC	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
+									-DIRAM_KB_SIZE=\"$(IRAM_KB_SIZE)\"		\
+									-DDRAM_KB_SIZE=\"$(DRAM_KB_SIZE)\"		\
+									-DIRAM_ADDR=\"$(IRAM_ADDR)\"					\
+									-DDRAM_ADDR=\"$(DRAM_ADDR)\"					\
+									-DWAVEFORM_USE=\"$(WAVEFORM_USE)\"	  \
+									-DWAVEFORM_FST=\"$(WAVEFORM_FST)\""
+									#-Wunknown-warning-option"
+
 VERIL_ARGS		:=	-CFLAGS $(CPPFLAGS_VERI) 			\
 									--top-module $(ROOT_MOD_VERI)	\
 									--Mdir $(OUT_VERILATOR)				\
@@ -102,16 +111,16 @@ VERIL_ARGS		:=	-CFLAGS $(CPPFLAGS_VERI) 			\
 									-o 														\
 									$(ROOT_MOD_VERI)
 
-VERIL_ARGS_SOC:=	-CFLAGS $(CPPFLAGS_VERI) 			\
-									--top-module $(ROOT_MOD_SOC)	\
-									--Mdir $(OUT_VERILATOR)				\
-									-f verilator.flags			  		\
-									$(INCS_VLOG)									\
-									$(MACROS_VLOG)							 	\
-									$(SOC_VERILOG) 								\
-									$(SRC_CPP_SOC)								\
-									-o 														\
-									$(ROOT_MOD_SOC)
+VERIL_ARGS_SOC	:=	-CFLAGS $(CPPFLAGS_SOC) 			\
+										--top-module $(ROOT_MOD_SOC)	\
+										--Mdir $(OUT_VERILATOR)				\
+										-f verilator.flags			  		\
+										$(INCS_VLOG)									\
+										$(MACROS_VLOG)							 	\
+										$(SOC_VERILOG) 								\
+										$(SRC_CPP_SOC)								\
+										-o 														\
+										$(ROOT_MOD_SOC)
 
 .PHONY: verilator clean help
 help:

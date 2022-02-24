@@ -127,7 +127,7 @@ module axi_mem import utils_pkg::*; #(
     wr_addr      = wr_addr_ff[2+:ADDR_RAM];
     byte_sel_wr  = 'h0;
     we_mem       = 'b0;
-    next_bvalid  = bvalid_ff;
+    next_bvalid  = 'b0;
     next_wr_size = axi_size_t'('h0);
     next_wdata   = 'h0;
 
@@ -224,9 +224,10 @@ module axi_mem import utils_pkg::*; #(
     end
 `endif
 
-    if (bvalid_ff) begin
-      next_bvalid = ~axi_mosi.bready;
-    end
+    next_bvalid = axi_mosi.wlast;
+    //if (bvalid_ff) begin
+      //next_bvalid = ~axi_mosi.bready;
+    //end
 
     //if (axi_wr_vld_ff) begin
       //next_axi_wr = ~(axi_mosi.wvalid && axi_mosi.wlast);
