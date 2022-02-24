@@ -109,12 +109,13 @@ module fetch
 
   always_comb begin : trap_control
     trap_info_o = s_trap_info_t'('0);
-    instr_access_fault = 'b0;
+    instr_access_fault = instr_cb_miso_i.rd_valid &&
+                         (instr_cb_miso_i.rd_resp != CB_OKAY);
 
     if (instr_access_fault) begin
       trap_info_o.active  = 'b1;
-      //trap_info_o.pc_addr = pc_ff;
-      //trap_info_o.mtval   = fetch_addr_i;
+      trap_info_o.pc_addr = pc_addr_ff;
+      trap_info_o.mtval   = pc_addr_ff;
     end
   end : trap_control
 
