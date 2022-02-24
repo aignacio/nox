@@ -27,7 +27,8 @@ int main(void) {
   /*int time = rdtime();*/
   //int cycle = rdcycle();
 
-  printf("Hello_World!");
+  int misa_id = read_csr(misa);
+  printf("Hello_World! - MISA:%x", misa_id);
   *addr_leds = leds_out;
   /*set_csr(mstatus,MSTATUS_MIE);*/
   while(true){
@@ -57,7 +58,6 @@ int main(void) {
     // Illegal instruction
     /*asm volatile (".word 0x0");*/
 
-    printf("\n-->i=%d",i);
     if (i == 5){
       i = 0;
 
