@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 23.02.2022
+ * Last Modified Date: 24.02.2022
  */
 module execute
   import utils_pkg::*;
@@ -37,6 +37,11 @@ module execute
   input   s_trap_info_t lsu_trap_st_i,
   input   s_trap_info_t lsu_trap_ld_i
 );
+  typedef enum logic {
+    NO_FWD,
+    FWD_REG
+  } fwd_mux_t;
+
   s_ex_mem_wb_t ex_mem_wb_ff, next_ex_mem_wb;
   alu_t         op1, op2, res;
   fwd_mux_t     rs1_fwd, rs2_fwd;
