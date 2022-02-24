@@ -16,7 +16,9 @@ CFLAGS	:=	-march=rv32i	    	\
 						-ffreestanding			\
 						-O0 -g							\
 						--specs=nano.specs	\
-						-Wall -Wno-main
+						-Wall -Wno-main			\
+						-DPRINTF_DISABLE_SUPPORT_FLOAT			 \
+						-DPRINTF_DISABLE_SUPPORT_EXPONENTIAL
 LDFLAGS	:=	-g									\
 						-Wl,-gc-sections		\
 						-Wl,-Map=output/image.map,--print-memory-usage \
@@ -24,9 +26,7 @@ LDFLAGS	:=	-g									\
 						-mabi=ilp32					\
 						-nostdlib						\
 						-nostartfiles 			\
-						--specs=nano.specs	\
-						--specs=nosys.specs \
-						-lm -lc -lgcc
+						-lgcc
 
 TARGET_NAME	:= $(notdir $(shell pwd))
 ODIR				:=	output
@@ -74,6 +74,10 @@ $(TARGET).elf:	$(OBJ) $(LD)
 	$(CC) -T$(LD) $(INC) $(OBJ) -o $@ $(LDFLAGS)
 
 $(TEMP)/%.o:	init/%.S
+	@echo "Building $@"
+	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
+
+$(TEMP)/%.o:	printf/%.c
 	@echo "Building $@"
 	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
 

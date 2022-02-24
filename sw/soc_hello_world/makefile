@@ -16,13 +16,17 @@ CFLAGS	:=	-march=rv32i	    	\
 						-ffreestanding			\
 						-O0 -g							\
 						--specs=nano.specs	\
-						-Wall -Wno-main
+						-Wall -Wno-main			\
+						-DPRINTF_DISABLE_SUPPORT_FLOAT				\
+						-DPRINTF_DISABLE_SUPPORT_EXPONENTIAL	\
+						-DPRINTF_DISABLE_SUPPORT_LONG_LONG
 LDFLAGS	:=	-g									\
 						-Wl,-gc-sections		\
 						-Wl,-Map=output/image.map,--print-memory-usage \
 						-march=rv32i				\
 						-mabi=ilp32					\
 						-nostartfiles 			\
+						-nostdlib			 			\
 						--specs=nano.specs	\
 						--specs=nosys.specs \
 						-lm -lc -lgcc
@@ -33,9 +37,10 @@ TEMP				:=	output_temp
 TARGET			:=	$(ODIR)/$(TARGET_NAME)
 LD					:=	sections.ld
 _INC				:=	../common
-_INC				+=	sw/common
+_INC				+=	../printf
 INC					:=	$(addprefix -I,$(_INC))
-_OBJ    		:=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.S)))
+_OBJ    		:=	$(patsubst printf/%,%.o,$(basename $(wildcard printf/*.c)))
+_OBJ    		+=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.S)))
 _OBJ    		+=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.c)))
 _OBJ    		+=	$(patsubst src/%,%.o,$(basename $(wildcard src/*.c)))
 OBJ					:=	$(patsubst %,$(TEMP)/%,$(_OBJ))
@@ -70,6 +75,10 @@ $(TARGET).bin:	$(TARGET).elf
 $(TARGET).elf:	$(OBJ) $(LD)
 	@echo "Linking $@"
 	$(CC) -T$(LD) $(INC) $(OBJ) -o $@ $(LDFLAGS)
+
+$(TEMP)/%.o:	printf/%.c
+	@echo "Building $@"
+	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
 
 $(TEMP)/%.o:	init/%.S
 	@echo "Building $@"

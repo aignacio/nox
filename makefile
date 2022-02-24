@@ -27,7 +27,7 @@ INCS_VLOG			:=	$(addprefix -I,$(_INCS_VLOG))
 
 # Parameters of simulation
 #IRAM_KB_SIZE	?=	2*1024 #2MB due to J-Tests on RV Compliance tests
-IRAM_KB_SIZE	?=	8
+IRAM_KB_SIZE	?=	16
 DRAM_KB_SIZE	?=	8
 ENTRY_ADDR		?=	\'h8000_0000
 IRAM_ADDR			?=	0x80000000

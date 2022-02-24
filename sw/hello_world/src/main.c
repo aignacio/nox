@@ -27,6 +27,9 @@ int main(void) {
   /*int time = rdtime();*/
   //int cycle = rdcycle();
 
+  // Printf will not work because LSU is directly connected to the
+  // DRAM, without access to the IRAM where the string is containted
+  printf("Hello_World!");
   set_csr(mstatus,MSTATUS_MIE);
   *addr_leds = leds_out;
   while(true){
@@ -57,7 +60,6 @@ int main(void) {
     /*asm volatile (".word 0x0");*/
     if (i == 5){
       i = 0;
-      printf("Hello_World!=%d", test);
       if (leds_out == 8)
         leds_out = 1;
       else

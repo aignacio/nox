@@ -1,22 +1,23 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Wed Feb 23 23:37:54 2022
+[*] Thu Feb 24 17:41:53 2022
 [*]
 [dumpfile] "/Users/aignacio/projects/nox/nox_waves.fst"
-[dumpfile_mtime] "Wed Feb 23 23:22:09 2022"
-[dumpfile_size] 171849
+[dumpfile_mtime] "Thu Feb 24 17:35:11 2022"
+[dumpfile_size] 264156
 [savefile] "/Users/aignacio/projects/nox/waves_soc.gtkw"
-[timestart] 181
-[size] 2809 1687
-[pos] 279 285
-*-4.475826 257 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 2288
+[size] 3308 1723
+[pos] 132 288
+*-5.652901 2608 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.nox_soc.
 [treeopen] TOP.nox_soc.u_nox.
-[sst_width] 225
+[treeopen] TOP.nox_soc.u_nox.u_execute.u_csr.
+[sst_width] 323
 [signals_width] 389
 [sst_expanded] 1
-[sst_vpaned_height] 851
+[sst_vpaned_height] 871
 @28
 TOP.nox_soc.clk_in
 TOP.nox_soc.clk
@@ -26,6 +27,14 @@ TOP.nox_soc.start_fetch
 TOP.nox_soc.csr_out[3:0]
 @28
 +{enter_in_a_trap} TOP.nox_soc.u_nox.u_execute.trap_out.active
+@100000028
+TOP.nox_soc.u_nox.u_fetch.fetch_st_ff[1:0]
+@28
+[color] 1
+TOP.nox_soc.u_nox.u_fetch.fetch_req_i
+@22
+[color] 1
+TOP.nox_soc.u_nox.u_fetch.fetch_addr_i[31:0]
 @800200
 -nox_instr_mosi
 @28
@@ -102,7 +111,7 @@ TOP.nox_soc.masters_axi_mosi[0].wstrb[3:0]
 TOP.nox_soc.masters_axi_mosi[0].wvalid
 @1000200
 -nox_instr_mosi
-@800200
+@c00200
 -nox_instr_miso
 @28
 TOP.nox_soc.masters_axi_miso[0].arready
@@ -122,10 +131,22 @@ TOP.nox_soc.masters_axi_miso[0].rresp[1:0]
 TOP.nox_soc.masters_axi_miso[0].ruser[1:0]
 TOP.nox_soc.masters_axi_miso[0].rvalid
 TOP.nox_soc.masters_axi_miso[0].wready
-@1000200
+@1401200
 -nox_instr_miso
+@22
+TOP.nox_soc.u_nox.u_execute.u_csr.csr_mcause_ff[31:0]
+@28
+TOP.nox_soc.u_nox.u_lsu.lock_ff
+@22
+TOP.nox_soc.u_nox.u_lsu.lsu_req_addr[31:0]
+TOP.nox_soc.u_nox.u_lsu.lsu_i.addr[31:0]
 @800200
 -nox_lsu_mosi
+@28
+TOP.nox_soc.u_iram.axi_miso.awready
+TOP.nox_soc.u_iram.axi_miso.rvalid
+TOP.nox_soc.u_iram.axi_mosi.rready
+TOP.nox_soc.u_nox.u_lsu.lock_ff
 @22
 [color] 2
 TOP.nox_soc.masters_axi_mosi[1].awaddr[31:0]
@@ -137,7 +158,6 @@ TOP.nox_soc.masters_axi_miso[1].awready
 TOP.nox_soc.u_nox.lsu_axi_mosi_o.wlast
 [color] 2
 TOP.nox_soc.masters_axi_mosi[1].wvalid
-@29
 [color] 2
 TOP.nox_soc.masters_axi_miso[1].wready
 @c00022
@@ -222,7 +242,7 @@ TOP.nox_soc.masters_axi_mosi[1].wdata[31:0]
 (30)TOP.nox_soc.masters_axi_mosi[1].wdata[31:0]
 [color] 2
 (31)TOP.nox_soc.masters_axi_mosi[1].wdata[31:0]
-@1401200
+@1401202
 -group_end
 @22
 [color] 3
@@ -232,6 +252,11 @@ TOP.nox_soc.masters_axi_mosi[1].araddr[31:0]
 TOP.nox_soc.masters_axi_mosi[1].arvalid
 [color] 3
 TOP.nox_soc.masters_axi_miso[1].arready
+@22
+TOP.nox_soc.u_dram.mem_loading[1998][31:0]
+TOP.nox_soc.u_dram.mem_loading[1999][31:0]
+TOP.nox_soc.u_dram.mem_loading[2000][31:0]
+@28
 [color] 3
 TOP.nox_soc.masters_axi_mosi[1].rready
 [color] 3
@@ -242,8 +267,11 @@ TOP.nox_soc.masters_axi_miso[1].rdata[31:0]
 @28
 TOP.nox_soc.masters_axi_miso[1].bvalid
 TOP.nox_soc.masters_axi_mosi[1].bready
+@100000029
+TOP.nox_soc.u_nox.lsu_axi_miso_i.rresp[1:0]
 @100000028
 TOP.nox_soc.masters_axi_miso[1].bresp[1:0]
+TOP.nox_soc.u_nox.lsu_axi_miso_i.rresp[1:0]
 @1000200
 -nox_lsu_mosi
 @28
