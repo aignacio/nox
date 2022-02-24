@@ -22,6 +22,7 @@ LDFLAGS	:=	-g									\
 						-Wl,-Map=output/image.map,--print-memory-usage \
 						-march=rv32i				\
 						-mabi=ilp32					\
+						-nostdlib						\
 						-nostartfiles 			\
 						--specs=nano.specs	\
 						--specs=nosys.specs \
@@ -33,9 +34,10 @@ TEMP				:=	output_temp
 TARGET			:=	$(ODIR)/$(TARGET_NAME)
 LD					:=	sections.ld
 _INC				:=	../common
-_INC				+=	sw/common
+_INC				+=	printf
 INC					:=	$(addprefix -I,$(_INC))
-_OBJ    		:=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.S)))
+_OBJ    		:=	$(patsubst printf/%,%.o,$(basename $(wildcard printf/*.c)))
+_OBJ    		+=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.S)))
 _OBJ    		+=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.c)))
 _OBJ    		+=	$(patsubst src/%,%.o,$(basename $(wildcard src/*.c)))
 OBJ					:=	$(patsubst %,$(TEMP)/%,$(_OBJ))

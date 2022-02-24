@@ -2,11 +2,18 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include "printf.h"
 #include "riscv_csr_encoding.h"
 
-#define LEDS_ADDR 0xD0000000
+#define LEDS_ADDR   0xD0000000
+#define PRINT_ADDR  0xABCD0000
 
 volatile uint32_t* const addr_leds = (uint32_t*) LEDS_ADDR;
+volatile uint32_t* const addr_print = (uint32_t*) PRINT_ADDR;
+
+void _putchar(char character){
+  *addr_print = character;
+}
 
 int main(void) {
   int i = 0;
@@ -50,7 +57,7 @@ int main(void) {
     /*asm volatile (".word 0x0");*/
     if (i == 5){
       i = 0;
-
+      printf("Hello_World!=%d", test);
       if (leds_out == 8)
         leds_out = 1;
       else
