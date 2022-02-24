@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 20.02.2022
+ * Last Modified Date: 24.02.2022
  */
 module nox_sim import utils_pkg::*; (
   input               clk,
@@ -12,13 +12,14 @@ module nox_sim import utils_pkg::*; (
   s_axi_mosi_t  [1:0] masters_axi_mosi;
   s_axi_miso_t  [1:0] masters_axi_miso;
 
-  s_axi_mosi_t  [1:0] slaves_axi_mosi;
-  s_axi_miso_t  [1:0] slaves_axi_miso;
+  s_axi_mosi_t  [2:0] slaves_axi_mosi;
+  s_axi_miso_t  [2:0] slaves_axi_miso;
 
   assign slaves_axi_mosi[0]  = masters_axi_mosi[0];
-  assign slaves_axi_mosi[1]  = masters_axi_mosi[1];
   assign masters_axi_miso[0] = slaves_axi_miso[0];
-  assign masters_axi_miso[1] = slaves_axi_miso[1];
+
+  //assign slaves_axi_mosi[1]  = masters_axi_mosi[1];
+  //assign masters_axi_miso[1] = slaves_axi_miso[1];
 
   s_irq_t irq_stim;
 
@@ -32,6 +33,51 @@ module nox_sim import utils_pkg::*; (
     .axi_miso (slaves_axi_miso[0])
   );
 
+  typedef enum logic [1:0] {
+    IDLE,
+    IRAM_MIRROR,
+    DRAM
+  } mux_axi_t;
+
+  mux_axi_t switch_ff, next_switch;
+  logic slave_1_sel;
+  logic slave_2_sel;
+
+  // This mux is only used for the printf to work =)
+  always_comb begin : axi_mux
+    masters_axi_miso[1] = s_axi_miso_t'('0);
+    slaves_axi_mosi[1]  = s_axi_mosi_t'('0);
+    slaves_axi_mosi[2]  = s_axi_mosi_t'('0);
+
+    slave_2_sel = (masters_axi_mosi[1].arvalid &&
+                  (masters_axi_mosi[1].araddr[31:16] == 'h8000));
+    slave_1_sel = ~slave_2_sel;
+
+    next_switch = slave_2_sel ? IRAM_MIRROR : DRAM;
+
+    if (switch_ff == IRAM_MIRROR) begin
+      masters_axi_miso[1] = slaves_axi_miso[2];
+    end
+
+    if (switch_ff == DRAM) begin
+      masters_axi_miso[1] = slaves_axi_miso[1];
+    end
+
+    if (slave_2_sel)
+      slaves_axi_mosi[2]  = masters_axi_mosi[1];
+    else
+      slaves_axi_mosi[1]  = masters_axi_mosi[1];
+  end
+
+  always_ff @ (posedge clk) begin
+    if (~rst) begin
+      switch_ff <= IDLE;
+    end
+    else begin
+      switch_ff <= next_switch;
+    end
+  end
+
   axi_mem #(
     .MEM_KB(`DRAM_KB_SIZE)
   ) u_dram (
@@ -39,6 +85,15 @@ module nox_sim import utils_pkg::*; (
     .rst      (rst),
     .axi_mosi (slaves_axi_mosi[1]),
     .axi_miso (slaves_axi_miso[1])
+  );
+
+  axi_mem #(
+    .MEM_KB(`IRAM_KB_SIZE)
+  ) u_iram_mirror (
+    .clk      (clk),
+    .rst      (rst),
+    .axi_mosi (slaves_axi_mosi[2]),
+    .axi_miso (slaves_axi_miso[2])
   );
   /* verilator lint_on PINMISSING */
 
@@ -65,7 +120,8 @@ module nox_sim import utils_pkg::*; (
     /*verilator public*/
     logic [31:0] addr_val;
     logic [31:0] word_val;
-    u_iram.mem_loading[addr_val] = word_val;
+    u_iram.mem_loading[addr_val]        = word_val;
+    u_iram_mirror.mem_loading[addr_val] = word_val;
   endfunction
 
   function automatic void writeWordDRAM(addr_val, word_val);

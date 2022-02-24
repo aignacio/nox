@@ -307,7 +307,7 @@ module axi_mem import utils_pkg::*; #(
       end_sig_ff    <= next_end_sig;
       fin_sig_ff    <= next_fin;
       if (char_ff) begin
-        if (DISPLAY_TEST)
+        //if (DISPLAY_TEST)
           $write("%c",find_byte(axi_mosi.wdata));
       end
       else if (num_ff) begin

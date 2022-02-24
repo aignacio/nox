@@ -28,7 +28,7 @@ int main(void) {
   //int cycle = rdcycle();
 
   int misa_id = read_csr(misa);
-  printf("Hello_World! - MISA:%x", misa_id);
+  /*printf("Hello_World! - MISA:%x", misa_id);*/
   *addr_leds = leds_out;
   /*set_csr(mstatus,MSTATUS_MIE);*/
   while(true){
@@ -58,7 +58,7 @@ int main(void) {
     // Illegal instruction
     /*asm volatile (".word 0x0");*/
 
-    if (i == 5){
+    if (i == 5000){
       i = 0;
 
       if (leds_out == 8)

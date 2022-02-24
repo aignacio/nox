@@ -6,7 +6,7 @@
 #include "riscv_csr_encoding.h"
 
 #define LEDS_ADDR   0xD0000000
-#define PRINT_ADDR  0xABCD0000
+#define PRINT_ADDR  0xA0000000
 
 volatile uint32_t* const addr_leds = (uint32_t*) LEDS_ADDR;
 volatile uint32_t* const addr_print = (uint32_t*) PRINT_ADDR;
@@ -58,7 +58,7 @@ int main(void) {
     /*asm volatile (".word 0x02f71763");*/
     // Illegal instruction
     /*asm volatile (".word 0x0");*/
-    if (i == 5){
+    if (i == 5000){
       i = 0;
       if (leds_out == 8)
         leds_out = 1;
