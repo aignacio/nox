@@ -1,9 +1,9 @@
 /**
- * File              : fetch.sv
+* File              : fetch.sv
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 23.02.2022
+ * Last Modified Date: 24.02.2022
  */
 module fetch
   import utils_pkg::*;
@@ -31,165 +31,121 @@ module fetch
   output  s_trap_info_t trap_info_o
 );
   typedef logic [$clog2(L0_BUFFER_SIZE>1?L0_BUFFER_SIZE:2):0] buffer_t;
-  typedef logic [$clog2(MAX_OT_TXN):0] cnt_ot_t;
 
-  cnt_ot_t      ot_cnt_ff, next_ot_cnt;
+  typedef enum logic [1:0] {
+    IDLE,
+    FETCH_CLEAR,
+    FETCH_STOP,
+    FETCH_RUN
+  } fetch_fsm_t;
+
   fetch_fsm_t   fetch_st_ff, next_fetch_sm;
-  instr_raw_t   instr_buffer;
+  logic         instr_access_fault;
+  cb_addr_t     pc_addr_ff, next_pc_addr;
+  cb_addr_t     new_addr_ff, next_new_pc;
+  logic         requested_ff, next_requested;
+  logic         ignore_data;
+  logic         ap_received;
+  logic         received_data;
+  logic         full_fifo;
+
+  logic         clear_buffer;
+  logic         get_next_instr;
+  logic         write_instr;
   buffer_t      buffer_space;
-  pc_t          pc_ff, next_pc;
+  instr_raw_t   instr_buffer;
   instr_raw_t   instr_from_mem;
 
-  logic wait_answer_ff, next_wait_answer;
-  logic fetch_full;
-  logic fetch_trig_ff, next_trig;
-  logic fetch_start_ff, next_fetch_start;
-  logic fetch_req_trig, fetch_start_trig;
-  logic req_sent;
-  logic answer_recv;
-  logic get_next_instr;
-  logic clear_buffer;
-  logic write_instr;
-  logic after_clr_valid_ff, next_after_clr_valid;
-  logic instr_access_fault;
-
-  always_comb begin : cb_fetch
+  always_comb begin
     instr_cb_mosi_o = s_cb_mosi_t'('0);
-    next_trig = fetch_req_i;
+    next_requested  = requested_ff;
+    next_pc_addr    = pc_addr_ff;
+    ignore_data     = 'b0;
+    received_data   = instr_cb_miso_i.rd_valid;
+    instr_from_mem  = instr_cb_miso_i.rd_data;
+    clear_buffer    = 'b0;
+    write_instr     = 'b0;
+    ap_received     = instr_cb_miso_i.rd_addr_ready;
+    next_new_pc     = new_addr_ff;
 
-    // Only used during start
-    next_fetch_start = fetch_start_i;
-    fetch_start_trig = (next_fetch_start && ~fetch_start_ff);
+    if (requested_ff && received_data) begin
+      next_requested = 'b0;
+      case (fetch_st_ff)
+        FETCH_CLEAR: begin
+          ignore_data  = 'b1;
+          next_pc_addr = new_addr_ff;
+        end
+        FETCH_RUN: begin
+          write_instr  = 'b1;
+        end
+        default:  next_requested = 'b0;
+      endcase
+    end
 
-    fetch_req_trig = fetch_start_trig ||
-                     (next_trig && ~fetch_trig_ff);
-    next_pc = pc_ff;
-    fetch_full = (buffer_space == buffer_t'(L0_BUFFER_SIZE));
-    clear_buffer = fetch_req_trig;
-    write_instr = 'b0;
-    instr_from_mem = 'd0;
-    next_after_clr_valid = after_clr_valid_ff;
+    if (fetch_st_ff == FETCH_STOP) begin
+      instr_cb_mosi_o.rd_addr       = cb_addr_t'({pc_addr_ff[31:2],2'd0});
+      instr_cb_mosi_o.rd_addr_valid = 'b1;
+      instr_cb_mosi_o.rd_size       = cb_size_t'(CB_WORD);
+      next_requested = 'b1;
+    end
+
+    if (fetch_st_ff == FETCH_RUN) begin
+      instr_cb_mosi_o.rd_addr       = cb_addr_t'({pc_addr_ff[31:2],2'd0});
+      instr_cb_mosi_o.rd_addr_valid = 'b1;
+      instr_cb_mosi_o.rd_size       = cb_size_t'(CB_WORD);
+      next_requested = 'b1;
+      if (ap_received) begin
+        next_pc_addr = pc_addr_ff + 'd4;
+      end
+    end
+
+    if (fetch_req_i) begin
+      clear_buffer = 'b1;
+      next_new_pc  = fetch_addr_i;
+    end
+
+    instr_cb_mosi_o.rd_ready = ~full_fifo;
+  end
+
+  always_comb begin : trap_control
+    trap_info_o = s_trap_info_t'('0);
     instr_access_fault = 'b0;
 
-    instr_cb_mosi_o.rd_ready = ~fetch_full;
-
-    // Memory reply
-    // If we received something (rd_valid) and there're no old answers
-    // from previous txns due to a fetch req (fetch_st_ff != FETCH_CLEAR)
-    if (instr_cb_miso_i.rd_valid && (fetch_st_ff != FETCH_CLEAR) && after_clr_valid_ff) begin
-      if ((instr_cb_miso_i.rd_resp == CB_OKAY) && ~fetch_full) begin
-        write_instr = 'b1;
-        instr_from_mem = instr_cb_miso_i.rd_data;
-      end
-      else begin
-        if (instr_cb_miso_i.rd_resp != CB_OKAY) begin
-          instr_access_fault = 'b1;
-        end
-      end
-    end
-
-    // Request to mem new instr IF:
-    // 1) We are not in the IDLE st and we have space left
-    // 2) AND we are not in the fetch clear
-    // 3) AND we didn't reach the max OT limits
-    // 4) AND previous answers were cleared
-    /* verilator lint_off WIDTH */
-    //if ((fetch_st_ff != IDLE) && ~fetch_full && ~fetch_req_trig &&
-    if (wait_answer_ff ||
-        ((fetch_st_ff != IDLE) && ~fetch_req_trig &&
-        (ot_cnt_ff < MAX_OT_TXN) && (after_clr_valid_ff))) begin
-    /* verilator lint_on WIDTH */
-      instr_cb_mosi_o.rd_addr_valid = 'b1;
-      instr_cb_mosi_o.rd_size = cb_size_t'(CB_WORD);
-      instr_cb_mosi_o.rd_addr = cb_addr_t'({next_pc[31:2],2'd0});
-    end
-
-    req_sent = instr_cb_mosi_o.rd_addr_valid && instr_cb_miso_i.rd_addr_ready;
-    answer_recv = instr_cb_mosi_o.rd_ready && instr_cb_miso_i.rd_valid;
-
-    if (clear_buffer) begin
-      next_pc = fetch_start_trig ? fetch_start_addr_i : {fetch_addr_i[31:2],2'd0};
-      `P_MSG("FETCH","Clear L0 buffer")
-    end
-    else begin
-      if (req_sent) begin
-        next_pc = {pc_ff[31:2],2'd0} + 'd4;
-      end
-    end
-
-    // This is used to discard previous OT answers
-    // after we have a fetch clear
-    next_ot_cnt = ot_cnt_ff + cnt_ot_t'(req_sent) - cnt_ot_t'(answer_recv);
-
-    if (after_clr_valid_ff) begin
-      if (fetch_req_trig) begin
-        next_after_clr_valid = (next_ot_cnt == 'd0);
-      end
-    end
-    else begin
-      next_after_clr_valid = (next_ot_cnt == 'd0);
-    end
-
-    trap_info_o = s_trap_info_t'('0);
     if (instr_access_fault) begin
       trap_info_o.active  = 'b1;
-      trap_info_o.pc_addr = pc_ff;
-      trap_info_o.mtval   = fetch_addr_i;
+      //trap_info_o.pc_addr = pc_ff;
+      //trap_info_o.mtval   = fetch_addr_i;
     end
+  end : trap_control
 
-    next_wait_answer = 'b0;
-    if (instr_cb_mosi_o.rd_addr_valid && ~instr_cb_miso_i.rd_addr_ready)
-      next_wait_answer = 'b1;
-  end : cb_fetch
-
-  `CLK_PROC(clk, rst) begin : pc_ctrl_seq
-    `RST_TYPE(rst) begin
-      pc_ff              <= pc_t'('d0);
-      ot_cnt_ff          <= 'd0;
-      after_clr_valid_ff <= 'b0;
-      fetch_trig_ff      <= 'b0;
-      fetch_start_ff     <= 'b0;
-      wait_answer_ff     <= 'b0;
-    end
-    else begin
-      pc_ff              <= next_pc;
-      ot_cnt_ff          <= next_ot_cnt;
-      after_clr_valid_ff <= next_after_clr_valid;
-      fetch_trig_ff      <= next_trig;
-      fetch_start_ff     <= next_fetch_start;
-      wait_answer_ff     <= next_wait_answer;
-    end
-  end : pc_ctrl_seq
-
-  always_comb begin : fetch_fsm_comb
+  always_comb begin : fetch_fsm_control
     next_fetch_sm = fetch_st_ff;
+
     /* verilator lint_off CASEINCOMPLETE */
     unique case (fetch_st_ff)
-      IDLE:         next_fetch_sm = fetch_req_trig ? FETCH_CLEAR : IDLE;
-      FETCH_CLEAR:  next_fetch_sm = FETCH_RUN;
-      FETCH_RUN: begin
-        priority case (1)
-          fetch_req_trig:  next_fetch_sm = FETCH_CLEAR;
-          fetch_full:   begin
-            `P_MSG("FETCH","Stall this cycle")
-            next_fetch_sm = FETCH_RUN;
-          end
-          default:  next_fetch_sm = FETCH_RUN;
-        endcase
-      end
-      default:  next_fetch_sm = fetch_st_ff;
+      IDLE:         next_fetch_sm = fetch_start_i ? FETCH_RUN   : IDLE;
+      FETCH_CLEAR:  next_fetch_sm = received_data ? FETCH_RUN   : FETCH_CLEAR;
+      FETCH_STOP:   next_fetch_sm = ap_received   ? FETCH_CLEAR : FETCH_STOP;
+      FETCH_RUN:    next_fetch_sm = fetch_req_i   ? (ap_received ? FETCH_CLEAR : FETCH_STOP) : FETCH_RUN;
+      default:      next_fetch_sm = fetch_st_ff;
     endcase
     /* verilator lint_on CASEINCOMPLETE */
-  end : fetch_fsm_comb
+  end : fetch_fsm_control
 
-  `CLK_PROC(clk, rst) begin : fetch_fsm_seq
+  `CLK_PROC(clk, rst) begin
     `RST_TYPE(rst) begin
-      fetch_st_ff <= fetch_fsm_t'(IDLE);
+      fetch_st_ff  <= fetch_fsm_t'(IDLE);
+      pc_addr_ff   <= cb_addr_t'(fetch_start_addr_i);
+      requested_ff <= 'b0;
+      new_addr_ff  <= cb_addr_t'('0);
     end
     else begin
-      fetch_st_ff <= next_fetch_sm;
+      fetch_st_ff  <= next_fetch_sm;
+      pc_addr_ff   <= next_pc_addr;
+      requested_ff <= next_requested;
+      new_addr_ff  <= next_new_pc;
     end
-  end : fetch_fsm_seq
+  end
 
   always_comb begin : fetch_proc_if
     fetch_valid_o = 'b0;
@@ -199,7 +155,7 @@ module fetch
     // We assert valid instr if:
     // 1 - There's no req to fetch a new addr
     // 2 - There's data inside the FIFO
-    if (~fetch_req_trig && (buffer_space != 'd0)) begin
+    if (~fetch_req_i && (buffer_space != 'd0)) begin
       // We request to read the FIFO if:
       // 3 - The next stage is ready to receive
       fetch_valid_o = 'b1;
@@ -222,17 +178,10 @@ module fetch
     .data_i   (instr_from_mem),
     .data_o   (instr_buffer),
     .error_o  (),
-    .full_o   (),
+    .full_o   (full_fifo),
     .empty_o  (),
     .ocup_o   (buffer_space)
   );
-
-`ifndef NO_ASSERTIONS
-  initial begin
-    illegal_param_fetch : assert (L0_BUFFER_SIZE > 0)
-    else $error("Illegal fetch build parameters!");
-  end
-`endif
 
 `ifdef COCOTB_SIM
   `ifdef XCELIUM

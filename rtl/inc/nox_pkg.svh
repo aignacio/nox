@@ -72,16 +72,5 @@
   typedef logic valid_t;
   typedef logic ready_t;
 
-  typedef enum logic {
-    NO_FWD,
-    FWD_REG
-  } fwd_mux_t;
-
-  typedef enum logic [1:0] {
-    IDLE,
-    FETCH_CLEAR,
-    FETCH_RUN
-  } fetch_fsm_t;
-
   //endpackage
 `endif
