@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 23.02.2022
+ * Last Modified Date: 25.02.2022
  */
 module nox
   import utils_pkg::*;
@@ -11,7 +11,6 @@ module nox
   parameter int SUPPORT_DEBUG     = 1,
   parameter int MTVEC_DEFAULT_VAL = 'h1000, // 4KB
   parameter int L0_BUFFER_SIZE    = 2,  // Max instrs locally stored
-  parameter int MAX_OT_TXN        = 4,  // Max outstanding txns, low numbers might impact perf.
   parameter int SUPPORT_WR_RESP   = 1   // IF I/F supports wr_resp
 )(
   input                 clk,
@@ -21,12 +20,22 @@ module nox
   input   pc_t          start_addr_i,
   // IRQs
   input   s_irq_t       irq_i,
+`ifdef TARGET_IF_AXI
   // Read-only interface
   output  s_axi_mosi_t  instr_axi_mosi_o,
   input   s_axi_miso_t  instr_axi_miso_i,
   // Load-Store interface
   output  s_axi_mosi_t  lsu_axi_mosi_o,
   input   s_axi_miso_t  lsu_axi_miso_i
+`endif
+`ifdef TARGET_IF_AHB
+  // Read-only interface
+  output  s_ahb_mosi_t  instr_ahb_mosi_o,
+  input   s_ahb_miso_t  instr_ahb_miso_i,
+  // Load-Store interface
+  output  s_ahb_mosi_t  lsu_ahb_mosi_o,
+  input   s_ahb_miso_t  lsu_ahb_miso_i
+`endif
 );
   logic rst;
 
@@ -69,9 +78,10 @@ module nox
   assign rst = arst;
 `endif
 
+`ifdef TARGET_IF_AXI
   cb_to_axi #(
     .AXI_ID                (0)
-  ) u_instr_cb_to_axi (
+  ) u_instr_cb_to_axi(
     // Core bus Master I/F
     .cb_mosi_i             (instr_cb_mosi),
     .cb_miso_o             (instr_cb_miso),
@@ -90,11 +100,29 @@ module nox
     .axi_mosi_o            (lsu_axi_mosi_o),
     .axi_miso_i            (lsu_axi_miso_i)
   );
+`else
+  cb_to_ahb u_instr_cb_to_ahb(
+    // Core bus Master I/F
+    .cb_mosi_i             (instr_cb_mosi),
+    .cb_miso_o             (instr_cb_miso),
+    // AHB Master I/F
+    .ahb_mosi_o            (instr_ahb_mosi_o),
+    .ahb_miso_i            (instr_ahb_miso_i)
+  );
+
+  cb_to_ahb u_lsu_cb_to_ahb(
+    // Core bus Master I/F
+    .cb_mosi_i             (lsu_cb_mosi),
+    .cb_miso_o             (lsu_cb_miso),
+    // AHB Master I/F
+    .ahb_mosi_o            (lsu_ahb_mosi_o),
+    .ahb_miso_i            (lsu_ahb_miso_i)
+  );
+`endif
 
   fetch #(
     .SUPPORT_DEBUG         (SUPPORT_DEBUG),
-    .L0_BUFFER_SIZE        (L0_BUFFER_SIZE),
-    .MAX_OT_TXN            (MAX_OT_TXN)
+    .L0_BUFFER_SIZE        (L0_BUFFER_SIZE)
   ) u_fetch (
     .clk                   (clk),
     .rst                   (rst),

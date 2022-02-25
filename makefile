@@ -1,5 +1,8 @@
+AXI_IF				?=	1
+
 # Design files
 _SRC_VERILOG	?=	rtl/inc/axi_pkg.svh
+_SRC_VERILOG	?=	rtl/inc/ahb_pkg.svh
 _SRC_VERILOG	+=	rtl/inc/nox_pkg.svh
 _SRC_VERILOG 	+=	rtl/inc/core_bus_pkg.svh
 _SRC_VERILOG 	+=	rtl/inc/riscv_pkg.svh
@@ -11,6 +14,7 @@ SRC_VERILOG 	?=	$(_SRC_VERILOG)
 
 # SoC design files
 _SOC_VERILOG	?=	rtl/inc/axi_pkg.svh
+_SOC_VERILOG	?=	rtl/inc/ahb_pkg.svh
 _SOC_VERILOG	+=	rtl/inc/nox_pkg.svh
 _SOC_VERILOG 	+=	rtl/inc/core_bus_pkg.svh
 _SOC_VERILOG 	+=	rtl/inc/riscv_pkg.svh
@@ -18,7 +22,17 @@ _SOC_VERILOG 	+=	rtl/inc/utils_pkg.sv
 _SOC_VERILOG 	+=	tb/axi_mem.sv
 _SOC_VERILOG 	+=	$(_CORE_VERILOG)
 _SOC_VERILOG 	+=	$(shell find xlnx/rtl/verilog-axi/rtl -type f -iname *.v)
-_SOC_VERILOG 	+=	$(shell find xlnx/rtl/ -type f -iname *.sv)
+#_SOC_VERILOG 	+=	$(shell find xlnx/rtl/ -type f -iname *.sv)
+_SOC_VERILOG 	+=	xlnx/rtl/axi_interconnect_wrapper.sv
+_SOC_VERILOG 	+=	xlnx/rtl/axi_mem_wrapper.sv
+_SOC_VERILOG 	+=	xlnx/rtl/axi_rom_wrapper.sv
+#_SOC_VERILOG 	+=	xlnx/rtl/ahb_interconnect.sv
+#_SOC_VERILOG 	+=	xlnx/rtl/ahb_interconnect_wrapper.sv
+ifeq ($(AXI_IF),0)
+_SOC_VERILOG 	+=	xlnx/rtl/nox_soc_ahb.sv
+else
+_SOC_VERILOG 	+=	xlnx/rtl/nox_soc.sv
+endif
 SOC_VERILOG		:=	$(_SOC_VERILOG)
 
 # Design include files
@@ -67,6 +81,12 @@ ifeq ($(RV_COMPLIANCE),1)
 _MACROS_VLOG	+=	RV_COMPLIANCE
 else
 _MACROS_VLOG	+=	EN_PRINTF
+endif
+
+ifeq ($(AXI_IF),0)
+_MACROS_VLOG	+=	TARGET_IF_AHB
+else
+_MACROS_VLOG	+=	TARGET_IF_AXI
 endif
 MACROS_VLOG		?=	$(addprefix +define+,$(_MACROS_VLOG))
 

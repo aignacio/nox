@@ -6,6 +6,7 @@
     //import core_bus_pkg::*;
     //export *::*;
     `include "axi_pkg.svh"
+    `include "ahb_pkg.svh"
     `include "nox_pkg.svh"
     `include "core_bus_pkg.svh"
     `include "riscv_pkg.svh"

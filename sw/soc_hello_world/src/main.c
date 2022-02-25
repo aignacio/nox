@@ -58,7 +58,7 @@ int main(void) {
     // Illegal instruction
     /*asm volatile (".word 0x0");*/
 
-    if (i == 5000){
+    if (i == 5){
       i = 0;
 
       if (leds_out == 8)

@@ -10,6 +10,9 @@
   //`define TARGET_ASIC
   //`define EN_RTL_VERBOSE
 
+  //`define TARGET_IF_AXI
+  //`define TARGET_IF_AHB
+
   `ifdef TARGET_FPGA
     `define ACT_L_RESET
     `define SYNC_RESET
