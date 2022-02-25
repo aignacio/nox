@@ -29,9 +29,9 @@ int main(void) {
 
   // Printf will not work because LSU is directly connected to the
   // DRAM, without access to the IRAM where the string is containted
-  printf("Hello_World!");
   set_csr(mstatus,MSTATUS_MIE);
   *addr_leds = leds_out;
+  printf("Hello_World Nox!");
   while(true){
     if (test%10 == 0){
       switch(irq_type){
@@ -58,7 +58,7 @@ int main(void) {
     /*asm volatile (".word 0x02f71763");*/
     // Illegal instruction
     /*asm volatile (".word 0x0");*/
-    if (i == 5000){
+    if (i == 5){
       i = 0;
       if (leds_out == 8)
         leds_out = 1;

@@ -63,7 +63,11 @@ _MACROS_VLOG	+=	BP_ADDRS_CHN=$(BP_ADDRS_CHN)
 _MACROS_VLOG	+=	BP_WRDTA_CHN=$(BP_WRDTA_CHN)
 _MACROS_VLOG	+=	BP_BWRES_CHN=$(BP_BWRES_CHN)
 _MACROS_VLOG	+=	SIMULATION
+ifeq ($(RV_COMPLIANCE),1)
 _MACROS_VLOG	+=	RV_COMPLIANCE
+else
+_MACROS_VLOG	+=	EN_PRINTF
+endif
 MACROS_VLOG		?=	$(addprefix +define+,$(_MACROS_VLOG))
 
 # Be sure to set up correctly the number of
@@ -198,7 +202,7 @@ run_soc: $(RUN_SW_SOC)
 #	RISC-V Compliance test #
 ##########################
 sim_comp:
-	make all IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
+	make all RV_COMPLIANCE=1 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
 
 compliance:
 	$(RUN_CMD_2) make verify RISCV_PREFIX=riscv-none-embed-	\
