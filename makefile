@@ -193,6 +193,12 @@ $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk: $(SRC_VERILOG) $(SRC_CPP) $(TB_VERILATOR)
 	$(RUN_CMD) verilator $(VERIL_ARGS)
 
 ##########################
+#				 Coremark			   #
+##########################
+coremark:
+	make -C sw/coremark/ PORT_DIR=nox
+
+##########################
 #				 SoC test			   #
 ##########################
 wave_soc: $(WAVEFORM_FST)

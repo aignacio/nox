@@ -26,10 +26,11 @@ LDFLAGS	:=	-g									\
 						-march=rv32i				\
 						-mabi=ilp32					\
 						-nostartfiles 			\
-						-nostdlib			 			\
 						--specs=nano.specs	\
 						--specs=nosys.specs \
 						-lm -lc -lgcc
+# Add this if you want to implement your own libgcc functions
+#-nostdlib			 			\
 
 TARGET_NAME	:= $(notdir $(shell pwd))
 ODIR				:=	output

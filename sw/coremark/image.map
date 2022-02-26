@@ -1,0 +1,291 @@
+Archive member included to satisfy reference by file (symbol)
+
+/opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(muldi3.o)
+                              ./core_main.o (__mulsi3)
+/opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(div.o)
+                              ./nox/ee_printf.o (__divsi3)
+
+Discarded input sections
+
+ .data          0x0000000000000000        0x0 ./core_list_join.o
+ .bss           0x0000000000000000        0x0 ./core_list_join.o
+ .bss           0x0000000000000000        0x0 ./core_main.o
+ .data          0x0000000000000000        0x0 ./core_matrix.o
+ .bss           0x0000000000000000        0x0 ./core_matrix.o
+ .bss           0x0000000000000000        0x0 ./core_state.o
+ .data          0x0000000000000000        0x0 ./core_util.o
+ .bss           0x0000000000000000        0x0 ./core_util.o
+ .data          0x0000000000000000        0x0 ./nox/core_portme.o
+ .data          0x0000000000000000        0x0 ./nox/ee_printf.o
+ .bss           0x0000000000000000        0x0 ./nox/ee_printf.o
+ .srodata       0x0000000000000000        0x4 ./nox/ee_printf.o
+ .text          0x0000000000000000        0x0 ./nox/crt0.o
+ .data          0x0000000000000000        0x0 ./nox/crt0.o
+ .bss           0x0000000000000000        0x0 ./nox/crt0.o
+ .text          0x0000000000000000       0xc0 ./nox/startup.o
+ .data          0x0000000000000000        0x0 ./nox/startup.o
+ .bss           0x0000000000000000        0xc ./nox/startup.o
+ .sdata         0x0000000000000000        0x4 ./nox/startup.o
+ .data          0x0000000000000000        0x0 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(muldi3.o)
+ .bss           0x0000000000000000        0x0 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(muldi3.o)
+ .data          0x0000000000000000        0x0 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(div.o)
+ .bss           0x0000000000000000        0x0 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(div.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+IRAM             0x0000000080000000 0x0000000000005400 axrl !w
+DRAM             0x0000000010000000 0x0000000000002000 axw !rl
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a
+LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/../../../../riscv-none-embed/lib/rv32i/ilp32/libm.a
+LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/../../../../riscv-none-embed/lib/rv32i/ilp32/libc.a
+LOAD ./core_list_join.o
+LOAD ./core_main.o
+LOAD ./core_matrix.o
+LOAD ./core_state.o
+LOAD ./core_util.o
+LOAD ./nox/core_portme.o
+LOAD ./nox/ee_printf.o
+LOAD ./nox/crt0.o
+LOAD ./nox/startup.o
+LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a
+START GROUP
+LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a
+LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/../../../../riscv-none-embed/lib/rv32i/ilp32/libg.a
+LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/../../../../riscv-none-embed/lib/rv32i/ilp32/libc.a
+END GROUP
+LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a
+                0x0000000000000100                _min_stack = 0x100
+
+.text           0x0000000080000000     0x5108
+                0x0000000080000000                _start_text = .
+ *(.init)
+ .init          0x0000000080000000       0x14 ./nox/crt0.o
+                0x0000000080000000                _start_reset
+ .init          0x0000000080000014       0x58 ./nox/startup.o
+                0x0000000080000014                _reset
+                0x0000000080000100                . = (ORIGIN (IRAM) + 0x100)
+ *fill*         0x000000008000006c       0x94 
+                0x0000000080000100                _start_vector = .
+ *(.isr_vector)
+ *(.text*)
+ .text          0x0000000080000100      0xe48 ./core_list_join.o
+                0x0000000080000100                calc_func
+                0x00000000800002f8                cmp_complex
+                0x0000000080000364                cmp_idx
+                0x0000000080000444                copy_info
+                0x0000000080000488                core_bench_list
+                0x00000000800007ac                core_list_init
+                0x0000000080000a74                core_list_insert_new
+                0x0000000080000b60                core_list_remove
+                0x0000000080000bd4                core_list_undo_remove
+                0x0000000080000c40                core_list_find
+                0x0000000080000ce4                core_list_reverse
+                0x0000000080000d40                core_list_mergesort
+ .text          0x0000000080000f48     0x1020 ./core_main.o
+                0x0000000080000f48                iterate
+                0x0000000080001058                main
+ .text          0x0000000080001f68      0xc64 ./core_matrix.o
+                0x0000000080001f68                core_bench_matrix
+                0x000000008000201c                matrix_test
+                0x00000000800021d0                core_init_matrix
+                0x000000008000242c                matrix_sum
+                0x0000000080002550                matrix_mul_const
+                0x0000000080002654                matrix_add_const
+                0x000000008000274c                matrix_mul_vect
+                0x0000000080002864                matrix_mul_matrix
+                0x0000000080002a04                matrix_mul_matrix_bitextract
+ .text          0x0000000080002bcc      0x910 ./core_state.o
+                0x0000000080002bcc                core_bench_state
+                0x0000000080002e78                core_init_state
+                0x0000000080003140                core_state_transition
+ .text          0x00000000800034dc      0x328 ./core_util.o
+                0x00000000800034dc                get_seed_32
+                0x000000008000356c                crcu8
+                0x000000008000366c                crcu16
+                0x00000000800036f4                crcu32
+                0x0000000080003774                crc16
+                0x00000000800037c4                check_data_types
+ .text          0x0000000080003804      0x150 ./nox/core_portme.o
+                0x0000000080003804                barebones_clock
+                0x000000008000382c                start_time
+                0x000000008000385c                stop_time
+                0x000000008000388c                get_time
+                0x00000000800038bc                time_in_secs
+                0x0000000080003904                portable_init
+                0x0000000080003938                portable_fini
+ .text          0x0000000080003954      0xfc8 ./nox/ee_printf.o
+                0x0000000080004834                uart_send_char
+                0x0000000080004864                ee_printf
+ .text          0x000000008000491c       0x24 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(muldi3.o)
+                0x000000008000491c                __mulsi3
+ .text          0x0000000080004940       0xb4 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(div.o)
+                0x0000000080004940                __divsi3
+                0x0000000080004948                __udivsi3
+                0x0000000080004990                __umodsi3
+                0x00000000800049c4                __modsi3
+                0x00000000800049f4                _edata = .
+ *(.rodata*)
+ .rodata        0x00000000800049f4      0x477 ./core_main.o
+ *fill*         0x0000000080004e6b        0x1 
+ .rodata        0x0000000080004e6c       0xd0 ./core_state.o
+ .rodata        0x0000000080004f3c       0x4e ./core_util.o
+ *fill*         0x0000000080004f8a        0x2 
+ .rodata        0x0000000080004f8c      0x17c ./nox/ee_printf.o
+ *(.srodata*)
+                0x0000000080005108                . = ALIGN (0x4)
+                0x0000000080005108                _end_text = .
+                0x0000000080005108                _stored_data = .
+
+.rela.dyn       0x0000000080005108        0x0
+ .rela.init     0x0000000080005108        0x0 ./core_list_join.o
+
+.data           0x0000000010000000       0x80 load address 0x0000000080005108
+                0x0000000010000000                __DATA_BEGIN__ = .
+                0x0000000010000000                _start_data = .
+ *(.data .data.* .gnu.linkonce.d.*)
+ .data          0x0000000010000000       0x30 ./core_main.o
+                0x0000000010000024                mem_name
+ .data          0x0000000010000030       0x40 ./core_state.o
+                0x0000000010000070                __SDATA_BEGIN__ = .
+ *(.srodata.cst16)
+ *(.srodata.cst8)
+ *(.srodata.cst4)
+ *(.srodata.cst2)
+ *(.srodata .srodata.*)
+ *(.sdata .sdata.* .sdata2.* .gnu.linkonce.s.*)
+ .sdata         0x0000000010000070        0x8 ./nox/core_portme.o
+                0x0000000010000070                seed3_volatile
+                0x0000000010000074                default_num_contexts
+ .sdata         0x0000000010000078        0x8 ./nox/ee_printf.o
+                0x0000000010000080                _end_data = .
+                0x0000000010000080                _start_bss = .
+
+.bss            0x0000000010000080        0x8 load address 0x0000000080005108
+                0x0000000010000080                __BSS_START__ = .
+ *(.dynbss)
+ *(.bss .bss.* .gnu.linkonce.b.*)
+ .bss           0x0000000010000080        0x8 ./nox/core_portme.o
+ *(COMMON)
+                0x0000000010000088                . = ALIGN ((. != 0x0)?0x4:0x1)
+
+.sbss           0x0000000010000088       0x10 load address 0x0000000080005108
+ *(.dynsbss)
+ *(.sbss .sbss.* .gnu.linkonce.sb.*)
+ .sbss          0x0000000010000088       0x10 ./nox/core_portme.o
+                0x0000000010000088                seed1_volatile
+                0x000000001000008c                seed2_volatile
+                0x0000000010000090                seed4_volatile
+                0x0000000010000094                seed5_volatile
+ *(.scommon)
+                0x0000000010000098                __BSS_END__ = .
+                0x0000000010000098                _end = .
+                0x0000000010000098                _end_bss = .
+                0x0000000010000800                __global_pointer$ = MIN ((__SDATA_BEGIN__ + 0x800), MAX ((__DATA_BEGIN__ + 0x800), (__BSS_END__ - 0x800)))
+                0x0000000010002000                PROVIDE (_start_stack = (ORIGIN (DRAM) + LENGTH (DRAM)))
+                [!provide]                        PROVIDE (_end_stack = (ORIGIN (DRAM) + (LENGTH (DRAM) - _stack_size)))
+                [!provide]                        PROVIDE (_start_heap = __BSS_END__)
+                [!provide]                        PROVIDE (_end_heap = _end_stack)
+                [!provide]                        PROVIDE (end = _start_heap)
+OUTPUT(./coremark.elf elf32-littleriscv)
+
+.debug_info     0x0000000000000000     0x22c1
+ .debug_info    0x0000000000000000      0x8ad ./core_list_join.o
+ .debug_info    0x00000000000008ad      0x4a2 ./core_main.o
+ .debug_info    0x0000000000000d4f      0x59c ./core_matrix.o
+ .debug_info    0x00000000000012eb      0x34a ./core_state.o
+ .debug_info    0x0000000000001635      0x240 ./core_util.o
+ .debug_info    0x0000000000001875      0x297 ./nox/core_portme.o
+ .debug_info    0x0000000000001b0c      0x55b ./nox/ee_printf.o
+ .debug_info    0x0000000000002067       0x26 ./nox/crt0.o
+ .debug_info    0x000000000000208d      0x234 ./nox/startup.o
+
+.debug_abbrev   0x0000000000000000      0xa4a
+ .debug_abbrev  0x0000000000000000      0x1d0 ./core_list_join.o
+ .debug_abbrev  0x00000000000001d0      0x13e ./core_main.o
+ .debug_abbrev  0x000000000000030e      0x130 ./core_matrix.o
+ .debug_abbrev  0x000000000000043e      0x127 ./core_state.o
+ .debug_abbrev  0x0000000000000565       0xef ./core_util.o
+ .debug_abbrev  0x0000000000000654      0x15f ./nox/core_portme.o
+ .debug_abbrev  0x00000000000007b3      0x1cb ./nox/ee_printf.o
+ .debug_abbrev  0x000000000000097e       0x14 ./nox/crt0.o
+ .debug_abbrev  0x0000000000000992       0xb8 ./nox/startup.o
+
+.debug_aranges  0x0000000000000000      0x128
+ .debug_aranges
+                0x0000000000000000       0x20 ./core_list_join.o
+ .debug_aranges
+                0x0000000000000020       0x20 ./core_main.o
+ .debug_aranges
+                0x0000000000000040       0x20 ./core_matrix.o
+ .debug_aranges
+                0x0000000000000060       0x20 ./core_state.o
+ .debug_aranges
+                0x0000000000000080       0x20 ./core_util.o
+ .debug_aranges
+                0x00000000000000a0       0x20 ./nox/core_portme.o
+ .debug_aranges
+                0x00000000000000c0       0x20 ./nox/ee_printf.o
+ .debug_aranges
+                0x00000000000000e0       0x20 ./nox/crt0.o
+ .debug_aranges
+                0x0000000000000100       0x28 ./nox/startup.o
+
+.debug_line     0x0000000000000000     0x3926
+ .debug_line    0x0000000000000000      0xa91 ./core_list_join.o
+ .debug_line    0x0000000000000a91      0xb55 ./core_main.o
+ .debug_line    0x00000000000015e6      0x83a ./core_matrix.o
+ .debug_line    0x0000000000001e20      0x6e4 ./core_state.o
+ .debug_line    0x0000000000002504      0x20c ./core_util.o
+ .debug_line    0x0000000000002710      0x125 ./nox/core_portme.o
+ .debug_line    0x0000000000002835      0xe84 ./nox/ee_printf.o
+ .debug_line    0x00000000000036b9       0x4d ./nox/crt0.o
+ .debug_line    0x0000000000003706      0x220 ./nox/startup.o
+
+.debug_str      0x0000000000000000      0x987
+ .debug_str     0x0000000000000000      0x358 ./core_list_join.o
+                                        0x390 (size before relaxing)
+ .debug_str     0x0000000000000358       0xe5 ./core_main.o
+                                        0x298 (size before relaxing)
+ .debug_str     0x000000000000043d       0xce ./core_matrix.o
+                                        0x1bb (size before relaxing)
+ .debug_str     0x000000000000050b      0x131 ./core_state.o
+                                        0x223 (size before relaxing)
+ .debug_str     0x000000000000063c       0x9b ./core_util.o
+                                        0x167 (size before relaxing)
+ .debug_str     0x00000000000006d7       0x99 ./nox/core_portme.o
+                                        0x1ff (size before relaxing)
+ .debug_str     0x0000000000000770      0x109 ./nox/ee_printf.o
+                                        0x1f7 (size before relaxing)
+ .debug_str     0x0000000000000879       0x17 ./nox/crt0.o
+                                         0x22 (size before relaxing)
+ .debug_str     0x0000000000000890       0xf7 ./nox/startup.o
+                                        0x1ed (size before relaxing)
+
+.comment        0x0000000000000000       0x33
+ .comment       0x0000000000000000       0x33 ./core_list_join.o
+                                         0x34 (size before relaxing)
+ .comment       0x0000000000000033       0x34 ./core_main.o
+ .comment       0x0000000000000033       0x34 ./core_matrix.o
+ .comment       0x0000000000000033       0x34 ./core_state.o
+ .comment       0x0000000000000033       0x34 ./core_util.o
+ .comment       0x0000000000000033       0x34 ./nox/core_portme.o
+ .comment       0x0000000000000033       0x34 ./nox/ee_printf.o
+ .comment       0x0000000000000033       0x34 ./nox/startup.o
+
+.debug_frame    0x0000000000000000      0x884
+ .debug_frame   0x0000000000000000      0x1d8 ./core_list_join.o
+ .debug_frame   0x00000000000001d8       0x68 ./core_main.o
+ .debug_frame   0x0000000000000240      0x198 ./core_matrix.o
+ .debug_frame   0x00000000000003d8       0xa8 ./core_state.o
+ .debug_frame   0x0000000000000480       0xf8 ./core_util.o
+ .debug_frame   0x0000000000000578      0x110 ./nox/core_portme.o
+ .debug_frame   0x0000000000000688      0x14c ./nox/ee_printf.o
+ .debug_frame   0x00000000000007d4       0xb0 ./nox/startup.o
+
+.debug_ranges   0x0000000000000000       0x18
+ .debug_ranges  0x0000000000000000       0x18 ./nox/startup.o

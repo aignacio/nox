@@ -24,9 +24,10 @@ LDFLAGS	:=	-g									\
 						-Wl,-Map=output/image.map,--print-memory-usage \
 						-march=rv32i				\
 						-mabi=ilp32					\
-						-nostdlib						\
 						-nostartfiles 			\
 						-lgcc
+
+#-nostdlib
 
 TARGET_NAME	:= $(notdir $(shell pwd))
 ODIR				:=	output
