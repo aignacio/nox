@@ -17,6 +17,17 @@ Original Author: Shay Gal-on
 */
 #include "coremark.h"
 #include "core_portme.h"
+#include "printf.h"
+#include <stdint.h>
+
+#define PRINT_ADDR  0xA0000000
+
+volatile uint32_t* const addr_print = (uint32_t*) PRINT_ADDR;
+
+void _putchar(char character){
+  *addr_print = character;
+}
+
 
 #if VALIDATION_RUN
 volatile ee_s32 seed1_volatile = 0x3415;

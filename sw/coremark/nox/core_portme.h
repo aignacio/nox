@@ -55,7 +55,7 @@ Original Author: Shay Gal-on
    function.
 */
 #ifndef HAS_PRINTF
-#define HAS_PRINTF 0
+#define HAS_PRINTF 1
 #endif
 
 /* Definitions : COMPILER_VERSION, COMPILER_FLAGS, MEM_LOCATION
@@ -70,7 +70,7 @@ Original Author: Shay Gal-on
 #endif
 #ifndef COMPILER_FLAGS
 #define COMPILER_FLAGS \
-    FLAGS_STR ""
+    FLAGS_STR "-O0 -g"
 #endif
 #ifndef MEM_LOCATION
 #define MEM_LOCATION "STACK"
@@ -130,6 +130,7 @@ typedef ee_u32 CORE_TICKS;
 */
 #ifndef MEM_METHOD
 #define MEM_METHOD MEM_STACK
+//#define MEM_METHOD MEM_STATIC
 #endif
 
 /* Configuration : MULTITHREAD
@@ -207,6 +208,7 @@ void portable_fini(core_portable *p);
 #endif
 #endif
 
-int ee_printf(const char *fmt, ...);
+//int ee_printf(const char *fmt, ...);
+#include "printf.h"
 
 #endif /* CORE_PORTME_H */

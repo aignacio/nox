@@ -23,6 +23,8 @@ run_dir
 build
 fusesoc.conf
 .tox
+*.elf
+*.bin
 .test_durations
 *.i
 *.fst

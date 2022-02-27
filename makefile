@@ -195,8 +195,14 @@ $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk: $(SRC_VERILOG) $(SRC_CPP) $(TB_VERILATOR)
 ##########################
 #				 Coremark			   #
 ##########################
-coremark:
+nox_coremark:
+	make all IRAM_KB_SIZE=24 WAVEFORM_USE=0
+
+sw/coremark/coremark.elf:
 	make -C sw/coremark/ PORT_DIR=nox
+
+run_coremark: sw/coremark/coremark.elf
+	$(RUN_CMD) ./$(VERILATOR_EXE) -s 10000 -e $<
 
 ##########################
 #				 SoC test			   #
@@ -222,7 +228,7 @@ $(RUN_SW_SOC):
 	make -C sw/soc_hello_world all
 
 run_soc: $(RUN_SW_SOC)
-	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 10000 -e $<
+	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 50000 -e $<
 
 ##########################
 #	RISC-V Compliance test #

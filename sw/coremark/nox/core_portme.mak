@@ -44,6 +44,9 @@ PORT_CFLAGS = -O0 -g              \
 			  -Wno-unused		  \
 			  -ffreestanding	  \
 			  --specs=nano.specs  \
+			  -DPRINTF_DISABLE_SUPPORT_FLOAT		\
+			  -DPRINTF_DISABLE_SUPPORT_EXPONENTIAL	\
+			  -DPRINTF_DISABLE_SUPPORT_LONG_LONG	\
 			  -Wall -Wno-main
 FLAGS_STR = "$(PORT_CFLAGS) $(XCFLAGS) $(XLFLAGS) $(LFLAGS_END)"
 CFLAGS = $(PORT_CFLAGS) -I$(PORT_DIR) -I. -DFLAGS_STR=\"$(FLAGS_STR)\"
@@ -70,10 +73,18 @@ LFLAGS_END =
 # Flag : PORT_SRCS
 # 	Port specific source files can be added here
 #	You may also need cvt.c if the fcvt functions are not provided as intrinsics by your compiler!
-PORT_OBJS = $(PORT_DIR)/core_portme.o $(PORT_DIR)/ee_printf.o \
-            $(PORT_DIR)/crt0.o $(PORT_DIR)/startup.o
-PORT_SRCS = $(PORT_DIR)/core_portme.c $(PORT_DIR)/ee_printf.c \
-            $(PORT_DIR)/crt0.s $(PORT_DIR)/startup.c
+PORT_OBJS =	$(PORT_DIR)/printf.o		\
+			$(PORT_DIR)/core_portme.o	\
+			$(PORT_DIR)/crt0.o			\
+			$(PORT_DIR)/startup.o
+			#$(PORT_DIR)/ee_printf.o \
+            #$(PORT_DIR)/cvt.o
+PORT_SRCS =	$(PORT_DIR)/printf.c		\
+			$(PORT_DIR)/core_portme.c	\
+			$(PORT_DIR)/crt0.s			\
+			$(PORT_DIR)/startup.c
+						#$(PORT_DIR)/ee_printf.c \
+            #$(PORT_DIR)/cvt.c
 vpath %.c $(PORT_DIR)
 vpath %.s $(PORT_DIR)
 
