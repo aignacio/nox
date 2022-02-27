@@ -21,9 +21,7 @@ Original Author: Shay Gal-on
 #include <stdint.h>
 
 #define PRINT_ADDR  0xA0000000
-
 volatile uint32_t* const addr_print = (uint32_t*) PRINT_ADDR;
-
 void _putchar(char character){
   *addr_print = character;
 }

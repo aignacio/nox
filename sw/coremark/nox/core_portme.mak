@@ -31,9 +31,9 @@ CC 		 = $(RUN_CMD)gcc
 LD		 = $(RUN_CMD)gcc
 # Flag : AS
 #	Use this flag to define compiler to use
-AS		= $(RUN_CMD)gcc
+AS		 = $(RUN_CMD)gcc
 # Added by Anderson to get the asm
-OBJDUMP	= $(RUN_CMD)objdump
+OBJDUMP	 = $(RUN_CMD)objdump
 
 # Flag : CFLAGS
 #	Use this flag to define compiler options. Note, you can add compiler options from the command line using XCFLAGS="other flags"
@@ -44,9 +44,9 @@ PORT_CFLAGS = -O0 -g              \
 			  -Wno-unused		  \
 			  -ffreestanding	  \
 			  --specs=nano.specs  \
-			  -DPRINTF_DISABLE_SUPPORT_FLOAT		\
-			  -DPRINTF_DISABLE_SUPPORT_EXPONENTIAL	\
-			  -DPRINTF_DISABLE_SUPPORT_LONG_LONG	\
+			  -DPRINTF_DISABLE_SUPPORT_FLOAT		 \
+			  -DPRINTF_DISABLE_SUPPORT_EXPONENTIAL	 \
+			  -DPRINTF_DISABLE_SUPPORT_LONG_LONG	 \
 			  -Wall -Wno-main
 FLAGS_STR = "$(PORT_CFLAGS) $(XCFLAGS) $(XLFLAGS) $(LFLAGS_END)"
 CFLAGS = $(PORT_CFLAGS) -I$(PORT_DIR) -I. -DFLAGS_STR=\"$(FLAGS_STR)\"
@@ -77,14 +77,14 @@ PORT_OBJS =	$(PORT_DIR)/printf.o		\
 			$(PORT_DIR)/core_portme.o	\
 			$(PORT_DIR)/crt0.o			\
 			$(PORT_DIR)/startup.o
-			#$(PORT_DIR)/ee_printf.o \
-            #$(PORT_DIR)/cvt.o
+			#$(PORT_DIR)/ee_printf.o		\
+			#$(PORT_DIR)/cvt.o
 PORT_SRCS =	$(PORT_DIR)/printf.c		\
 			$(PORT_DIR)/core_portme.c	\
 			$(PORT_DIR)/crt0.s			\
 			$(PORT_DIR)/startup.c
-						#$(PORT_DIR)/ee_printf.c \
-            #$(PORT_DIR)/cvt.c
+			#$(PORT_DIR)/ee_printf.c		\
+			$(PORT_DIR)/cvt.c
 vpath %.c $(PORT_DIR)
 vpath %.s $(PORT_DIR)
 

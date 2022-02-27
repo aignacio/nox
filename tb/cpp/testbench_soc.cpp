@@ -26,6 +26,7 @@ unsigned long tick_counter;
 template<class module> class testbench {
   VerilatedFstC *trace = new VerilatedFstC;
   bool getDataNextCycle;
+  unsigned long start_dumping;
 
   public:
     module *core = new module;
@@ -49,6 +50,10 @@ template<class module> class testbench {
       this->tick();
     }
 
+    virtual	void init_dump_setpoint(unsigned long val) {
+      start_dumping = val;
+    }
+
     virtual	void opentrace(const char *name) {
       core->trace(trace, 99);
       trace->open(name);
@@ -65,12 +70,14 @@ template<class module> class testbench {
       core->clk_in = 0;
       core->eval();
       tick_counter++;
-      if(trace) trace->dump(tick_counter);
+      if (tick_counter>(start_dumping*2))
+        if(trace) trace->dump(tick_counter);
 
       core->clk_in = 1;
       core->eval();
       tick_counter++;
-      if(trace) trace->dump(tick_counter);
+      if (tick_counter>(start_dumping*2))
+        if(trace) trace->dump(tick_counter);
     }
 
     virtual bool done(void) {
@@ -165,6 +172,7 @@ int main(int argc, char** argv, char** env){
   s_sim_setup_t setup = {
     .sim_cycles = 1000,
     .waves_dump = WAVEFORM_USE,
+    .waves_timestamp = 0,
     .waves_path = STRINGIZE_VALUE_OF(WAVEFORM_FST)
   };
 
@@ -177,6 +185,8 @@ int main(int argc, char** argv, char** env){
 
   if (WAVEFORM_USE)
     dut->opentrace(STRINGIZE_VALUE_OF(WAVEFORM_FST));
+
+  dut->init_dump_setpoint(setup.waves_timestamp);
 
   if (loadELF(dut, setup.elf_path, true)) {
     cout << "\nError while processing ELF file!" << std::endl;

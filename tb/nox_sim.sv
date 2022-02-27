@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 25.02.2022
+ * Last Modified Date: 27.02.2022
  */
 module nox_sim import utils_pkg::*; (
   input               clk,
@@ -52,6 +52,16 @@ module nox_sim import utils_pkg::*; (
     if (switch_ff == DRAM) begin
       masters_axi_miso[1] = slaves_axi_miso[1];
     end
+
+    // Write channel can be always connected to the DRAM
+    slaves_axi_mosi[1].wdata   = masters_axi_mosi[1].wdata;
+    slaves_axi_mosi[1].wvalid  = masters_axi_mosi[1].wvalid;
+    slaves_axi_mosi[1].wstrb   = masters_axi_mosi[1].wstrb;
+    slaves_axi_mosi[1].wlast   = masters_axi_mosi[1].wlast;
+    slaves_axi_mosi[1].wuser   = masters_axi_mosi[1].wuser;
+    slaves_axi_mosi[1].bready  = masters_axi_mosi[1].bready;
+    masters_axi_miso[1].bvalid = slaves_axi_miso[1].bvalid;
+    masters_axi_miso[1].bresp  = slaves_axi_miso[1].bresp;
 
     if (slave_2_sel)
       slaves_axi_mosi[2]  = masters_axi_mosi[1];

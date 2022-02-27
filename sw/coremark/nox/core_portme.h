@@ -61,13 +61,13 @@ Original Author: Shay Gal-on
 /* Definitions : COMPILER_VERSION, COMPILER_FLAGS, MEM_LOCATION
         Initialize these strings per platform
 */
-#ifndef COMPILER_VERSION
-#ifdef __GNUC__
-#define COMPILER_VERSION "GCC"__VERSION__
-#else
+//#ifndef COMPILER_VERSION
+//#ifdef __GNUC__
+//#define COMPILER_VERSION "GCC"__VERSION__
+//#else
 #define COMPILER_VERSION "riscv-none-embed-gcc (xPack GNU RISC-V Embedded GCC x86_64) 10.2.0"
-#endif
-#endif
+//#endif
+//#endif
 #ifndef COMPILER_FLAGS
 #define COMPILER_FLAGS \
     FLAGS_STR "-O0 -g"

@@ -61,7 +61,7 @@ END GROUP
 LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a
                 0x0000000000000100                _min_stack = 0x100
 
-.text           0x0000000080000000     0x5c8c
+.text           0x0000000080000000     0x57c8
                 0x0000000080000000                _start_text = .
  *(.init)
  .init          0x0000000080000000       0x14 ./nox/crt0.o
@@ -73,89 +73,83 @@ LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/
                 0x0000000080000100                _start_vector = .
  *(.isr_vector)
  *(.text*)
- .text          0x0000000080000100      0xf00 ./core_list_join.o
+ .text          0x0000000080000100      0xe48 ./core_list_join.o
                 0x0000000080000100                calc_func
                 0x00000000800002f8                cmp_complex
                 0x0000000080000364                cmp_idx
                 0x0000000080000444                copy_info
                 0x0000000080000488                core_bench_list
-                0x00000000800007f4                core_list_init
-                0x0000000080000b2c                core_list_insert_new
-                0x0000000080000c18                core_list_remove
-                0x0000000080000c8c                core_list_undo_remove
-                0x0000000080000cf8                core_list_find
-                0x0000000080000d9c                core_list_reverse
-                0x0000000080000df8                core_list_mergesort
- .text          0x0000000080001000     0x1028 ./core_main.o
-                0x0000000080001000                iterate
-                0x0000000080001110                main
- .text          0x0000000080002028      0xec0 ./core_matrix.o
-                0x0000000080002028                printmat
-                0x0000000080002110                printmatC
-                0x00000000800021f8                core_bench_matrix
-                0x00000000800022ac                matrix_test
-                0x00000000800024c4                core_init_matrix
-                0x0000000080002748                matrix_sum
-                0x000000008000286c                matrix_mul_const
-                0x0000000080002970                matrix_add_const
-                0x0000000080002a68                matrix_mul_vect
-                0x0000000080002b80                matrix_mul_matrix
-                0x0000000080002d20                matrix_mul_matrix_bitextract
- .text          0x0000000080002ee8      0x99c ./core_state.o
-                0x0000000080002ee8                core_bench_state
-                0x00000000800031ec                core_init_state
-                0x00000000800034e8                core_state_transition
- .text          0x0000000080003884      0x328 ./core_util.o
-                0x0000000080003884                get_seed_32
-                0x0000000080003914                crcu8
-                0x0000000080003a14                crcu16
-                0x0000000080003a9c                crcu32
-                0x0000000080003b1c                crc16
-                0x0000000080003b6c                check_data_types
- .text          0x0000000080003bac     0x1550 ./nox/printf.o
-                0x0000000080004e48                printf_
-                0x0000000080004ec8                sprintf_
-                0x0000000080004f48                snprintf_
-                0x0000000080004fc8                vprintf_
-                0x0000000080005018                vsnprintf_
-                0x000000008000506c                fctprintf
- .text          0x00000000800050fc      0x180 ./nox/core_portme.o
-                0x00000000800050fc                _putchar
-                0x000000008000512c                barebones_clock
-                0x0000000080005154                start_time
-                0x0000000080005184                stop_time
-                0x00000000800051b4                get_time
-                0x00000000800051e4                time_in_secs
-                0x000000008000522c                portable_init
-                0x0000000080005260                portable_fini
- .text          0x000000008000527c       0x24 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(muldi3.o)
-                0x000000008000527c                __mulsi3
- .text          0x00000000800052a0       0xb4 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(div.o)
-                0x00000000800052a0                __divsi3
-                0x00000000800052a8                __udivsi3
-                0x00000000800052f0                __umodsi3
-                0x0000000080005324                __modsi3
-                0x0000000080005354                _edata = .
+                0x00000000800007ac                core_list_init
+                0x0000000080000a74                core_list_insert_new
+                0x0000000080000b60                core_list_remove
+                0x0000000080000bd4                core_list_undo_remove
+                0x0000000080000c40                core_list_find
+                0x0000000080000ce4                core_list_reverse
+                0x0000000080000d40                core_list_mergesort
+ .text          0x0000000080000f48     0x1020 ./core_main.o
+                0x0000000080000f48                iterate
+                0x0000000080001058                main
+ .text          0x0000000080001f68      0xc64 ./core_matrix.o
+                0x0000000080001f68                core_bench_matrix
+                0x000000008000201c                matrix_test
+                0x00000000800021d0                core_init_matrix
+                0x000000008000242c                matrix_sum
+                0x0000000080002550                matrix_mul_const
+                0x0000000080002654                matrix_add_const
+                0x000000008000274c                matrix_mul_vect
+                0x0000000080002864                matrix_mul_matrix
+                0x0000000080002a04                matrix_mul_matrix_bitextract
+ .text          0x0000000080002bcc      0x910 ./core_state.o
+                0x0000000080002bcc                core_bench_state
+                0x0000000080002e78                core_init_state
+                0x0000000080003140                core_state_transition
+ .text          0x00000000800034dc      0x328 ./core_util.o
+                0x00000000800034dc                get_seed_32
+                0x000000008000356c                crcu8
+                0x000000008000366c                crcu16
+                0x00000000800036f4                crcu32
+                0x0000000080003774                crc16
+                0x00000000800037c4                check_data_types
+ .text          0x0000000080003804     0x1550 ./nox/printf.o
+                0x0000000080004aa0                printf_
+                0x0000000080004b20                sprintf_
+                0x0000000080004ba0                snprintf_
+                0x0000000080004c20                vprintf_
+                0x0000000080004c70                vsnprintf_
+                0x0000000080004cc4                fctprintf
+ .text          0x0000000080004d54      0x180 ./nox/core_portme.o
+                0x0000000080004d54                _putchar
+                0x0000000080004d84                barebones_clock
+                0x0000000080004dac                start_time
+                0x0000000080004ddc                stop_time
+                0x0000000080004e0c                get_time
+                0x0000000080004e3c                time_in_secs
+                0x0000000080004e84                portable_init
+                0x0000000080004eb8                portable_fini
+ .text          0x0000000080004ed4       0x24 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(muldi3.o)
+                0x0000000080004ed4                __mulsi3
+ .text          0x0000000080004ef8       0xb4 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(div.o)
+                0x0000000080004ef8                __divsi3
+                0x0000000080004f00                __udivsi3
+                0x0000000080004f48                __umodsi3
+                0x0000000080004f7c                __modsi3
+                0x0000000080004fac                _edata = .
  *(.rodata*)
- .rodata        0x0000000080005354       0x66 ./core_list_join.o
- *fill*         0x00000000800053ba        0x2 
- .rodata        0x00000000800053bc      0x4f3 ./core_main.o
- *fill*         0x00000000800058af        0x1 
- .rodata        0x00000000800058b0       0x92 ./core_matrix.o
- *fill*         0x0000000080005942        0x2 
- .rodata        0x0000000080005944      0x118 ./core_state.o
- .rodata        0x0000000080005a5c       0x4e ./core_util.o
- *fill*         0x0000000080005aaa        0x2 
- .rodata        0x0000000080005aac      0x1e0 ./nox/printf.o
+ .rodata        0x0000000080004fac      0x51b ./core_main.o
+ *fill*         0x00000000800054c7        0x1 
+ .rodata        0x00000000800054c8       0xd0 ./core_state.o
+ .rodata        0x0000000080005598       0x4e ./core_util.o
+ *fill*         0x00000000800055e6        0x2 
+ .rodata        0x00000000800055e8      0x1e0 ./nox/printf.o
  *(.srodata*)
-                0x0000000080005c8c                . = ALIGN (0x4)
-                0x0000000080005c8c                _end_text = .
-                0x0000000080005c8c                _stored_data = .
+                0x00000000800057c8                . = ALIGN (0x4)
+                0x00000000800057c8                _end_text = .
+                0x00000000800057c8                _stored_data = .
 
-.rela.dyn       0x0000000080005c8c        0x0
- .rela.init     0x0000000080005c8c        0x0 ./core_list_join.o
+.rela.dyn       0x00000000800057c8        0x0
+ .rela.init     0x00000000800057c8        0x0 ./core_list_join.o
 
-.data           0x0000000010000000       0x7c load address 0x0000000080005c8c
+.data           0x0000000010000000       0x7c load address 0x00000000800057c8
                 0x0000000010000000                __DATA_BEGIN__ = .
                 0x0000000010000000                _start_data = .
  *(.data .data.* .gnu.linkonce.d.*)
@@ -176,7 +170,7 @@ LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/
                 0x000000001000007c                _end_data = .
                 0x000000001000007c                _start_bss = .
 
-.bss            0x000000001000007c        0x8 load address 0x0000000080005c8c
+.bss            0x000000001000007c        0x8 load address 0x00000000800057c8
                 0x000000001000007c                __BSS_START__ = .
  *(.dynbss)
  *(.bss .bss.* .gnu.linkonce.b.*)
@@ -184,7 +178,7 @@ LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/
  *(COMMON)
                 0x0000000010000084                . = ALIGN ((. != 0x0)?0x4:0x1)
 
-.sbss           0x0000000010000084        0xc load address 0x0000000080005c8c
+.sbss           0x0000000010000084        0xc load address 0x00000000800057c8
  *(.dynsbss)
  *(.sbss .sbss.* .gnu.linkonce.sb.*)
  .sbss          0x0000000010000084        0xc ./nox/core_portme.o
@@ -203,27 +197,27 @@ LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/
                 [!provide]                        PROVIDE (end = _start_heap)
 OUTPUT(./coremark.elf elf32-littleriscv)
 
-.debug_info     0x0000000000000000     0x28ea
+.debug_info     0x0000000000000000     0x281a
  .debug_info    0x0000000000000000      0x8bb ./core_list_join.o
  .debug_info    0x00000000000008bb      0x4b0 ./core_main.o
- .debug_info    0x0000000000000d6b      0x66b ./core_matrix.o
- .debug_info    0x00000000000013d6      0x367 ./core_state.o
- .debug_info    0x000000000000173d      0x24e ./core_util.o
- .debug_info    0x000000000000198b      0x9eb ./nox/printf.o
- .debug_info    0x0000000000002376      0x31a ./nox/core_portme.o
- .debug_info    0x0000000000002690       0x26 ./nox/crt0.o
- .debug_info    0x00000000000026b6      0x234 ./nox/startup.o
+ .debug_info    0x0000000000000d6b      0x5aa ./core_matrix.o
+ .debug_info    0x0000000000001315      0x358 ./core_state.o
+ .debug_info    0x000000000000166d      0x24e ./core_util.o
+ .debug_info    0x00000000000018bb      0x9eb ./nox/printf.o
+ .debug_info    0x00000000000022a6      0x31a ./nox/core_portme.o
+ .debug_info    0x00000000000025c0       0x26 ./nox/crt0.o
+ .debug_info    0x00000000000025e6      0x234 ./nox/startup.o
 
-.debug_abbrev   0x0000000000000000      0xab6
+.debug_abbrev   0x0000000000000000      0xa9c
  .debug_abbrev  0x0000000000000000      0x1d0 ./core_list_join.o
  .debug_abbrev  0x00000000000001d0      0x13e ./core_main.o
- .debug_abbrev  0x000000000000030e      0x14a ./core_matrix.o
- .debug_abbrev  0x0000000000000458      0x127 ./core_state.o
- .debug_abbrev  0x000000000000057f       0xef ./core_util.o
- .debug_abbrev  0x000000000000066e      0x1fa ./nox/printf.o
- .debug_abbrev  0x0000000000000868      0x182 ./nox/core_portme.o
- .debug_abbrev  0x00000000000009ea       0x14 ./nox/crt0.o
- .debug_abbrev  0x00000000000009fe       0xb8 ./nox/startup.o
+ .debug_abbrev  0x000000000000030e      0x130 ./core_matrix.o
+ .debug_abbrev  0x000000000000043e      0x127 ./core_state.o
+ .debug_abbrev  0x0000000000000565       0xef ./core_util.o
+ .debug_abbrev  0x0000000000000654      0x1fa ./nox/printf.o
+ .debug_abbrev  0x000000000000084e      0x182 ./nox/core_portme.o
+ .debug_abbrev  0x00000000000009d0       0x14 ./nox/crt0.o
+ .debug_abbrev  0x00000000000009e4       0xb8 ./nox/startup.o
 
 .debug_aranges  0x0000000000000000      0x128
  .debug_aranges
@@ -245,35 +239,35 @@ OUTPUT(./coremark.elf elf32-littleriscv)
  .debug_aranges
                 0x0000000000000100       0x28 ./nox/startup.o
 
-.debug_line     0x0000000000000000     0x3d39
- .debug_line    0x0000000000000000      0xb17 ./core_list_join.o
- .debug_line    0x0000000000000b17      0xb5b ./core_main.o
- .debug_line    0x0000000000001672      0x9c5 ./core_matrix.o
- .debug_line    0x0000000000002037      0x724 ./core_state.o
- .debug_line    0x000000000000275b      0x20c ./core_util.o
- .debug_line    0x0000000000002967      0xf6d ./nox/printf.o
- .debug_line    0x00000000000038d4      0x1f8 ./nox/core_portme.o
- .debug_line    0x0000000000003acc       0x4d ./nox/crt0.o
- .debug_line    0x0000000000003b19      0x220 ./nox/startup.o
+.debug_line     0x0000000000000000     0x3ae2
+ .debug_line    0x0000000000000000      0xa91 ./core_list_join.o
+ .debug_line    0x0000000000000a91      0xb55 ./core_main.o
+ .debug_line    0x00000000000015e6      0x83a ./core_matrix.o
+ .debug_line    0x0000000000001e20      0x6e4 ./core_state.o
+ .debug_line    0x0000000000002504      0x20c ./core_util.o
+ .debug_line    0x0000000000002710      0xf6d ./nox/printf.o
+ .debug_line    0x000000000000367d      0x1f8 ./nox/core_portme.o
+ .debug_line    0x0000000000003875       0x4d ./nox/crt0.o
+ .debug_line    0x00000000000038c2      0x220 ./nox/startup.o
 
-.debug_str      0x0000000000000000      0xa3c
+.debug_str      0x0000000000000000      0xa23
  .debug_str     0x0000000000000000      0x36b ./core_list_join.o
                                         0x3aa (size before relaxing)
  .debug_str     0x000000000000036b       0xe5 ./core_main.o
                                         0x2b2 (size before relaxing)
- .debug_str     0x0000000000000450       0xe1 ./core_matrix.o
-                                        0x1f2 (size before relaxing)
- .debug_str     0x0000000000000531      0x137 ./core_state.o
-                                        0x243 (size before relaxing)
- .debug_str     0x0000000000000668       0x9b ./core_util.o
+ .debug_str     0x0000000000000450       0xce ./core_matrix.o
+                                        0x1d5 (size before relaxing)
+ .debug_str     0x000000000000051e      0x131 ./core_state.o
+                                        0x23d (size before relaxing)
+ .debug_str     0x000000000000064f       0x9b ./core_util.o
                                         0x181 (size before relaxing)
- .debug_str     0x0000000000000703      0x173 ./nox/printf.o
+ .debug_str     0x00000000000006ea      0x173 ./nox/printf.o
                                         0x285 (size before relaxing)
- .debug_str     0x0000000000000876       0xb8 ./nox/core_portme.o
+ .debug_str     0x000000000000085d       0xb8 ./nox/core_portme.o
                                         0x280 (size before relaxing)
- .debug_str     0x000000000000092e       0x17 ./nox/crt0.o
+ .debug_str     0x0000000000000915       0x17 ./nox/crt0.o
                                          0x22 (size before relaxing)
- .debug_str     0x0000000000000945       0xf7 ./nox/startup.o
+ .debug_str     0x000000000000092c       0xf7 ./nox/startup.o
                                         0x1ed (size before relaxing)
 
 .comment        0x0000000000000000       0x33
@@ -287,15 +281,15 @@ OUTPUT(./coremark.elf elf32-littleriscv)
  .comment       0x0000000000000033       0x34 ./nox/core_portme.o
  .comment       0x0000000000000033       0x34 ./nox/startup.o
 
-.debug_frame    0x0000000000000000      0xa5c
+.debug_frame    0x0000000000000000      0xa08
  .debug_frame   0x0000000000000000      0x1d8 ./core_list_join.o
  .debug_frame   0x00000000000001d8       0x68 ./core_main.o
- .debug_frame   0x0000000000000240      0x1e8 ./core_matrix.o
- .debug_frame   0x0000000000000428       0xac ./core_state.o
- .debug_frame   0x00000000000004d4       0xf8 ./core_util.o
- .debug_frame   0x00000000000005cc      0x2ac ./nox/printf.o
- .debug_frame   0x0000000000000878      0x134 ./nox/core_portme.o
- .debug_frame   0x00000000000009ac       0xb0 ./nox/startup.o
+ .debug_frame   0x0000000000000240      0x198 ./core_matrix.o
+ .debug_frame   0x00000000000003d8       0xa8 ./core_state.o
+ .debug_frame   0x0000000000000480       0xf8 ./core_util.o
+ .debug_frame   0x0000000000000578      0x2ac ./nox/printf.o
+ .debug_frame   0x0000000000000824      0x134 ./nox/core_portme.o
+ .debug_frame   0x0000000000000958       0xb0 ./nox/startup.o
 
 .debug_ranges   0x0000000000000000       0x18
  .debug_ranges  0x0000000000000000       0x18 ./nox/startup.o
