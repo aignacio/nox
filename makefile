@@ -97,10 +97,10 @@ MACROS_VLOG		?=	$(addprefix +define+,$(_MACROS_VLOG))
 # the executable nox_sim
 RUN_CMD				:=	docker run --rm --name ship_nox	\
 									-v $(abspath .):/nox_files -w		\
-									/nox_files nox
+									/nox_files aignacio/nox
 RUN_CMD_2			:=	docker run --rm --name ship_nox	\
 									-v $(abspath .):/nox_files -w		\
-									/opt/riscv-arch-test nox
+									/opt/riscv-arch-test aignacio/nox
 
 RUN_SW				:=	sw/hello_world/output/hello_world.elf
 RUN_SW_SOC		:=	sw/soc_hello_world/output/soc_hello_world.elf
@@ -183,7 +183,7 @@ $(RUN_SW):
 	make -C sw/hello_world all
 
 run: $(RUN_SW)
-	$(RUN_CMD) ./$(VERILATOR_EXE) -s 10000 -e $<
+	$(RUN_CMD) ./$(VERILATOR_EXE) -s 50000 -e $<
 
 $(VERILATOR_EXE): $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk
 	$(RUN_CMD) make -C $(OUT_VERILATOR)	\

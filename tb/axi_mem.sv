@@ -42,6 +42,19 @@ module axi_mem import utils_pkg::*; #(
   logic end_sig_ff, next_end_sig;
   logic fin_sig_ff, next_fin;
 `endif
+  function [7:0] getbufferReq;
+    /* verilator public */
+    begin
+      getbufferReq = (axi_mosi.wdata[7:0]);
+    end
+  endfunction
+
+  function printfbufferReq;
+    /* verilator public */
+    begin
+      printfbufferReq = char_ff && axi_mosi.wvalid;
+    end
+  endfunction
 
   function automatic void dump_signature();
     automatic string sig_file;
@@ -308,9 +321,9 @@ module axi_mem import utils_pkg::*; #(
       fin_sig_ff    <= next_fin;
 
       if (char_ff) begin
-`ifdef EN_PRINTF
-        $write("%c",find_byte(axi_mosi.wdata));
-`endif
+//`ifdef EN_PRINTF
+        //$write("%c",find_byte(axi_mosi.wdata));
+//`endif
       end
       else if (num_ff) begin
         if (DISPLAY_TEST)

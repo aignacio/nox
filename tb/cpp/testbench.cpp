@@ -6,8 +6,9 @@
 #include <cstdlib>
 #include <elfio/elfio.hpp>
 #include <iomanip>
-#include <ctime>
-#include <queue>
+//#include <ctime>
+#include <chrono>
+//#include <queue>
 
 #include "inc/common.h"
 #include "verilated.h"
@@ -67,6 +68,10 @@ template<class module> class testbench {
     }
 
     virtual void tick(void) {
+      if (core->nox_sim->u_dram->printfbufferReq()) {
+        printf("%c",core->nox_sim->u_dram->getbufferReq());
+      }
+
       core->clk = 0;
       core->eval();
       tick_counter++;
@@ -193,14 +198,21 @@ int main(int argc, char** argv, char** env){
     exit(EXIT_FAILURE);
   }
 
+  auto start_sim_time = chrono::steady_clock::now();
+
   dut->reset(2);
   while(!Verilated::gotFinish() && setup.sim_cycles--) {
     dut->tick();
   }
 
+  auto end_sim_time = chrono::steady_clock::now();
+  auto elapsed_time = chrono::duration_cast<chrono::seconds>(end_sim_time - start_sim_time).count();
+
   cout << "\n[SIM Summary]" << std::endl;
   cout << "Clk cycles elapsed\t= " << (sim_cycles_timeout-(setup.sim_cycles+1)) << std::endl;
   cout << "Remaining clk cycles\t= " << setup.sim_cycles+1 << std::endl;
+  cout << "Elapsed time [s]\t= " <<  elapsed_time << std::endl;
+  cout << "Sim. frequency [Hz]\t= " << (sim_cycles_timeout-(setup.sim_cycles+1))/elapsed_time << std::endl;
   dut->close();
   exit(EXIT_SUCCESS);
 }
