@@ -16,60 +16,88 @@ void _putchar(char character){
   *addr_print = character;
 }
 
+void print_logo(void){
+  int mstatus_csr  = read_csr(mstatus);
+  int misa_csr     = read_csr(misa);
+  int mhartid_csr  = read_csr(mhartid);
+  int mie_csr      = read_csr(mie);
+  int mtvec_csr    = read_csr(mtvec);
+  int mepc_csr     = read_csr(mepc);
+  int mscratch_csr = read_csr(mscratch);
+  int mtval_csr    = read_csr(mtval);
+  int mcause_csr   = read_csr(mcause);
+  int mip_csr      = read_csr(mip);
+  int cycle = rdcycle();
+
+  printf("\n  _   _       __  __  ");
+  printf("\n | \\ | |  ___ \\ \\/ /  ");
+  printf("\n |  \\| | / _ \\ \\  /   ");
+  printf("\n | |\\  || (_) |/  \\   ");
+  printf("\n |_| \\_| \\___//_/\\_\\  ");
+  printf("\n NoX RISC-V Core RV32I \n");
+  printf("\n CSRs:");
+  printf("\n mstatus \t0x%x",mstatus_csr);
+  printf("\n misa    \t0x%x",misa_csr);
+  printf("\n mhartid \t0x%x",mhartid_csr);
+  printf("\n mie     \t0x%x",mie_csr);
+  printf("\n mip     \t0x%x",mip_csr);
+  printf("\n mtvec   \t0x%x",mtvec_csr);
+  printf("\n mepc    \t0x%x",mepc_csr);
+  printf("\n mscratch\t0x%x",mscratch_csr);
+  printf("\n mtval   \t0x%x",mtval_csr);
+  printf("\n mcause  \t0x%x",mcause_csr);
+  printf("\n cycle   \t%d",cycle);
+  printf("\n");
+}
+
 int main(void) {
   int i = 0;
   int test = 0;
   int irq_type = 0;
   uint8_t leds_out = 0x01;
   int global = 0;
-  int mstatus_csr   = read_csr(mstatus);
-  int misa_csr      = read_csr(misa);
-  int mhartid_csr   = read_csr(mhartid);
+
   /*int time = rdtime();*/
-  //int cycle = rdcycle();
 
-  // Printf will not work because LSU is directly connected to the
-  // DRAM, without access to the IRAM where the string is containted
-  /*set_csr(mstatus,MSTATUS_MIE);*/
-  /**addr_leds = leds_out;*/
   /*printf("Hello_World Nox!");*/
-  printf("Hello_World Nox! %s",STRING_TEST);
-  /*while(true){*/
-    /*if (test%10 == 0){*/
-      /*switch(irq_type){*/
-        /*case 0:*/
-          /*set_csr(mie,1<<IRQ_M_SOFT);*/
-        /*break;*/
-        /*case 1:*/
-          /*set_csr(mie,1<<IRQ_M_TIMER);*/
-        /*break;*/
-        /*case 2:*/
-          /*set_csr(mie,1<<IRQ_M_EXT);*/
-        /*break;*/
-      /*}*/
-      /*[>[>asm volatile ("csrrsi x0,mie,8");<]<]*/
-      /*[>[>asm volatile ("addi t6,t6,1");<]<]*/
-      /*if (irq_type < 2){*/
-        /*irq_type++;*/
-      /*}*/
-      /*else{*/
-        /*irq_type = 0;*/
-      /*}*/
-    /*}*/
-    /*// Illegal jump*/
-    /*[>asm volatile (".word 0x02f71763");<]*/
-    /*// Illegal instruction*/
-    /*[>asm volatile (".word 0x0");<]*/
-    /*if (i == 5){*/
-      /*i = 0;*/
-      /*if (leds_out == 8)*/
-        /*leds_out = 1;*/
-      /*else*/
-        /*leds_out = leds_out << 1;*/
+  *addr_leds = leds_out;
+  print_logo();
+  set_csr(mstatus,MSTATUS_MIE);
+  while(true){
+    if (test == 10){
+      test = 0;
+      switch(irq_type){
+        case 0:
+          set_csr(mie,1<<IRQ_M_SOFT);
+        break;
+        case 1:
+          set_csr(mie,1<<IRQ_M_TIMER);
+        break;
+        case 2:
+          set_csr(mie,1<<IRQ_M_EXT);
+        break;
+      }
+      /*asm volatile ("csrrsi x0,mie,8");*/
+      /*asm volatile ("addi t6,t6,1");*/
+      if (irq_type < 2)
+        irq_type++;
+      else
+        irq_type = 0;
+    }
+    // Illegal jump
+    /*asm volatile (".word 0x02f71763");*/
+    // Illegal instruction
+    /*asm volatile (".word 0x0");*/
+    if (i == 5){
+      i = 0;
+      if (leds_out == 8)
+        leds_out = 1;
+      else
+        leds_out = leds_out << 1;
 
-      /**addr_leds = leds_out;*/
-    /*}*/
-    /*i++;*/
-    /*test++;*/
-  /*}*/
+      *addr_leds = leds_out;
+    }
+    i++;
+    test++;
+  }
 }

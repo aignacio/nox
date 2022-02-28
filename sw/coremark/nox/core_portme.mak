@@ -22,7 +22,7 @@ OUTFLAG= -o
 
 RUN_CMD	?=	docker run --rm --name ship_nox	  \
 		    -v $(abspath .):/nox_files -w     \
-		    /nox_files nox riscv-none-embed-
+		    /nox_files aignacio/nox riscv-none-embed-
 # Flag : CC
 #	Use this flag to define compiler to use
 CC 		 = $(RUN_CMD)gcc

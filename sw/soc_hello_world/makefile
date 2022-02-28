@@ -2,7 +2,7 @@
 PREFIX	?=	docker run --rm --name sw_nox					\
 						-v $(abspath ../..):/nox_files -w			\
 						/nox_files/sw/$(notdir $(shell pwd))	\
-						nox riscv-none-embed-
+						aignacio/nox riscv-none-embed-
 CC			:=	$(PREFIX)gcc
 OBJDUMP	:=	$(PREFIX)objdump
 OBJCOPY	:=	$(PREFIX)objcopy
