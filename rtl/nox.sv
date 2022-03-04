@@ -207,8 +207,8 @@ module nox
     .lsu_i                 (lsu_op),
     // To EXE stg
     .lsu_bp_o              (lsu_bp),
-    .lsu_bp_data_o         (lsu_bp_data),
     // To write-back datapath
+    .lsu_bp_data_o         (lsu_bp_data),
     .wb_lsu_o              (lsu_op_wb),
     .lsu_data_o            (lsu_rd_data),
     // Core data bus I/F
