@@ -183,6 +183,7 @@ module nox
     .id_ready_o            (id_ready),
     // To MEM/WB stg I/F
     .ex_mem_wb_o           (ex_mem_wb),
+    // To/From LSU
     .lsu_o                 (lsu_op),
     .lsu_bp_i              (lsu_bp),
     // IRQs

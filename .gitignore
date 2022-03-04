@@ -29,3 +29,5 @@ fusesoc.conf
 *.i
 *.fst
 output_temp/
+riscof_work/
+riscv-arch-test/
