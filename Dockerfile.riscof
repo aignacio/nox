@@ -21,12 +21,12 @@ RUN opam switch create ocaml-base-compiler.4.06.1
 RUN opam install sail -y
 RUN eval $(opam config env)
 RUN /bin/bash /root/.bashrc
-#RUN git clone https://github.com/riscv/sail-riscv.git
-#WORKDIR /opt/sail-riscv
-#ENV ARCH=RV32
-#RUN make
-#RUN ln -s sail-riscv/c_emulator/riscv_sim_RV32 /usr/bin/riscv_sim_RV32
-#RUN echo "export PATH=\"$PATH:/sail-riscv/c_emulator/\""  >> /root/.bashrc
+RUN git clone https://github.com/riscv/sail-riscv.git
+WORKDIR /opt/sail-riscv
+ENV ARCH=RV32
+RUN eval $(opam config env) && make
+RUN ln -s sail-riscv/c_emulator/riscv_sim_RV32 /usr/bin/riscv_sim_RV32
+RUN echo "export PATH=\"$PATH:/sail-riscv/c_emulator/\""  >> /root/.bashrc
 
 # Spike (riscv-isa-sim)
 RUN apt-get install device-tree-compiler -y
