@@ -1,0 +1,38 @@
+FROM ubuntu:latest
+LABEL author="Anderson Ignacio da Silva"
+LABEL maintainer="anderson@aignacio.com"
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install git file gcc make time wget zip -y
+# RISC-V Toolchain
+WORKDIR /opt/
+RUN wget -c https://github.com/xpack-dev-tools/riscv-none-embed-gcc-xpack/releases/download/v10.2.0-1.2/xpack-riscv-none-embed-gcc-10.2.0-1.2-linux-x64.tar.gz -O - | tar -xz
+RUN ln -s /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/riscv* /usr/bin
+
+# RISCOF
+RUN apt-get install python3-pip -y
+RUN pip3 install riscof
+
+# SAIL C-emulator
+ENV TZ=Europe/Dublin
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apt-get install opam build-essential libgmp-dev z3 pkg-config zlib1g-dev -y
+RUN opam init -y --disable-sandboxing
+RUN opam switch create ocaml-base-compiler.4.06.1
+RUN opam install sail -y
+RUN eval $(opam config env)
+RUN /bin/bash /root/.bashrc
+#RUN git clone https://github.com/riscv/sail-riscv.git
+#WORKDIR /opt/sail-riscv
+#ENV ARCH=RV32
+#RUN make
+#RUN ln -s sail-riscv/c_emulator/riscv_sim_RV32 /usr/bin/riscv_sim_RV32
+#RUN echo "export PATH=\"$PATH:/sail-riscv/c_emulator/\""  >> /root/.bashrc
+
+# Spike (riscv-isa-sim)
+RUN apt-get install device-tree-compiler -y
+WORKDIR /
+RUN git clone https://github.com/riscv-software-src/riscv-isa-sim.git
+RUN cd riscv-isa-sim       && mkdir build
+RUN cd riscv-isa-sim/build && ../configure --prefix=/riscv_isa_sim/
+RUN cd riscv-isa-sim/build && make
+RUN cd riscv-isa-sim/build && make install

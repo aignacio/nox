@@ -177,7 +177,7 @@ all: clean $(VERILATOR_EXE)
 	@echo "\n"
 
 build:
-	docker build -t nox:latest . --progress tty
+	docker build -f Dockerfile.nox . -t nox:latest . --progress tty
 
 $(RUN_SW):
 	make -C sw/hello_world all

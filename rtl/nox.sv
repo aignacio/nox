@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 25.02.2022
+ * Last Modified Date: 04.03.2022
  */
 module nox
   import utils_pkg::*;
@@ -27,8 +27,7 @@ module nox
   // Load-Store interface
   output  s_axi_mosi_t  lsu_axi_mosi_o,
   input   s_axi_miso_t  lsu_axi_miso_i
-`endif
-`ifdef TARGET_IF_AHB
+`else
   // Read-only interface
   output  s_ahb_mosi_t  instr_ahb_mosi_o,
   input   s_ahb_miso_t  instr_ahb_miso_i,
