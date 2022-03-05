@@ -13,28 +13,20 @@
 
 * RV32IZicsr
 
-% Please add the following required packages to your document preamble:
-% \usepackage{graphicx}
-\begin{table}[]
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{|c|c|c|}
-\hline
-            & \textbf{CSR} & \textbf{Description}                \\ \hline
-\textbf{1}  & mstatus      & Status register                     \\ \hline
-\textbf{2}  & mie          & Machine Interrupt enable            \\ \hline
-\textbf{3}  & mtvec        & Trap-vector base-address            \\ \hline
-\textbf{4}  & mscratch     & Scratch register                    \\ \hline
-\textbf{5}  & mepc         & Exception program counter           \\ \hline
-\textbf{6}  & mcause       & Machine cause register              \\ \hline
-\textbf{7}  & mtval        & Machine trap value                  \\ \hline
-\textbf{8}  & mip          & Machine pending interrupt           \\ \hline
-\textbf{9}  & cycle        & RO shadow of mcycle                 \\ \hline
-\textbf{10} & cycleh       & RO shadow of mcycle {[}Upper 32b{]} \\ \hline
-\textbf{11} & misa         & Machine ISA register                \\ \hline
-\textbf{12} & mhartid      & Hart ID register                    \\ \hline
-\end{tabular}%
-}
-\end{table}
+|    |    CSR   |           Description           |
+|:--:|:--------:|:-------------------------------:|
+|  1 |  mstatus |         Status register         |
+|  2 |    mie   |     Machine Interrupt enable    |
+|  3 |   mtvec  |     Trap-vector base-address    |
+|  4 | mscratch |         Scratch register        |
+|  5 |   mepc   |    Exception program counter    |
+|  6 |  mcause  |      Machine cause register     |
+|  7 |   mtval  |        Machine trap value       |
+|  8 |    mip   |    Machine pending interrupt    |
+|  9 |   cycle  |       RO shadow of mcycle       |
+| 10 |  cycleh  | RO shadow of mcycle [Upper 32b] |
+| 11 |   misa   |       Machine ISA register      |
+| 12 |  mhartid |         Hart ID register        |
 
 ## <a name="uarch"></a> RTL micro architecture
 ![NoX uArch](docs/img/nox_diagram.svg)
