@@ -71,20 +71,8 @@ int main(void) {
 
   *addr_leds = leds_out;
   // 50MHz -> 115200
-  /**uart_cfg = 49;*/
-  /*print_logo();*/
-
   *uart_cfg = 434;
   print_logo();
-
-  /**uart_cfg = 848;*/
-  /*print_logo();*/
-
-  /**uart_cfg = 654;*/
-  /*print_logo();*/
-
-  /**uart_cfg = 848;*/
-  /*print_logo();*/
 
   while(true){
     if (i == 60000){
