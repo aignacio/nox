@@ -10,6 +10,6 @@ set_property -dict { PACKAGE_PIN K2    IOSTANDARD LVCMOS33 } [get_ports { csr_ou
 set_property -dict { PACKAGE_PIN D9    IOSTANDARD LVCMOS33 } [get_ports { rst_cpu }]; #IO_L6N_T0_VREF_16 Sch=btn[0]
 set_property -dict { PACKAGE_PIN C9    IOSTANDARD LVCMOS33 } [get_ports { rst_clk }]; #IO_L11P_T1_SRCC_16 Sch=btn[1]
 
-set_property -dict { PACKAGE_PIN D10   IOSTANDARD LVCMOS33 } [get_ports { uart_tx_o }]; #IO_L19N_T3_VREF_16 Sch=uart_rxd_out
 #set_property -dict { PACKAGE_PIN A9    IOSTANDARD LVCMOS33 } [get_ports { uart_rx_i }]; #IO_L14N_T2_SRCC_16 Sch=uart_txd_in
-set_property -dict { PACKAGE_PIN D4    IOSTANDARD LVCMOS33 } [get_ports { uart_tx_o }]; #IO_L11N_T1_SRCC_35 Sch=jd[1]
+set_property -dict { PACKAGE_PIN D10   IOSTANDARD LVCMOS33 } [get_ports { uart_tx_o }]; #IO_L19N_T3_VREF_16 Sch=uart_rxd_out
+set_property -dict { PACKAGE_PIN D4    IOSTANDARD LVCMOS33 } [get_ports { uart_tx_mirror_o }]; #IO_L11N_T1_SRCC_35 Sch=jd[1]

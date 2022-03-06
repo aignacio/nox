@@ -15,7 +15,8 @@ module nox_soc
   input               rst_cpu,
   input               rst_clk,
   output  logic [3:0] csr_out,
-  output  logic       uart_tx_o
+  output  logic       uart_tx_o,
+  output  logic       uart_tx_mirror_o
 );
   s_axi_mosi_t  [1:0] masters_axi_mosi;
   s_axi_miso_t  [1:0] masters_axi_miso;
@@ -36,9 +37,11 @@ module nox_soc
 
 `ifdef NEXYS_VIDEO_70MHz
   assign rst_int = ~rst_cpu;
-  wire        clkfbout_clk_wiz_2;
-  wire        clkfbout_buf_clk_wiz_2;
-  wire        clk_out_clk_wiz_2;
+  assign uart_tx_mirror_o = uart_tx_o;
+
+  logic        clkfbout_clk_wiz_2;
+  logic        clkfbout_buf_clk_wiz_2;
+  logic        clk_out_clk_wiz_2;
 
   PLLE2_ADV#(
     .BANDWIDTH            ("OPTIMIZED"),
