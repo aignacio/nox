@@ -29,7 +29,6 @@ _SOC_VERILOG 	+=	xlnx/rtl/wbuart32/rtl/skidbuffer.v
 _SOC_VERILOG 	+=	xlnx/rtl/wbuart32/rtl/txuart.v
 _SOC_VERILOG 	+=	xlnx/rtl/wbuart32/rtl/txuartlite.v
 _SOC_VERILOG 	+=	xlnx/rtl/wbuart32/rtl/ufifo.v
-#_SOC_VERILOG 	+=	$(shell find xlnx/rtl/ -type f -iname *.sv)
 _SOC_VERILOG 	+=	xlnx/rtl/axi_interconnect_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_mem_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_rom_wrapper.sv

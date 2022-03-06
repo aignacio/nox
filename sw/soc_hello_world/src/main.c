@@ -70,7 +70,7 @@ int main(void) {
   int i = 0;
 
   *addr_leds = leds_out;
-  // 50MHz -> 115200
+  // 50MHz / 115200 = 434
   *uart_cfg = 434;
   print_logo();
 

@@ -35,6 +35,8 @@ AS		 = $(RUN_CMD)gcc
 # Added by Anderson to get the asm
 OBJDUMP	 = $(RUN_CMD)objdump
 
+OBJCOPY	 = $(RUN_CMD)objcopy
+
 # Flag : CFLAGS
 #	Use this flag to define compiler options. Note, you can add compiler options from the command line using XCFLAGS="other flags"
 PORT_CFLAGS = -O0 -g              \
@@ -114,6 +116,10 @@ $(OPATH)%$(OEXT) : %.s
 
 port_postbuild:
 	$(OBJDUMP) -S -t -D -h coremark.elf > coremark.asm
+	$(OBJCOPY) -O binary coremark.elf coremark.bin
+	python3 nox/freedom-bin2hex.py --bit-width 32 coremark.bin coremark.data
+	python3 nox/gen_rom.py --in_hex coremark.data --out_v boot_rom.sv
+
 # Target : port_pre% and port_post%
 # For the purpose of this simple port, no pre or post steps needed.
 

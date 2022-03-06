@@ -84,6 +84,14 @@ filesets:
       - xlnx/rtl/verilog-axi/rtl/axi_axil_adapter_wr.v
     file_type: verilogSource
 
+  coremark_nox:
+    files:
+      - xlnx/rtl/nox_soc.sv
+      - xlnx/rtl/axi_rom_wrapper.sv
+      - xlnx/rtl/axi_uart_wrapper.sv
+      - sw/soc_hello_world/output/boot_rom.sv
+      - xlnx/rtl/axi_mem_wrapper.sv
+    file_type: systemVerilogSource
 
   synth_nox:
     files:
@@ -199,3 +207,19 @@ targets:
       vivado:
         part : xc7a35ticsg324-1L
     toplevel: nox_soc
+
+  coremark_synth:
+    <<: *default
+    default_tool : vivado
+    parameters:
+      - ARTY_A7_70MHz
+      - DISPLAY_TEST
+    description : Arty A7 - 35 board synthesis
+    filesets_append:
+      - coremark_nox
+      - arty7_constraints
+      - files_tcl
+    tools:
+      vivado:
+        part : xc7a35ticsg324-1L
+    toplevel: nox_coremark
