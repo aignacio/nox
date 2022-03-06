@@ -165,16 +165,6 @@ module nox_soc
     .csr_o            (csr_out_int)
   );
 
-  //axi_mem_wrapper #(
-    //.MEM_KB           (1)
-  //) u_slave_2_mem (
-    //.clk              (clk),
-    //.rst              (rst_int),
-    //.axi_mosi         (slaves_axi_mosi[3]),
-    //.axi_miso         (slaves_axi_miso[3]),
-    //.csr_o            ()
-  //);
-
   axi_interconnect_wrapper #(
     .N_MASTERS        (2),
     .N_SLAVES         (4),
@@ -194,17 +184,6 @@ module nox_soc
     .uart_tx_o        (uart_tx_o),
     .uart_rx_i        ('1)
   );
-
-  //axi_crossbar_wrapper #(
-    //.N_MASTERS        (2),
-    //.N_SLAVES         (4),
-    //.M_BASE_ADDR      ({32'hB000_0000, 32'hA000_0000, 32'h8000_0000, 32'h1000_0000}),
-    //.M_ADDR_WIDTH     ({32'd17, 32'd17, 32'd17, 32'd17})
-  //) u_axi_crossbar (
-    //.clk              (clk),
-    //.arst             (rst_int),
-    //.*
-  //);
 
 `ifdef SIMULATION
   // synthesis translate_off

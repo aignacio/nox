@@ -33,6 +33,7 @@ _SOC_VERILOG 	+=	xlnx/rtl/axi_interconnect_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_mem_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_rom_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_uart_wrapper.sv
+_SOC_VERILOG 	+=	xlnx/rtl/axi_crossbar_wrapper.sv
 ifeq ($(AXI_IF),0)
 _SOC_VERILOG 	+=	xlnx/rtl/nox_soc_ahb.sv
 else

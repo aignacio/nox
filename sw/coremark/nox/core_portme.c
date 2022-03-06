@@ -27,16 +27,16 @@ Original Author: Shay Gal-on
 #define UART_STATS  0xB0000004
 #define UART_CFG    0xB0000000
 
-/*volatile uint32_t* const addr_print = (uint32_t*) PRINT_ADDR;*/
+volatile uint32_t* const addr_print = (uint32_t*) PRINT_ADDR;
 volatile uint32_t* const uart_stats = (uint32_t*) UART_STATS;
 volatile uint32_t* const uart_print = (uint32_t*) UART_TX;
 volatile uint32_t* const uart_rx    = (uint32_t*) UART_RX;
 volatile uint32_t* const uart_cfg   = (uint32_t*) UART_CFG;
 
 void _putchar(char character){
-  while((*uart_stats & 0x10000) == 0);
-  *uart_print = character;
-  /**addr_print = character;*/
+  /*while((*uart_stats & 0x10000) == 0);*/
+  /**uart_print = character;*/
+  *addr_print = character;
 }
 
 
@@ -157,7 +157,7 @@ void
 portable_init(core_portable *p, int *argc, char *argv[])
 {
 
-  *uart_cfg = 434;
+  /**uart_cfg = 434;*/
   ee_printf("\n\r -----------");
   ee_printf("\n\r Coremark Start");
   ee_printf("\n\r -----------");
