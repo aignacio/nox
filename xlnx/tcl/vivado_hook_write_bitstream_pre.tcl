@@ -7,6 +7,7 @@ set workroot [file dirname [info script]]
 send_msg "Designcheck 1-1" INFO "Checking design"
 
 # Ensure the design meets timing
+# OR MAYBE EVERYTHING WAS OPTZ OUT
 set slack_ns [get_property SLACK [get_timing_paths -delay_type min_max]]
 send_msg "Designcheck 1-2" INFO "Slack is ${slack_ns} ns."
 

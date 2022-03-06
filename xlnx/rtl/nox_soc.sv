@@ -3,15 +3,19 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 24.02.2022
+ * Last Modified Date: 06.03.2022
  */
+
+`default_nettype wire
+
 module nox_soc
   import utils_pkg::*;
 (
   input               clk_in,
   input               rst_cpu,
   input               rst_clk,
-  output  logic [3:0] csr_out
+  output  logic [3:0] csr_out,
+  output  logic       uart_tx_o
 );
   s_axi_mosi_t  [1:0] masters_axi_mosi;
   s_axi_miso_t  [1:0] masters_axi_miso;
@@ -31,35 +35,33 @@ module nox_soc
 `endif
 
 `ifdef NEXYS_VIDEO_70MHz
-  logic clk_in_clk_gen;
-  logic clkfbout_buf_clk_gen;
-  logic clkfbout_clk_gen;
-
   assign rst_int = ~rst_cpu;
+  wire        clkfbout_clk_wiz_2;
+  wire        clkfbout_buf_clk_wiz_2;
+  wire        clk_out_clk_wiz_2;
 
-  PLLE2_ADV #(
-    .BANDWIDTH           ("OPTIMIZED"),
-    .COMPENSATION        ("ZHOLD"),
-    .STARTUP_WAIT        ("FALSE"),
-    .DIVCLK_DIVIDE       (5),
-    .CLKFBOUT_MULT       (42),
-    .CLKFBOUT_PHASE      (0.000),
-    .CLKOUT0_DIVIDE      (12),
-    .CLKOUT0_PHASE       (0.000),
-    .CLKOUT0_DUTY_CYCLE  (0.500),
-    .CLKIN1_PERIOD       (10.000)
-  ) u_plle2_adv_inst (
-    // Output clocks
-    .CLKFBOUT            (clkfbout_clk_gen),
-    .CLKOUT0             (clk_out_clk_gen),
+  PLLE2_ADV#(
+    .BANDWIDTH            ("OPTIMIZED"),
+    .COMPENSATION         ("ZHOLD"),
+    .STARTUP_WAIT         ("FALSE"),
+    .DIVCLK_DIVIDE        (2),
+    .CLKFBOUT_MULT        (17),
+    .CLKFBOUT_PHASE       (0.000),
+    .CLKOUT0_DIVIDE       (17),
+    .CLKOUT0_PHASE        (0.000),
+    .CLKOUT0_DUTY_CYCLE   (0.500),
+    .CLKIN1_PERIOD        (10.000)
+  ) plle2_adv_inst (
+    .CLKFBOUT            (clkfbout_clk_wiz_2),
+    .CLKOUT0             (clk_out_clk_wiz_2),
     .CLKOUT1             (),
     .CLKOUT2             (),
     .CLKOUT3             (),
     .CLKOUT4             (),
     .CLKOUT5             (),
      // Input clock control
-    .CLKFBIN             (clkfbout_buf_clk_gen),
-    .CLKIN1              (clk_in_clk_gen),
+    .CLKFBIN             (clkfbout_buf_clk_wiz_2),
+    .CLKIN1              (clk_in_clk_wiz_2),
     .CLKIN2              (1'b0),
      // Tied to always select the primary input clock
     .CLKINSEL            (1'b1),
@@ -74,23 +76,23 @@ module nox_soc
     // Other control and status signals
     .LOCKED              (start_fetch),
     .PWRDWN              (1'b0),
-    .RST                 (rst_clk)
+    .RST                 (rst_clk));
+
+  IBUF clkin1_ibufg(
+    .O (clk_in_clk_wiz_2),
+    .I (clk_in)
   );
 
-  IBUF clkin_ibufg(
-    .O  (clk_in_clk_gen),
-    .I  (clk_in)
+  BUFG clkf_buf(
+    .O (clkfbout_buf_clk_wiz_2),
+    .I (clkfbout_clk_wiz_2)
   );
 
-  BUFG u_clkf_buf(
-    .O  (clkfbout_buf_clk_gen),
-    .I  (clkfbout_clk_gen)
+  BUFG clkout1_buf(
+    .O   (clk),
+    .I   (clk_out_clk_wiz_2)
   );
 
-  BUFG u_clkout_buf(
-    .O  (clk),
-    .I  (clk_out_clk_gen)
-  );
 `endif
 
 `ifdef QMTECH_KINTEX_7_100MHz
@@ -133,7 +135,7 @@ module nox_soc
 
 `ifdef SIMULATION
   axi_mem #(
-    .MEM_KB           (8)
+    .MEM_KB           (16)
   ) u_iram (
     .clk              (clk),
     .rst              (rst_int),
@@ -160,15 +162,15 @@ module nox_soc
     .csr_o            (csr_out_int)
   );
 
-  axi_mem_wrapper #(
-    .MEM_KB           (1)
-  ) u_slave_2_mem (
-    .clk              (clk),
-    .rst              (rst_int),
-    .axi_mosi         (slaves_axi_mosi[3]),
-    .axi_miso         (slaves_axi_miso[3]),
-    .csr_o            ()
-  );
+  //axi_mem_wrapper #(
+    //.MEM_KB           (1)
+  //) u_slave_2_mem (
+    //.clk              (clk),
+    //.rst              (rst_int),
+    //.axi_mosi         (slaves_axi_mosi[3]),
+    //.axi_miso         (slaves_axi_miso[3]),
+    //.csr_o            ()
+  //);
 
   axi_interconnect_wrapper #(
     .N_MASTERS        (2),
@@ -179,6 +181,15 @@ module nox_soc
     .clk              (clk),
     .arst             (rst_int),
     .*
+  );
+
+  axi_uart_wrapper u_axi_uart (
+    .clk              (clk),
+    .rst              (rst_int),
+    .axi_mosi         (slaves_axi_mosi[3]),
+    .axi_miso         (slaves_axi_miso[3]),
+    .uart_tx_o        (uart_tx_o),
+    .uart_rx_i        ('1)
   );
 
   //axi_crossbar_wrapper #(

@@ -6,6 +6,7 @@ filesets:
   rtl_nox:
     files:
       - rtl/inc/axi_pkg.svh: {is_include_file: true}
+      - rtl/inc/ahb_pkg.svh: {is_include_file: true}
       - rtl/inc/nox_pkg.svh: {is_include_file: true}
       - rtl/inc/core_bus_pkg.svh: {is_include_file: true}
       - rtl/inc/riscv_pkg.svh: {is_include_file: true}
@@ -18,10 +19,23 @@ filesets:
       - rtl/csr.sv
       - rtl/execute.sv
       - rtl/cb_to_axi.sv
+      - rtl/cb_to_ahb.sv
       - rtl/register_file.sv
       - rtl/lsu.sv
       - rtl/skid_buffer.sv
       - rtl/decode.sv
+    file_type: systemVerilogSource
+
+  uart_axi:
+    files:
+      - xlnx/rtl/wbuart32/rtl/txuart.v
+      - xlnx/rtl/wbuart32/rtl/rxuartlite.v
+      - xlnx/rtl/wbuart32/rtl/rxuart.v
+      - xlnx/rtl/wbuart32/rtl/skidbuffer.v
+      - xlnx/rtl/wbuart32/rtl/ufifo.v
+      - xlnx/rtl/wbuart32/rtl/txuartlite.v
+      - xlnx/rtl/wbuart32/rtl/axiluart.v
+      - xlnx/rtl/wbuart32/rtl/wbuart.v
     file_type: systemVerilogSource
 
   verilog_axi:
@@ -75,6 +89,7 @@ filesets:
     files:
       - xlnx/rtl/nox_soc.sv
       - xlnx/rtl/axi_rom_wrapper.sv
+      - xlnx/rtl/axi_uart_wrapper.sv
       - sw/soc_hello_world/output/boot_rom.sv
       - xlnx/rtl/axi_mem_wrapper.sv
       - xlnx/rtl/axi_interconnect_wrapper.sv
@@ -125,7 +140,7 @@ parameters:
 
 targets:
   default: &default
-    filesets: [rtl_nox,verilog_axi]
+    filesets: [rtl_nox,verilog_axi,uart_axi]
     toplevel: nox_soc
 
   lint:

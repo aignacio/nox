@@ -22,12 +22,18 @@ _SOC_VERILOG 	+=	rtl/inc/utils_pkg.sv
 _SOC_VERILOG 	+=	tb/axi_mem.sv
 _SOC_VERILOG 	+=	$(_CORE_VERILOG)
 _SOC_VERILOG 	+=	$(shell find xlnx/rtl/verilog-axi/rtl -type f -iname *.v)
+_SOC_VERILOG 	+=	xlnx/rtl/wbuart32/rtl/axiluart.v
+_SOC_VERILOG 	+=	xlnx/rtl/wbuart32/rtl/rxuart.v
+_SOC_VERILOG 	+=	xlnx/rtl/wbuart32/rtl/rxuartlite.v
+_SOC_VERILOG 	+=	xlnx/rtl/wbuart32/rtl/skidbuffer.v
+_SOC_VERILOG 	+=	xlnx/rtl/wbuart32/rtl/txuart.v
+_SOC_VERILOG 	+=	xlnx/rtl/wbuart32/rtl/txuartlite.v
+_SOC_VERILOG 	+=	xlnx/rtl/wbuart32/rtl/ufifo.v
 #_SOC_VERILOG 	+=	$(shell find xlnx/rtl/ -type f -iname *.sv)
 _SOC_VERILOG 	+=	xlnx/rtl/axi_interconnect_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_mem_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_rom_wrapper.sv
-#_SOC_VERILOG 	+=	xlnx/rtl/ahb_interconnect.sv
-#_SOC_VERILOG 	+=	xlnx/rtl/ahb_interconnect_wrapper.sv
+_SOC_VERILOG 	+=	xlnx/rtl/axi_uart_wrapper.sv
 ifeq ($(AXI_IF),0)
 _SOC_VERILOG 	+=	xlnx/rtl/nox_soc_ahb.sv
 else
@@ -228,7 +234,7 @@ $(RUN_SW_SOC):
 	make -C sw/soc_hello_world all
 
 run_soc: $(RUN_SW_SOC)
-	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 50000 -e $<
+	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 100000 -e $<
 
 ##########################
 #	RISC-V Compliance test #

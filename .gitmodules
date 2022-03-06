@@ -4,3 +4,6 @@
 [submodule "xlnx/rtl/verilog-axi"]
 	path = xlnx/rtl/verilog-axi
 	url = https://github.com/alexforencich/verilog-axi.git
+[submodule "xlnx/rtl/wbuart32"]
+	path = xlnx/rtl/wbuart32
+	url = https://github.com/ZipCPU/wbuart32.git
