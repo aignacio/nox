@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 04.03.2022
+ * Last Modified Date: 08.03.2022
  */
 module nox
   import utils_pkg::*;
@@ -59,7 +59,6 @@ module nox
   s_wb_t        wb_dec;
   logic         lsu_bp_data;
   s_trap_info_t fetch_trap;
-  s_trap_info_t dec_trap;
   s_trap_info_t lsu_trap_st;
   s_trap_info_t lsu_trap_ld;
   rdata_t       wb_fwd_load;
