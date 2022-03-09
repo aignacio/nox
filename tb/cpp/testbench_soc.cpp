@@ -67,6 +67,10 @@ template<class module> class testbench {
     }
 
     virtual void tick(void) {
+      if (core->nox_soc->u_slave_1_mem->printfbufferReq()) {
+        printf("%c",core->nox_soc->u_slave_1_mem->getbufferReq());
+      }
+
       core->clk_in = 0;
       core->eval();
       tick_counter++;
