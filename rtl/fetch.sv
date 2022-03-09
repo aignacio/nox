@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 25.02.2022
+ * Last Modified Date: 09.03.2022
  */
 module fetch
   import utils_pkg::*;
@@ -67,7 +67,7 @@ module fetch
     ap_received     = instr_cb_miso_i.rd_addr_ready;
     next_new_pc     = new_addr_ff;
 
-    if (requested_ff && received_data) begin
+    if (received_data) begin
       next_requested = 'b0;
       case (fetch_st_ff)
         FETCH_CLEAR: begin
@@ -90,10 +90,10 @@ module fetch
 
     if (fetch_st_ff == FETCH_RUN) begin
       instr_cb_mosi_o.rd_addr       = cb_addr_t'({pc_addr_ff[31:2],2'd0});
-      instr_cb_mosi_o.rd_addr_valid = 'b1;
+      instr_cb_mosi_o.rd_addr_valid = ~full_fifo;
       instr_cb_mosi_o.rd_size       = cb_size_t'(CB_WORD);
-      next_requested = 'b1;
-      if (ap_received) begin
+      next_requested = instr_cb_mosi_o.rd_addr_valid;
+      if (next_requested && ap_received) begin
         next_pc_addr = pc_addr_ff + 'd4;
       end
     end
@@ -101,6 +101,7 @@ module fetch
     if (fetch_req_i) begin
       clear_buffer = 'b1;
       next_new_pc  = fetch_addr_i;
+      `P_VAR("FETCH", "Jump to PC",fetch_addr_i);
     end
 
     instr_cb_mosi_o.rd_ready = ~full_fifo;
