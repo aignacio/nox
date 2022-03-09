@@ -6,7 +6,8 @@ module axi_mem import utils_pkg::*; #(
   input                 rst,
   output  logic [7:0]   csr_o,
   input   s_axi_mosi_t  axi_mosi,
-  output  s_axi_miso_t  axi_miso
+  output  s_axi_miso_t  axi_miso,
+  output                uart_tx_o
 );
   localparam ADDR_RAM  = $clog2((MEM_KB*1024)/4);
   localparam NUM_WORDS = (MEM_KB*1024)/4;
@@ -22,8 +23,12 @@ module axi_mem import utils_pkg::*; #(
   logic axi_rd_vld_ff, next_axi_rd;
   logic axi_wr_vld_ff, next_axi_wr;
   logic csr_decode_ff, next_dec_csr;
+  logic csr_uart_ff, next_dec_uart;
+  logic csr_uart_busy_ff, next_dec_uart_busy;
   logic [7:0] csr_output_ff, next_csr;
   logic raw_hit;
+  logic uart_busy;
+  logic write_uart;
 
   axi_addr_t  wr_addr_ff, next_wr_addr;
   axi_size_t  size_wr_ff, next_wr_size;
@@ -154,7 +159,8 @@ module axi_mem import utils_pkg::*; #(
     csr_o = csr_output_ff;
     next_csr = csr_output_ff;
     next_dec_csr = 'b0;
-
+    next_dec_uart = 'b0;
+    write_uart    = 'b0;
 `ifndef SIMULATION
     if (axi_mosi.awvalid && axi_miso.awready) begin
       next_wr_addr = axi_mosi.awaddr;
@@ -162,6 +168,9 @@ module axi_mem import utils_pkg::*; #(
       next_wr_size = axi_mosi.awsize;
       if (axi_mosi.awaddr == 'hD000_0000) begin
         next_dec_csr = 'b1;
+      end
+      if (axi_mosi.awaddr == 'hA000_0000) begin
+        next_dec_uart = 'b1;
       end
     end
     if (axi_mosi.wvalid && axi_wr_vld_ff) begin
@@ -172,6 +181,11 @@ module axi_mem import utils_pkg::*; #(
       if (csr_decode_ff) begin
         next_csr = axi_mosi.wdata[7:0];
         we_mem = 'b0;
+      end
+      if (csr_uart_ff) begin
+        write_uart = 'b1;
+        we_mem = 'b0;
+        //axi_miso.wready = ~uart_busy;
       end
     end
 `else
@@ -204,6 +218,9 @@ module axi_mem import utils_pkg::*; #(
       else if (axi_mosi.awaddr == 'hD000_0000) begin
         next_dec_csr = 'b1;
       end
+      else if (axi_mosi.awaddr == 'hA000_0000) begin
+        next_dec_uart = 'b1;
+      end
       else begin
         next_wr_addr = axi_mosi.awaddr;
         next_axi_wr  = 'b1;
@@ -233,6 +250,11 @@ module axi_mem import utils_pkg::*; #(
           next_csr = axi_mosi.wdata[7:0];
           we_mem = 'b0;
         end
+        if (csr_uart_ff) begin
+          write_uart = 'b1;
+          we_mem = 'b0;
+          axi_miso.wready = ~uart_busy;
+        end
       end
     end
 `endif
@@ -261,10 +283,14 @@ module axi_mem import utils_pkg::*; #(
       next_axi_rd  = ~axi_mosi.rready;
     end
 
+    next_dec_uart_busy = 'b0;
+
     if (axi_mosi.arvalid && axi_miso.arready) begin
       next_axi_rd  = 'b1;
       byte_sel_rd  = axi_mosi.araddr[1:0];
-
+      if (axi_mosi.araddr == 'hA000_0004) begin
+        next_dec_uart_busy = 'b1;
+      end
       if (raw_hit) begin
         for (int i=0;i<4;i++) begin
           if (axi_mosi.wstrb[i])
@@ -276,12 +302,17 @@ module axi_mem import utils_pkg::*; #(
       end
     end
 
+
     axi_miso.rid    = 1'b0;
     axi_miso.rresp  = AXI_OKAY;
     axi_miso.ruser  = axi_user_req_t'('h0);
     axi_miso.rvalid = axi_rd_vld_ff;
     axi_miso.rlast  = axi_rd_vld_ff;
     axi_miso.rdata  = axi_miso.rvalid ? axi_data_t'(rd_data_ff) : axi_data_t'('h0);
+
+    if (csr_uart_busy_ff) begin
+      axi_miso.rdata  = {31'h0,uart_busy};
+    end
   end : axi_rd_datapath
 
   `CLK_PROC(clk, rst) begin
@@ -294,6 +325,8 @@ module axi_mem import utils_pkg::*; #(
       bvalid_ff     <= `OP_RST_L;
       csr_output_ff <= `OP_RST_L;
       csr_decode_ff <= `OP_RST_L;
+      csr_uart_ff   <= 'b0;
+      csr_uart_busy_ff  <= 'b0;
 `ifdef SIMULATION
       char_ff       <= 'b0;
       num_ff        <= 'b0;
@@ -304,6 +337,7 @@ module axi_mem import utils_pkg::*; #(
 `endif
     end
     else begin
+      csr_uart_busy_ff  <= next_dec_uart_busy;
       rd_data_ff    <= next_rd_data;
       wr_addr_ff    <= next_wr_addr;
       axi_rd_vld_ff <= next_axi_rd;
@@ -312,6 +346,7 @@ module axi_mem import utils_pkg::*; #(
       bvalid_ff     <= next_bvalid;
       csr_output_ff <= next_csr;
       csr_decode_ff <= next_dec_csr;
+      csr_uart_ff   <= next_dec_uart;
 `ifdef SIMULATION
       char_ff       <= next_char;
       num_ff        <= next_num;
@@ -338,6 +373,16 @@ module axi_mem import utils_pkg::*; #(
       end
     end
   end
+
+  txuartlite #(
+	  .CLOCKS_PER_BAUD(434)
+	) u_uart (
+	  .i_clk      (clk),
+		.i_wr       (write_uart),
+		.i_data     (axi_mosi.wdata[7:0]),
+		.o_uart_tx  (uart_tx_o),
+		.o_busy     (uart_busy)
+  );
 
   initial begin
     `ifdef ACT_H_RESET

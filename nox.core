@@ -88,9 +88,8 @@ filesets:
     files:
       - xlnx/rtl/nox_soc.sv
       - xlnx/rtl/axi_rom_wrapper.sv
-      - xlnx/rtl/axi_uart_wrapper.sv
       - sw/soc_hello_world/output/boot_rom.sv
-      - xlnx/rtl/axi_mem_wrapper.sv
+      - tb/axi_mem.sv
     file_type: systemVerilogSource
 
   synth_nox:

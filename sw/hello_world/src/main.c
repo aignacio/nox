@@ -5,15 +5,21 @@
 #include "printf.h"
 #include "riscv_csr_encoding.h"
 
-#define LEDS_ADDR   0xD0000000
-#define PRINT_ADDR  0xA0010000
+#define LEDS_ADDR         0xD0000000
+#define PRINT_ADDR        0xA0010000
+#define UART_ADDR         0xA0000000
+#define UART_BUSY_ADDR    0xA0000004
 #define STRING_TEST "Teste!"
 
 volatile uint32_t* const addr_leds = (uint32_t*) LEDS_ADDR;
 volatile uint32_t* const addr_print = (uint32_t*) PRINT_ADDR;
+volatile uint32_t* const uart_print = (uint32_t*) UART_ADDR;
+volatile uint32_t* const uart_busy  = (uint32_t*) UART_BUSY_ADDR;
 
 void _putchar(char character){
   *addr_print = character;
+  while(*uart_busy != 0);
+  *uart_print = character;
 }
 
 void print_logo(void){
