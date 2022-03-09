@@ -186,7 +186,7 @@ module axi_mem import utils_pkg::*; #(
 
     // Address phase
     if (axi_mosi.awvalid && axi_miso.awready) begin
-      if (axi_mosi.awaddr == 'hA000_0000) begin
+      if (axi_mosi.awaddr == 'hA001_0000) begin
         next_char = 'b1;
       end
       else if (axi_mosi.awaddr == 'hB000_0000) begin

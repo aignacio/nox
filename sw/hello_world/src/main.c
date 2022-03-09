@@ -6,7 +6,7 @@
 #include "riscv_csr_encoding.h"
 
 #define LEDS_ADDR   0xD0000000
-#define PRINT_ADDR  0xA0000000
+#define PRINT_ADDR  0xA0010000
 #define STRING_TEST "Teste!"
 
 volatile uint32_t* const addr_leds = (uint32_t*) LEDS_ADDR;
@@ -60,7 +60,9 @@ int main(void) {
   /*int time = rdtime();*/
 
   /*printf("Hello_World Nox!");*/
-  *addr_leds = leds_out;
+  /**addr_leds = leds_out;*/
+  /*while(true)*/
+    /*printf("Anderson");*/
   print_logo();
   set_csr(mstatus,MSTATUS_MIE);
   while(true){

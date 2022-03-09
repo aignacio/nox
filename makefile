@@ -10,6 +10,10 @@ _SRC_VERILOG 	+=	rtl/inc/utils_pkg.sv
 _SRC_VERILOG 	+=	$(shell find rtl/ -type f -iname *.sv)
 _CORE_VERILOG :=	$(_SRC_VERILOG)
 _SRC_VERILOG 	+=	$(shell find tb/  -type f -iname *.sv)
+_SRC_VERILOG 	+=	$(shell find xlnx/rtl/verilog-axi/rtl -type f -iname *.v)
+_SRC_VERILOG 	+=	xlnx/rtl/axi_mem_wrapper.sv
+_SRC_VERILOG 	+=	xlnx/rtl/axi_rom_wrapper.sv
+_SRC_VERILOG 	+=	sw/hello_world/output/boot_rom.sv
 SRC_VERILOG 	?=	$(_SRC_VERILOG)
 
 # SoC design files

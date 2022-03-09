@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 24.02.2022
+ * Last Modified Date: 09.03.2022
  */
 module lsu
   import utils_pkg::*;
@@ -124,7 +124,10 @@ module lsu
         data_cb_mosi_o.rd_size       = CB_WORD;
         data_cb_mosi_o.rd_addr_valid = ~ap_done_ff && ~bp_data;
       end
-      next_ap_done = ~bp_addr;
+
+      if (~ap_done_ff && ~bp_addr && ~bp_data) begin
+        next_ap_done = 'b1;
+      end
     end
 
     next_lock = lock_ff;

@@ -12,6 +12,20 @@ module axi_mem_wrapper import utils_pkg::*; #(
 `ifdef SIMULATION
   localparam NUM_WORDS = (MEM_KB*1024)/4;
   logic [NUM_WORDS-1:0][31:0] mem_loading;
+
+  function [7:0] getbufferReq;
+    /* verilator public */
+    begin
+      getbufferReq = (axi_mosi.wdata[7:0]);
+    end
+  endfunction
+
+  function printfbufferReq;
+    /* verilator public */
+    begin
+      printfbufferReq = print_ff && axi_mosi.wvalid;
+    end
+  endfunction
 `endif
   localparam ADDR_RAM = $clog2(MEM_KB*1024);
 
@@ -37,7 +51,7 @@ module axi_mem_wrapper import utils_pkg::*; #(
       next_dec_csr = 'b1;
     end
 
-    if ((axi_mosi.awaddr == 'hA001_F800) && axi_mosi.awvalid) begin
+    if ((axi_mosi.awaddr == 'hA001_0000) && axi_mosi.awvalid) begin
       axi_mosi_int.awvalid = '0;
       next_print = 'b1;
     end
@@ -45,7 +59,7 @@ module axi_mem_wrapper import utils_pkg::*; #(
     if (axi_mosi.wvalid && print_ff) begin
       axi_mosi_int.wvalid = '0;
       axi_miso.wready = 'b1;
-      $write("%c",axi_mosi.wdata[7:0]);
+      //$write("%c",axi_mosi.wdata[7:0]);
       next_print = 'b0;
       next_bvalid = 'b1;
     end

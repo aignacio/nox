@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Thu Feb 24 17:05:27 2022
+[*] Wed Mar  9 09:44:48 2022
 [*]
 [dumpfile] "/Users/aignacio/projects/nox/nox_waves.fst"
-[dumpfile_mtime] "Thu Feb 24 17:04:51 2022"
-[dumpfile_size] 771851
+[dumpfile_mtime] "Wed Mar  9 09:13:42 2022"
+[dumpfile_size] 992771
 [savefile] "/Users/aignacio/projects/nox/waves.gtkw"
 [timestart] 1
 [size] 2837 1481
-[pos] 333 371
-*-2.483235 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] 541 405
+*-8.208227 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.nox_sim.
 [treeopen] TOP.nox_sim.u_nox.
@@ -24,7 +24,7 @@ TOP.nox_sim.u_nox.arst
 TOP.nox_sim.u_nox.clk
 @800200
 -instr_if
-@100000029
+@100000028
 TOP.nox_sim.u_nox.u_fetch.fetch_st_ff[1:0]
 @28
 [color] 1
@@ -54,8 +54,16 @@ TOP.nox_sim.u_nox.instr_axi_mosi_o.rready
 TOP.nox_sim.u_nox.instr_axi_miso_i.rdata[31:0]
 @1000200
 -instr_if
-@c00200
+@800200
 -data_if[LSU]
+@28
+TOP.nox_sim.slave_1_sel
+@29
+TOP.nox_sim.slave_2_sel
+@28
+TOP.nox_sim.u_nox.u_lsu.lsu_bp_o
+TOP.nox_sim.u_nox.u_lsu.dp_done_ff
+TOP.nox_sim.u_nox.u_lsu.ap_done_ff
 @22
 [color] 2
 TOP.nox_sim.masters_axi_mosi[1].awaddr[31:0]
@@ -102,7 +110,7 @@ TOP.nox_sim.masters_axi_miso[1].rdata[31:0]
 @28
 [color] 7
 TOP.nox_sim.masters_axi_mosi[1].rready
-@1401200
+@1000200
 -data_if[LSU]
 @100000028
 TOP.nox_sim.u_nox.u_execute.id_ex_i.lsu[1:0]

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 27.02.2022
+ * Last Modified Date: 09.03.2022
  */
 module nox_sim import utils_pkg::*; (
   input               clk,
@@ -78,30 +78,43 @@ module nox_sim import utils_pkg::*; (
     end
   end
 
-  axi_mem #(
-    .MEM_KB(`IRAM_KB_SIZE)
-  ) u_iram_mirror (
-    .clk      (clk),
-    .rst      (rst),
-    .axi_mosi (slaves_axi_mosi[2]),
-    .axi_miso (slaves_axi_miso[2])
+  axi_rom_wrapper u_irom(
+    .clk              (clk),
+    .rst              (rst),
+    .axi_mosi         (slaves_axi_mosi[2]),
+    .axi_miso         (slaves_axi_miso[2])
   );
+  //axi_mem #(
+    //.MEM_KB(`IRAM_KB_SIZE)
+  //) u_iram_mirror (
+    //.clk      (clk),
+    //.rst      (rst),
+    //.axi_mosi (slaves_axi_mosi[2]),
+    //.axi_miso (slaves_axi_miso[2])
+  //);
 
 `else
   assign slaves_axi_mosi[1]  = masters_axi_mosi[1];
   assign masters_axi_miso[1] = slaves_axi_miso[1];
 `endif
 
-  axi_mem #(
-    .MEM_KB(`IRAM_KB_SIZE)
-  ) u_iram (
-    .clk      (clk),
-    .rst      (rst),
-    .axi_mosi (slaves_axi_mosi[0]),
-    .axi_miso (slaves_axi_miso[0])
+  axi_rom_wrapper u_irom2(
+    .clk              (clk),
+    .rst              (rst),
+    .axi_mosi         (slaves_axi_mosi[0]),
+    .axi_miso         (slaves_axi_miso[0])
   );
 
-  axi_mem #(
+  //axi_mem #(
+    //.MEM_KB(`IRAM_KB_SIZE)
+  //) u_iram (
+    //.clk      (clk),
+    //.rst      (rst),
+    //.axi_mosi (slaves_axi_mosi[0]),
+    //.axi_miso (slaves_axi_miso[0])
+  //);
+
+  axi_mem_wrapper #(
     .MEM_KB(`DRAM_KB_SIZE)
   ) u_dram (
     .clk      (clk),
@@ -116,7 +129,7 @@ module nox_sim import utils_pkg::*; (
     .arst             (rst),
     .start_fetch_i    ('b1),
     .start_addr_i     (`ENTRY_ADDR),
-    .irq_i            (irq_stim),
+    .irq_i            ('0),
     .instr_axi_mosi_o (masters_axi_mosi[0]),
     .instr_axi_miso_i (masters_axi_miso[0]),
     .lsu_axi_mosi_o   (masters_axi_mosi[1]),
@@ -134,10 +147,10 @@ module nox_sim import utils_pkg::*; (
     /*verilator public*/
     logic [31:0] addr_val;
     logic [31:0] word_val;
-    u_iram.mem_loading[addr_val]        = word_val;
-`ifndef RV_COMPLIANCE
-    u_iram_mirror.mem_loading[addr_val] = word_val;
-`endif
+    //u_iram.mem_loading[addr_val]        = word_val;
+//`ifndef RV_COMPLIANCE
+    //u_iram_mirror.mem_loading[addr_val] = word_val;
+//`endif
   endfunction
 
   function automatic void writeWordDRAM(addr_val, word_val);
