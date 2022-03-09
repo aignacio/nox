@@ -6,7 +6,7 @@
 #include "riscv_csr_encoding.h"
 
 #define LEDS_ADDR   0xA001FC00
-#define PRINT_ADDR  0xA0010000
+#define PRINT_ADDR  0xA001F800
 #define UART_TX     0xB000000C
 #define UART_RX     0xB0000008
 #define UART_STATS  0xB0000004
