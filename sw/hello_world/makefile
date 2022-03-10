@@ -3,6 +3,10 @@ PREFIX	?=	docker run --rm --name sw_nox					\
 						-v $(abspath ../..):/nox_files -w			\
 						/nox_files/sw/$(notdir $(shell pwd))	\
 						aignacio/nox riscv-none-embed-
+RUN_PY	?=	docker run --rm --name sw_nox					\
+						-v $(abspath ../..):/nox_files -w			\
+						/nox_files/sw/$(notdir $(shell pwd))	\
+						aignacio/nox python3
 CC			:=	$(PREFIX)gcc
 OBJDUMP	:=	$(PREFIX)objdump
 OBJCOPY	:=	$(PREFIX)objcopy
@@ -56,11 +60,11 @@ all: $(ODIR)/boot_rom.sv $(TARGET).asm
 
 $(ODIR)/boot_rom.sv: $(TARGET).data
 	@echo "Generating behavioral ROM in verilog with hex file"
-	python3 scripts/gen_rom.py --in_hex $< --out_v $@
+	$(RUN_PY) scripts/gen_rom.py --in_hex $< --out_v $@
 
 $(TARGET).data: $(TARGET).bin
 	@echo "Generating hex format from elf to run in digital simulations..."
-	python3 scripts/freedom-bin2hex.py --bit-width 32 $< $@
+	$(RUN_PY) scripts/freedom-bin2hex.py --bit-width 32 $< $@
 
 $(TARGET).asm:	$(TARGET).elf
 	@echo "Generating disassembly of the code..."

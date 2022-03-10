@@ -5,7 +5,7 @@
 #include "printf.h"
 #include "riscv_csr_encoding.h"
 
-#define LEDS_ADDR   0xA001FC00
+#define LEDS_ADDR   0xA0000008
 #define PRINT_ADDR  0xA0000000
 #define UART_TX     0xB000000C
 #define UART_RX     0xB0000008

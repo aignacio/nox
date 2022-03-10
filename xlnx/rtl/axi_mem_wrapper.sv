@@ -54,7 +54,7 @@ module axi_mem_wrapper import utils_pkg::*; #(
     write_uart = 'b0;
     next_busy = 'b0;
 
-    if ((axi_mosi.awaddr == 'hD000_0000) && axi_mosi.awvalid) begin
+    if ((axi_mosi.awaddr == 'hA000_0008) && axi_mosi.awvalid) begin
       axi_mosi_int.awvalid = '0;
       next_dec_csr = 'b1;
     end
