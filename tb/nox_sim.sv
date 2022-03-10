@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 27.02.2022
+ * Last Modified Date: 10.03.2022
  */
 module nox_sim import utils_pkg::*; (
   input               clk,
@@ -46,7 +46,16 @@ module nox_sim import utils_pkg::*; (
     next_switch = slave_2_sel ? IRAM_MIRROR : DRAM;
 
     if (switch_ff == IRAM_MIRROR) begin
-      masters_axi_miso[1] = slaves_axi_miso[2];
+      masters_axi_miso[1].rid    = slaves_axi_miso[2].rid;
+      masters_axi_miso[1].rdata  = slaves_axi_miso[2].rdata;
+      masters_axi_miso[1].rresp  = slaves_axi_miso[2].rresp;
+      masters_axi_miso[1].rlast  = slaves_axi_miso[2].rlast;
+      masters_axi_miso[1].ruser  = slaves_axi_miso[2].ruser;
+      masters_axi_miso[1].rvalid = slaves_axi_miso[2].rvalid;
+
+      masters_axi_miso[1].awready = slaves_axi_miso[1].awready;
+      masters_axi_miso[1].wready = slaves_axi_miso[1].wready;
+      masters_axi_miso[1].arready = slaves_axi_miso[1].arready;
     end
 
     if (switch_ff == DRAM) begin
