@@ -86,10 +86,9 @@ filesets:
 
   coremark_nox:
     files:
-      - xlnx/rtl/nox_soc.sv
+      - xlnx/rtl/nox_coremark.sv
       - xlnx/rtl/axi_rom_wrapper.sv
-      - xlnx/rtl/axi_uart_wrapper.sv
-      - sw/soc_hello_world/output/boot_rom.sv
+      - sw/coremark/boot_rom.sv
       - xlnx/rtl/axi_mem_wrapper.sv
     file_type: systemVerilogSource
 

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 06.03.2022
+ * Last Modified Date: 10.03.2022
  */
 
 `default_nettype wire
@@ -133,7 +133,8 @@ module nox_soc
     .rst              (rst_int),
     .axi_mosi         (slaves_axi_mosi[0]),
     .axi_miso         (slaves_axi_miso[0]),
-    .csr_o            ()
+    .csr_o            (),
+    .uart_tx_o        ()
   );
 
 `ifdef SIMULATION
@@ -162,7 +163,8 @@ module nox_soc
     .rst              (rst_int),
     .axi_mosi         (slaves_axi_mosi[2]),
     .axi_miso         (slaves_axi_miso[2]),
-    .csr_o            (csr_out_int)
+    .csr_o            (csr_out_int),
+    .uart_tx_o        ()
   );
 
   axi_interconnect_wrapper #(

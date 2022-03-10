@@ -54,9 +54,6 @@ IRAM_ADDR			?=	0x80000000
 DRAM_ADDR			?=	0x10000000
 DISPLAY_TEST	?=	0 # Enable $display in axi_mem.sv [compliance test]
 WAVEFORM_USE	?=	1 # Use 0 to not generate waves [compliance test]
-BP_ADDRS_CHN	?=	0 # Insert bp on address chn - aw/raddr [MISO]
-BP_WRDTA_CHN	?=	0 # Insert bp on data chn - wready/rvalid [MISO]
-BP_BWRES_CHN	?=	0 # Insert bp on write resp chn - bvalid [MISO]
 
 # Verilator info
 VERILATOR_TB	:=	tb
@@ -79,9 +76,6 @@ _MACROS_VLOG	?=	IRAM_KB_SIZE=$(IRAM_KB_SIZE)
 _MACROS_VLOG	+=	DRAM_KB_SIZE=$(DRAM_KB_SIZE)
 _MACROS_VLOG	+=	ENTRY_ADDR=$(ENTRY_ADDR)
 _MACROS_VLOG	+=	DISPLAY_TEST=$(DISPLAY_TEST)
-_MACROS_VLOG	+=	BP_ADDRS_CHN=$(BP_ADDRS_CHN)
-_MACROS_VLOG	+=	BP_WRDTA_CHN=$(BP_WRDTA_CHN)
-_MACROS_VLOG	+=	BP_BWRES_CHN=$(BP_BWRES_CHN)
 _MACROS_VLOG	+=	SIMULATION
 ifeq ($(RV_COMPLIANCE),1)
 _MACROS_VLOG	+=	RV_COMPLIANCE
@@ -201,14 +195,8 @@ $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk: $(SRC_VERILOG) $(SRC_CPP) $(TB_VERILATOR)
 ##########################
 #				 Coremark			   #
 ##########################
-nox_coremark:
-	make all IRAM_KB_SIZE=24
-
 sw/coremark/coremark.elf:
-	make -C sw/coremark/ PORT_DIR=nox ITERATIONS=10
-
-run_coremark: sw/coremark/coremark.elf
-	$(RUN_CMD) ./$(VERILATOR_EXE) -s 52835000 -e $< -w 1000000000000000
+	make -C sw/coremark/ PORT_DIR=nox ITERATIONS=2000
 
 ##########################
 #				 SoC test			   #

@@ -23,6 +23,11 @@ OUTFLAG= -o
 RUN_CMD	?=	docker run --rm --name ship_nox	  \
 		    -v $(abspath .):/nox_files -w     \
 		    /nox_files aignacio/nox riscv-none-embed-
+
+RUN_PY	?=	docker run --rm --name ship_nox	  \
+		    -v $(abspath .):/nox_files -w     \
+		    /nox_files aignacio/nox python3
+
 # Flag : CC
 #	Use this flag to define compiler to use
 CC 		 = $(RUN_CMD)gcc
@@ -117,8 +122,8 @@ $(OPATH)%$(OEXT) : %.s
 port_postbuild:
 	$(OBJDUMP) -S -t -D -h coremark.elf > coremark.asm
 	$(OBJCOPY) -O binary coremark.elf coremark.bin
-	python3 nox/freedom-bin2hex.py --bit-width 32 coremark.bin coremark.data
-	python3 nox/gen_rom.py --in_hex coremark.data --out_v boot_rom.sv
+	$(RUN_PY) nox/freedom-bin2hex.py --bit-width 32 coremark.bin coremark.data
+	$(RUN_PY) nox/gen_rom.py --in_hex coremark.data --out_v boot_rom.sv
 
 # Target : port_pre% and port_post%
 # For the purpose of this simple port, no pre or post steps needed.
