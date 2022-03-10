@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 09.03.2022
+ * Last Modified Date: 10.03.2022
  */
 
 `default_nettype wire
@@ -134,7 +134,16 @@ module nox_soc
     next_switch = slave_2_sel ? IRAM_MIRROR : DRAM;
 
     if (switch_ff == IRAM_MIRROR) begin
-      masters_axi_miso[1] = slaves_axi_miso[2];
+      masters_axi_miso[1].rid    = slaves_axi_miso[2].rid;
+      masters_axi_miso[1].rdata  = slaves_axi_miso[2].rdata;
+      masters_axi_miso[1].rresp  = slaves_axi_miso[2].rresp;
+      masters_axi_miso[1].rlast  = slaves_axi_miso[2].rlast;
+      masters_axi_miso[1].ruser  = slaves_axi_miso[2].ruser;
+      masters_axi_miso[1].rvalid = slaves_axi_miso[2].rvalid;
+
+      masters_axi_miso[1].awready = slaves_axi_miso[1].awready;
+      masters_axi_miso[1].wready = slaves_axi_miso[1].wready;
+      masters_axi_miso[1].arready = slaves_axi_miso[1].arready;
     end
 
     if (switch_ff == DRAM) begin
@@ -196,27 +205,28 @@ module nox_soc
 `else
   axi_rom_wrapper u_irom(
     .clk              (clk),
-    .rst              (rst),
+    .rst              (rst_int),
     .axi_mosi         (slaves_axi_mosi[0]),
     .axi_miso         (slaves_axi_miso[0])
   );
 `endif
 
-  axi_mem #(
-    .MEM_KB(`DRAM_KB_SIZE)
+  axi_mem_wrapper #(
+    .MEM_KB(8)
   ) u_dram (
     .clk      (clk),
     .rst      (rst_int),
     .axi_mosi (slaves_axi_mosi[1]),
     .axi_miso (slaves_axi_miso[1]),
-    .uart_tx_o(uart_tx_o)
+    .uart_tx_o(uart_tx_o),
+    .csr_o    (csr_out_int)
   );
   /* verilator lint_on PINMISSING */
 
   nox u_nox(
     .clk              (clk),
     .arst             (rst_int),
-    .start_fetch_i    ('b1),
+    .start_fetch_i    (start_fetch),
     .start_addr_i     ('h8000_0000),
     .irq_i            ('0),
     .instr_axi_mosi_o (masters_axi_mosi[0]),
@@ -230,8 +240,8 @@ module nox_soc
     /*verilator public*/
     logic [31:0] addr_val;
     logic [31:0] word_val;
-    u_iram.mem_loading[addr_val]        = word_val;
-    u_iram_mirror.mem_loading[addr_val] = word_val;
+    //u_iram.mem_loading[addr_val]        = word_val;
+    //u_iram_mirror.mem_loading[addr_val] = word_val;
   endfunction
 
   function automatic void writeWordDRAM(addr_val, word_val);

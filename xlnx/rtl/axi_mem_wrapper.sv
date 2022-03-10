@@ -5,10 +5,15 @@ module axi_mem_wrapper import utils_pkg::*; #(
   input                 rst,
   input   s_axi_mosi_t  axi_mosi,
   output  s_axi_miso_t  axi_miso,
-  output  logic [7:0]   csr_o
+  output  logic [7:0]   csr_o,
+  output  logic         uart_tx_o
 );
   s_axi_mosi_t  axi_mosi_int;
   s_axi_miso_t  axi_miso_int;
+
+  logic uart_busy;
+  logic write_uart;
+
 `ifdef SIMULATION
   localparam NUM_WORDS = (MEM_KB*1024)/4;
   logic [NUM_WORDS-1:0][31:0] mem_loading;
@@ -32,6 +37,7 @@ module axi_mem_wrapper import utils_pkg::*; #(
   /* verilator lint_off WIDTH */
   logic [7:0] csr_output_ff, next_csr;
   logic print_ff, next_print;
+  logic busy_ff, next_busy;
   logic csr_decode_ff, next_dec_csr;
   logic bvalid_ff, next_bvalid;
 
@@ -45,23 +51,37 @@ module axi_mem_wrapper import utils_pkg::*; #(
     next_csr = csr_output_ff;
     next_bvalid = 'b0;
     next_print = print_ff;
+    write_uart = 'b0;
+    next_busy = 'b0;
 
-    if ((axi_mosi.awaddr == 'hA001_FC00) && axi_mosi.awvalid) begin
+    if ((axi_mosi.awaddr == 'hD000_0000) && axi_mosi.awvalid) begin
       axi_mosi_int.awvalid = '0;
       next_dec_csr = 'b1;
     end
 
-    if ((axi_mosi.awaddr == 'hA001_F800) && axi_mosi.awvalid) begin
+    if ((axi_mosi.awaddr == 'hA000_0000) && axi_mosi.awvalid) begin
       axi_mosi_int.awvalid = '0;
       next_print = 'b1;
     end
 
+    if ((axi_mosi.araddr == 'hA000_0004) && axi_mosi.arvalid) begin
+      axi_mosi_int.arvalid = '0;
+      next_busy = 'b1;
+    end
+
+    if (busy_ff) begin
+      axi_miso.rvalid = '1;
+      axi_miso.rdata  = {31'h0,uart_busy};
+      next_busy = 'b0;
+    end
+
+
     if (axi_mosi.wvalid && print_ff) begin
       axi_mosi_int.wvalid = '0;
       axi_miso.wready = 'b1;
-      //$write("%c",axi_mosi.wdata[7:0]);
       next_print = 'b0;
       next_bvalid = 'b1;
+      write_uart = 'b1;
     end
 
     if (axi_mosi.wvalid && csr_decode_ff) begin
@@ -79,12 +99,14 @@ module axi_mem_wrapper import utils_pkg::*; #(
       csr_output_ff <= '0;
       bvalid_ff     <= '0;
       print_ff      <= '0;
+      busy_ff       <= '0;
     end
     else begin
       csr_decode_ff <= next_dec_csr;
       csr_output_ff <= next_csr;
       bvalid_ff     <= next_bvalid;
       print_ff      <= next_print;
+      busy_ff       <= next_busy;
     end
   end
 
@@ -135,6 +157,16 @@ module axi_mem_wrapper import utils_pkg::*; #(
     .s_axi_rlast  (axi_miso_int.rlast),
     .s_axi_rvalid (axi_miso_int.rvalid),
     .s_axi_rready (axi_mosi_int.rready)
+  );
+
+  txuartlite #(
+	  .CLOCKS_PER_BAUD(434)
+	) u_uart (
+	  .i_clk      (clk),
+		.i_wr       (write_uart),
+		.i_data     (axi_mosi.wdata[7:0]),
+		.o_uart_tx  (uart_tx_o),
+		.o_busy     (uart_busy)
   );
 
 `ifdef SIMULATION

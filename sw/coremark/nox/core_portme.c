@@ -20,23 +20,18 @@ Original Author: Shay Gal-on
 #include "printf.h"
 #include <stdint.h>
 
-#define PRINT_ADDR  0xA0000000
+#define LEDS_ADDR         0xD0000000
+#define UART_ADDR         0xA0000000
+#define UART_BUSY_ADDR    0xA0000004
+#define STRING_TEST       "Test!"
 
-#define UART_TX     0xB000000C
-#define UART_RX     0xB0000008
-#define UART_STATS  0xB0000004
-#define UART_CFG    0xB0000000
-
-volatile uint32_t* const addr_print = (uint32_t*) PRINT_ADDR;
-volatile uint32_t* const uart_stats = (uint32_t*) UART_STATS;
-volatile uint32_t* const uart_print = (uint32_t*) UART_TX;
-volatile uint32_t* const uart_rx    = (uint32_t*) UART_RX;
-volatile uint32_t* const uart_cfg   = (uint32_t*) UART_CFG;
+volatile uint32_t* const addr_leds = (uint32_t*) LEDS_ADDR;
+volatile uint32_t* const uart_print = (uint32_t*) UART_ADDR;
+volatile uint32_t* const uart_busy  = (uint32_t*) UART_BUSY_ADDR;
 
 void _putchar(char character){
-  /*while((*uart_stats & 0x10000) == 0);*/
-  /**uart_print = character;*/
-  *addr_print = character;
+  while(*uart_busy != 0);
+  *uart_print = character;
 }
 
 
@@ -157,10 +152,12 @@ void
 portable_init(core_portable *p, int *argc, char *argv[])
 {
 
+  *addr_leds = 0xf;
   /**uart_cfg = 434;*/
   ee_printf("\n\r -----------");
-  ee_printf("\n\r Coremark Start");
+  ee_printf("\n\r [NoX] Coremark Start");
   ee_printf("\n\r -----------");
+  ee_printf("\n");
 //#error "Call board initialization routines in portable init (if needed), in particular initialize UART!\n"
     if (sizeof(ee_ptr_int) != sizeof(ee_u8 *))
     {

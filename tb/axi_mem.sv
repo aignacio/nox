@@ -33,9 +33,9 @@ module axi_mem import utils_pkg::*; #(
   axi_addr_t  wr_addr_ff, next_wr_addr;
   axi_size_t  size_wr_ff, next_wr_size;
   axi_data_t  rd_data_ff, next_rd_data;
+  logic next_char, char_ff;
 `ifdef SIMULATION
   logic [7:0] char_wr;
-  logic next_char, char_ff;
   logic next_num, num_ff;
   typedef struct packed {
     logic [31:0]     start_addr;
@@ -46,7 +46,6 @@ module axi_mem import utils_pkg::*; #(
   logic start_sig_ff, next_start_sig;
   logic end_sig_ff, next_end_sig;
   logic fin_sig_ff, next_fin;
-`endif
   function [7:0] getbufferReq;
     /* verilator public */
     begin
@@ -60,7 +59,7 @@ module axi_mem import utils_pkg::*; #(
       printfbufferReq = char_ff && axi_mosi.wvalid;
     end
   endfunction
-
+`endif
   function automatic void dump_signature();
     automatic string sig_file;
     automatic integer sig_fd;
@@ -327,8 +326,8 @@ module axi_mem import utils_pkg::*; #(
       csr_decode_ff <= `OP_RST_L;
       csr_uart_ff   <= 'b0;
       csr_uart_busy_ff  <= 'b0;
-`ifdef SIMULATION
       char_ff       <= 'b0;
+`ifdef SIMULATION
       num_ff        <= 'b0;
       sig_ff        <= s_signature_t'('h0);
       start_sig_ff  <= 'b0;
@@ -347,8 +346,8 @@ module axi_mem import utils_pkg::*; #(
       csr_output_ff <= next_csr;
       csr_decode_ff <= next_dec_csr;
       csr_uart_ff   <= next_dec_uart;
-`ifdef SIMULATION
       char_ff       <= next_char;
+`ifdef SIMULATION
       num_ff        <= next_num;
       sig_ff        <= next_sig;
       start_sig_ff  <= next_start_sig;

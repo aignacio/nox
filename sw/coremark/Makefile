@@ -97,7 +97,7 @@ $(OUTFILE): $(SRCS) $(HEADERS) Makefile core_portme.mak $(EXTRA_DEPENDS) $(FORCE
 
 .PHONY: rerun
 rerun:
-	$(MAKE) XCFLAGS="$(XCFLAGS) -DPERFORMANCE_RUN=1" load run1.log
+	#$(MAKE) XCFLAGS="$(XCFLAGS) -DPERFORMANCE_RUN=1" load run1.log
 	$(MAKE) XCFLAGS="$(XCFLAGS) -DVALIDATION_RUN=1" load run2.log
 
 PARAM1=$(PORT_PARAMS) 0x0 0x0 0x66 $(ITERATIONS)

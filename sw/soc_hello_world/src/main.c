@@ -21,7 +21,7 @@ void _putchar(char character){
 }
 #else
 void _putchar(char character){
-  *addr_print = character;
+  /**addr_print = character;*/
   while(*uart_busy != 0);
   *uart_print = character;
 }

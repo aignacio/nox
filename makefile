@@ -39,6 +39,7 @@ _SOC_VERILOG 	+=	xlnx/rtl/axi_mem_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_rom_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_uart_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_crossbar_wrapper.sv
+_SOC_VERILOG 	+=	sw/coremark/boot_rom.sv
 ifeq ($(AXI_IF),0)
 _SOC_VERILOG 	+=	xlnx/rtl/nox_soc_ahb.sv
 else
@@ -207,13 +208,13 @@ $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk: $(SRC_VERILOG) $(SRC_CPP) $(TB_VERILATOR)
 #				 Coremark			   #
 ##########################
 nox_coremark:
-	make all IRAM_KB_SIZE=24
+	make soc IRAM_KB_SIZE=24
 
 sw/coremark/coremark.elf:
-	make -C sw/coremark/ PORT_DIR=nox ITERATIONS=10
+	make -C sw/coremark/ PORT_DIR=nox ITERATIONS=2000
 
 run_coremark: sw/coremark/coremark.elf
-	$(RUN_CMD) ./$(VERILATOR_EXE) -s 52835000 -e $< -w 1000000000000000
+	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 52835000 -e $< -w 1000000000000000
 
 ##########################
 #				 SoC test			   #
