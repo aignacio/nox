@@ -1,3 +1,4 @@
+[![Lint](https://github.com/aignacio/nox/actions/workflows/lint.yaml/badge.svg)](https://github.com/aignacio/nox/actions/workflows/lint.yaml)
 <img align="right" alt="nox_logo" src="docs/img/rv_logo.png" width="100"/>
 
 # NoX RISC-V Core
@@ -40,7 +41,7 @@ The CSRs that are implemented in the core are listed down below, more CSRs can b
 | 12 |  mhartid |         Hart ID register        |
 
 ## <a name="quick"></a> Quickstart
-**NoX** uses a [docker container](https://hub.docker.com/repository/docker/aignacio/nox) to build and simulate a standalone instance of the core or an SoC requiring no additional tools to the user apart from docker itself. To quickly build a simple instance of the core with two memories and simulate it through linux, follow:
+**NoX** uses a [docker container](https://hub.docker.com/repository/docker/aignacio/nox) to build and simulate a standalone instance of the core or an SoC requiring no additional tools to the user apart from docker itself. Please be aware that the process of building the simulator might require more resources than what is allocated to the `docker`, therefore if the output shows `Killed`, increase the **memory** and the **cpu** resources. To quickly build a simple instance of the core with two memories and simulate it through linux, follow:
 
 ```bash
 make all # Will first download the docker container and build the design
@@ -109,6 +110,7 @@ fusesoc library add core  .
 fusesoc run --run --target=coremark_synth core:nox:v0.0.1
 ```
 As mentioned in the [CoreMark](https://github.com/eembc/coremark) repository, the benchmark needs to run for two sets of seeds 0,0,0x66 and 0x3415,0x3415,0x66. These two sets correspond respectively to PERFORMANCE run and VALIDATION run. Thus the two outputs of the runs are presented down below. According to the reporting rules, the CoreMark score is defined by the metrics of number of iterations per second during the performance run.
+
 **Performance run:**
 ```bash
  -----------

@@ -21,4 +21,4 @@ jobs:
       - name: Build model DUT
         uses: actions/checkout@v2
       - run: |
-          make all RUN_CMD="" lint
+          make RUN_CMD="" lint

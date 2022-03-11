@@ -241,7 +241,7 @@ build_comp:
 	make all RV_COMPLIANCE=1 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
 
 run_comp:
-	$(RUN_CMD_COMP) riscof --verbose info arch-tests --clone
+	$(RUN_CMD_COMP) riscof --verbose info arch-test --clone
 	$(RUN_CMD_COMP) riscof validateyaml --config=config.ini
 	$(RUN_CMD_COMP) riscof testlist --config=config.ini --suite=riscv-arch-test/riscv-test-suite/ --env=riscv-arch-test/riscv-test-suite/env
 	$(RUN_CMD_COMP) riscof run --config=config.ini --suite=riscv-arch-test/riscv-test-suite/ --env=riscv-arch-test/riscv-test-suite/env
