@@ -9,3 +9,7 @@ set_property -dict { PACKAGE_PIN AF10 IOSTANDARD LVCMOS18 } [get_ports { rst_clk
 ## LEDs
 set_property -dict { PACKAGE_PIN J26 IOSTANDARD LVCMOS33 } [get_ports { csr_out[0] }];
 set_property -dict { PACKAGE_PIN H26 IOSTANDARD LVCMOS33 } [get_ports { csr_out[1] }];
+
+## UART
+set_property -dict { PACKAGE_PIN A8 IOSTANDARD LVCMOS33 } [get_ports { uart_tx_o }];
+set_property -dict { PACKAGE_PIN B9 IOSTANDARD LVCMOS33 } [get_ports { uart_tx_mirror_o }];

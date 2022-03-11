@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 10.03.2022
+ * Last Modified Date: 11.03.2022
  */
 
 `default_nettype wire
@@ -79,7 +79,8 @@ module nox_soc
     // Other control and status signals
     .LOCKED              (start_fetch),
     .PWRDWN              (1'b0),
-    .RST                 (rst_clk));
+    .RST                 (rst_clk)
+  );
 
   IBUF clkin1_ibufg(
     .O (clk_in_clk_wiz_2),
@@ -92,20 +93,76 @@ module nox_soc
   );
 
   BUFG clkout1_buf(
-    .O   (clk),
-    .I   (clk_out_clk_wiz_2)
+    .O (clk),
+    .I (clk_out_clk_wiz_2)
   );
 
 `endif
 
 `ifdef QMTECH_KINTEX_7_100MHz
   assign rst_int = rst_cpu;
-  //clk_mmcm u_mmcm(
-    //.clk_out  (clk_out_clk_gen),
-    //.reset    (rst_clk),
-    //.locked   (start_fetch),
-    //.clk_in   (clk_in_clk_gen)
-  //);
+  logic rst_clk_int;
+
+  assign rst_clk_int = ~rst_clk;
+
+  logic        clkfbout_clk_wiz_2;
+  logic        clkfbout_buf_clk_wiz_2;
+  logic        clk_out_clk_wiz_2;
+
+  PLLE2_ADV#(
+    .BANDWIDTH            ("OPTIMIZED"),
+    .COMPENSATION         ("ZHOLD"),
+    .STARTUP_WAIT         ("FALSE"),
+    .DIVCLK_DIVIDE        (1),
+    .CLKFBOUT_MULT        (18),
+    .CLKFBOUT_PHASE       (0.000),
+    .CLKOUT0_DIVIDE       (9),
+    .CLKOUT0_PHASE        (0.000),
+    .CLKOUT0_DUTY_CYCLE   (0.500),
+    .CLKIN1_PERIOD        (20.000)
+  ) plle2_adv_inst (
+    .CLKFBOUT            (clkfbout_clk_wiz_2),
+    .CLKOUT0             (clk_out_clk_wiz_2),
+    .CLKOUT1             (),
+    .CLKOUT2             (),
+    .CLKOUT3             (),
+    .CLKOUT4             (),
+    .CLKOUT5             (),
+     // Input clock control
+    .CLKFBIN             (clkfbout_buf_clk_wiz_2),
+    .CLKIN1              (clk_in_clk_wiz_2),
+    .CLKIN2              (1'b0),
+     // Tied to always select the primary input clock
+    .CLKINSEL            (1'b1),
+    // Ports for dynamic reconfiguration
+    .DADDR               (7'h0),
+    .DCLK                (1'b0),
+    .DEN                 (1'b0),
+    .DI                  (16'h0),
+    .DO                  (),
+    .DRDY                (),
+    .DWE                 (1'b0),
+    // Other control and status signals
+    .LOCKED              (start_fetch),
+    .PWRDWN              (1'b0),
+    .RST                 (rst_clk_int)
+  );
+
+  IBUF clkin1_ibufg(
+    .O (clk_in_clk_wiz_2),
+    .I (clk_in)
+  );
+
+  BUFG clkf_buf(
+    .O (clkfbout_buf_clk_wiz_2),
+    .I (clkfbout_clk_wiz_2)
+  );
+
+  BUFG clkout1_buf(
+    .O (clk),
+    .I (clk_out_clk_wiz_2)
+  );
+
 `endif
 
 `ifdef SIMULATION
