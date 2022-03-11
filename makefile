@@ -1,5 +1,5 @@
 AXI_IF				?=	1
-
+GTKWAVE_PRE		:=	/Applications/gtkwave.app/Contents/Resources/bin/
 # Design files
 _SRC_VERILOG	?=	rtl/inc/axi_pkg.svh
 _SRC_VERILOG	?=	rtl/inc/ahb_pkg.svh
@@ -101,6 +101,9 @@ RUN_CMD				:=	docker run --rm --name ship_nox	\
 RUN_CMD_2			:=	docker run --rm --name ship_nox	\
 									-v $(abspath .):/nox_files -w		\
 									/opt/riscv-arch-test-nox aignacio/nox
+RUN_CMD_COMP	:=	docker run --rm --name ship_nox	\
+									-v $(abspath .):/test -w				\
+									/test/riscof_compliance aignacio/riscof
 
 RUN_SW				:=	sw/hello_world/output/hello_world.elf
 RUN_SW_SOC		:=	sw/soc_hello_world/output/soc_hello_world.elf
@@ -149,11 +152,16 @@ VERIL_ARGS_SOC	:=	-CFLAGS $(CPPFLAGS_SOC) 			\
 .PHONY: verilator clean help
 help:
 	@echo "Targets:"
-	@echo "all	- build design and sim through verilator"
-	@echo "run	- run sw/hello_world app through nox_sim"
-	@echo "build	- build docker image used by nox project"
-	@echo "wave	- calls gtkwave"
-	@echo "lint	- calls verible for sv linting"
+	@echo "lint	   - calls verilator sv linting"
+	@echo "all	   - build design and sim through verilator"
+	@echo "run	   - run sw/hello_world app through nox_sim"
+	@echo "wave	   - calls gtkwave for nox_sim sims"
+	@echo "soc	   - build design a simple NoX SoC through verilator"
+	@echo "run_soc	   - run sw/soc_hello_world app through nox_sim"
+	@echo "wave_soc   - calls gtkwave for SoC sims"
+	@echo "build_comp - Build NoX for running compliance tests"
+	@echo "run_comp   - Run compliance tests"
+	@echo "conv_verilog - Convert NoX core from system verilog to verilog"
 
 conv_verilog:
 	$(RUN_CMD) sv2v						 \
@@ -161,11 +169,13 @@ conv_verilog:
 		$(_CORE_VERILOG) > design.v
 
 wave: $(WAVEFORM_FST)
-	/Applications/gtkwave.app/Contents/Resources/bin/gtkwave $(WAVEFORM_FST) waves.gtkw
+	$(GTKWAVE_PRE)gtkwave $(WAVEFORM_FST) waves.gtkw
 
-lint:
-	verible-verilog-lint --lint_fatal --parse_fatal $(_CORE_VERILOG)
-	ec $(_CORE_VERILOG)
+lint: $(SRC_VERILOG) $(SRC_CPP) $(TB_VERILATOR)
+	$(RUN_CMD) verilator --lint-only $(VERIL_ARGS)
+
+	#verible-verilog-lint --lint_fatal --parse_fatal $(_CORE_VERILOG)
+	#ec $(_CORE_VERILOG)
 
 clean:
 	rm -rf $(OUT_VERILATOR)
@@ -183,7 +193,7 @@ $(RUN_SW):
 	make -C sw/hello_world all
 
 run: $(RUN_SW)
-	$(RUN_CMD) ./$(VERILATOR_EXE) -s 50000 -e $<
+	$(RUN_CMD) ./$(VERILATOR_EXE) -s 100000 -e $<
 
 $(VERILATOR_EXE): $(OUT_VERILATOR)/V$(ROOT_MOD_VERI).mk
 	$(RUN_CMD) make -C $(OUT_VERILATOR)	\
@@ -201,8 +211,9 @@ sw/coremark/coremark.elf:
 ##########################
 #				 SoC test			   #
 ##########################
+
 wave_soc: $(WAVEFORM_FST)
-	/Applications/gtkwave.app/Contents/Resources/bin/gtkwave $(WAVEFORM_FST) waves_soc.gtkw
+	$(GTKWAVE_PRE)gtkwave $(WAVEFORM_FST) waves_soc.gtkw
 
 $(VERI_EXE_SOC): $(OUT_VERILATOR)/V$(ROOT_MOD_SOC).mk
 	$(RUN_CMD) make -C $(OUT_VERILATOR)	\
@@ -210,7 +221,6 @@ $(VERI_EXE_SOC): $(OUT_VERILATOR)/V$(ROOT_MOD_SOC).mk
 
 $(OUT_VERILATOR)/V$(ROOT_MOD_SOC).mk: $(SOC_VERILOG) $(SRC_CPP_SOC) $(TB_VERILATOR)
 	$(RUN_CMD) verilator $(VERIL_ARGS_SOC)
-
 
 soc: clean $(VERI_EXE_SOC)
 	@echo "\n"
@@ -227,10 +237,16 @@ run_soc: $(RUN_SW_SOC)
 ##########################
 #	RISC-V Compliance test #
 ##########################
-sim_comp:
+build_comp:
 	make all RV_COMPLIANCE=1 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
 
-compliance:
-	$(RUN_CMD_2) make verify RISCV_PREFIX=riscv-none-embed-	\
-		RISCV_TARGET=nox RISCV_DEVICE=I		 										\
-		TARGET_SIM=/nox_files/$(VERILATOR_EXE) -j8
+run_comp:
+	$(RUN_CMD_COMP) riscof --verbose info arch-tests --clone
+	$(RUN_CMD_COMP) riscof validateyaml --config=config.ini
+	$(RUN_CMD_COMP) riscof testlist --config=config.ini --suite=riscv-arch-test/riscv-test-suite/ --env=riscv-arch-test/riscv-test-suite/env
+	$(RUN_CMD_COMP) riscof run --config=config.ini --suite=riscv-arch-test/riscv-test-suite/ --env=riscv-arch-test/riscv-test-suite/env
+
+#compliance:
+	#$(RUN_CMD_2) make verify RISCV_PREFIX=riscv-none-embed-	\
+		#RISCV_TARGET=nox RISCV_DEVICE=I		 										\
+		#TARGET_SIM=/nox_files/$(VERILATOR_EXE) -j8
