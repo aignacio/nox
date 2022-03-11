@@ -176,8 +176,8 @@ all: clean $(VERILATOR_EXE)
 	@echo "$(VERILATOR_EXE) -h"
 	@echo "\n"
 
-build:
-	docker build -f Dockerfile.nox . -t nox:latest . --progress tty
+build_nox_docker:
+	docker build -f Dockerfile.nox -t aignacio/nox:latest . --progress tty
 
 $(RUN_SW):
 	make -C sw/hello_world all
@@ -235,7 +235,5 @@ compliance:
 		RISCV_TARGET=nox RISCV_DEVICE=I		 										\
 		TARGET_SIM=/nox_files/$(VERILATOR_EXE) -j8
 
-	#$(RUN_CMD_2) make all_variant RISCV_PREFIX=riscv-none-embed-	\
-		#RISCV_TARGET=nox																						\
-		#TARGET_SIM=/nox_files/$(VERILATOR_EXE) -j8
-
+hello_world:
+	echo "Hello World @AIGNACIO" > test.txt
