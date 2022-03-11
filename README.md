@@ -1,3 +1,5 @@
+[![RISC-V ISA Compliance](https://github.com/aignacio/nox/actions/workflows/compliance-tests.yaml/badge.svg?branch=master)](https://github.com/aignacio/nox/actions/workflows/compliance-tests.yaml)
+
 <img align="right" alt="nox_logo" src="docs/img/rv_logo.png" width="100"/>
 
 # NoX RISC-V Core
