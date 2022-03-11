@@ -5,8 +5,8 @@ jobs:
   build_nox_sim:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Verilator
-        uses: actions/checkout@v2
+      #- name: Install Verilator
+        #uses: actions/checkout@v2
       #- run: |
           #sudo apt-get update -y
           #sudo apt-get upgrade -y
@@ -19,8 +19,9 @@ jobs:
           #make -j $(nproc)
           #sudo make install
       - name: Build model DUT
+        uses: actions/checkout@v2
       - run: |
-          make all RUN_CMD="" RV_COMPLIANCE=1 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
+          make all RV_COMPLIANCE=1 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
       - uses: actions/upload-artifact@master
         with:
           name: nox_sim
