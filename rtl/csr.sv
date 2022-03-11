@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 23.02.2022
+ * Last Modified Date: 11.03.2022
  */
 module csr
   import utils_pkg::*;
@@ -246,7 +246,8 @@ module csr
       ebreak_i: begin
         next_mepc        = pc_addr_i;
         next_mcause      = 'd3;
-        next_mtval       = pc_addr_i;
+        //next_mtval       = pc_addr_i;
+        next_mtval       = '0;
         next_trap.active = 'b1;
       end
       mret_i: begin // Fake trap to return program

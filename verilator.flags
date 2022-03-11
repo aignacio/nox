@@ -4,7 +4,7 @@
 -Wno-TIMESCALEMOD
 //--coverage
 --exe
-//--threads 8
+--threads 8
 --trace
 --trace-depth			10000
 --trace-structs
