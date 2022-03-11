@@ -18,15 +18,13 @@ jobs:
           #./configure
           #make -j $(nproc)
           #sudo make install
-      #- name: Build model DUT
-      #- run: |
-          #make all RUN_CMD="" RV_COMPLIANCE=1 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
+      - name: Build model DUT
       - run: |
-          make hello_world
+          make all RUN_CMD="" RV_COMPLIANCE=1 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
       - uses: actions/upload-artifact@master
         with:
           name: nox_sim
-          path: test.txt
+          path: output_verilator/nox_sim
 
   run_compliance:
     needs: build_nox_sim
@@ -36,7 +34,7 @@ jobs:
     - uses: actions/download-artifact@master
       with:
         name: nox_sim
-        path: ./
+        path: ./output_verilator/nox_sim
     - run: |
-        cat test.txt
+        make compliance
 

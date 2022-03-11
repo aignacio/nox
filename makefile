@@ -100,7 +100,7 @@ RUN_CMD				:=	docker run --rm --name ship_nox	\
 									/nox_files aignacio/nox
 RUN_CMD_2			:=	docker run --rm --name ship_nox	\
 									-v $(abspath .):/nox_files -w		\
-									/opt/riscv-arch-test aignacio/nox
+									/opt/riscv-arch-test-nox aignacio/nox
 
 RUN_SW				:=	sw/hello_world/output/hello_world.elf
 RUN_SW_SOC		:=	sw/soc_hello_world/output/soc_hello_world.elf
@@ -234,6 +234,3 @@ compliance:
 	$(RUN_CMD_2) make verify RISCV_PREFIX=riscv-none-embed-	\
 		RISCV_TARGET=nox RISCV_DEVICE=I		 										\
 		TARGET_SIM=/nox_files/$(VERILATOR_EXE) -j8
-
-hello_world:
-	echo "Hello World @AIGNACIO" > test.txt
