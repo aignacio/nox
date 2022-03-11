@@ -1,31 +1,31 @@
-name: RISC-V Compliance tests
-on: [push, pull_request]
+#name: RISC-V Compliance tests
+#on: [push, pull_request]
 
-jobs:
-  build_nox_sim:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install Verilator
-        uses: actions/checkout@v2
-      - run: |
-          sudo apt-get update -y
-          sudo apt-get upgrade -y
-          sudo apt install -y --no-install-recommends make g++ perl python3 autoconf flex bison libfl2 libfl-dev zlibc zlib1g zlib1g-dev
-          git clone https://github.com/verilator/verilator.git
-          cd verilator
-          git checkout stable
-          autoconf
-          ./configure
-          make -j $(nproc)
-          sudo make install
-      - name: Build model DUT
-        uses: actions/checkout@v2
-      - run: |
-          make all RUN_CMD="" RV_COMPLIANCE=1 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
-      - uses: actions/upload-artifact@master
-        with:
-          name: nox_sim
-          path: output_verilator/nox_sim
+#jobs:
+  #build_nox_sim:
+    #runs-on: ubuntu-latest
+    #steps:
+      #- name: Install Verilator
+        #uses: actions/checkout@v2
+      #- run: |
+          #sudo apt-get update -y
+          #sudo apt-get upgrade -y
+          #sudo apt install -y --no-install-recommends make g++ perl python3 autoconf flex bison libfl2 libfl-dev zlibc zlib1g zlib1g-dev
+          #git clone https://github.com/verilator/verilator.git
+          #cd verilator
+          #git checkout stable
+          #autoconf
+          #./configure
+          #make -j $(nproc)
+          #sudo make install
+      #- name: Build model DUT
+        #uses: actions/checkout@v2
+      #- run: |
+          #make all RUN_CMD="" RV_COMPLIANCE=1 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
+      #- uses: actions/upload-artifact@master
+        #with:
+          #name: nox_sim
+          #path: output_verilator/nox_sim
   #run_compliance:
     #needs: build_nox_sim
     #runs-on: ubuntu-latest

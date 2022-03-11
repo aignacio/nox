@@ -97,9 +97,9 @@ module csr
     // Output is combo cause there's a mux in the exe stg
     csr_rd_o = rdata_t'('0);
 
+    //next_minstret = csr_minstret_ff;
     next_cycle    = csr_cycle_ff + 'd1;
     next_time     = csr_time_ff;
-    next_minstret = csr_minstret_ff;
     next_mstatus  = csr_mstatus_ff;
     next_mie      = csr_mie_ff;
     next_mtvec    = csr_mtvec_ff;

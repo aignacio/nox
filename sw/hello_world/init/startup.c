@@ -25,6 +25,7 @@
 
 #include <stdint.h>
 #include "riscv_csr_encoding.h"
+#include "printf.h"
 
 /*volatile uint32_t* const mtime_addr = (uint32_t*) MTIME_ADDR;*/
 
@@ -105,6 +106,7 @@ void __attribute__((weak)) isr_m_software(void)
 {
   clear_csr(mie,1<<IRQ_M_SOFT);
   write_csr(mip, (0 << IRQ_M_SOFT));
+  printf("\n\r[ASYNC TRAP] IRQ Software");
   return;
   while(1);
 }
@@ -113,6 +115,7 @@ void __attribute__((weak)) isr_m_timer(void)
 {
   clear_csr(mie,1<<IRQ_M_TIMER);
   write_csr(mip, (0 << IRQ_M_TIMER));
+  printf("\n\r[ASYNC TRAP] IRQ timer");
   return;
   while(1);
 }
@@ -121,6 +124,7 @@ void __attribute__((weak)) isr_m_external(void)
 {
   clear_csr(mie,1<<IRQ_M_EXT);
   write_csr(mip, (0 << IRQ_M_EXT));
+  printf("\n\r[ASYNC TRAP] IRQ External");
   /*irq_callback();*/
   return;
   while(1);

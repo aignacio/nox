@@ -7,7 +7,6 @@
 
 #define LEDS_ADDR   0xD0000000
 #define PRINT_ADDR  0xA0000000
-#define STRING_TEST "Teste!"
 
 volatile uint32_t* const addr_leds = (uint32_t*) LEDS_ADDR;
 volatile uint32_t* const addr_print = (uint32_t*) PRINT_ADDR;
