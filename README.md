@@ -92,6 +92,21 @@ NoX core is a **4-stages** single issue, in-order pipeline with [**full bypass**
 ![NoX uArch](docs/img/nox_diagram.svg)
 In the file [rtl/inc/nox_pkg.svh](rtl/inc/nox_pkg.svh), there are two presets of `verilog` macros (Lines 8/9) that can be un/commented depending on the final target. For `TARGET_FPGA`, it is defined an **active-low** & **synchronous reset**. Otherwise, if the macro `TARGET_ASIC` is defined, then this change to **active-high** & **asynchronous reset**. In case it is required another combination of both, please follow what is coded there.
 
+As an estimative of resources utilization, listed below are the synthesis numbers of the design for the [Kintex 7 K325T](https://www.xilinx.com/support/documentation/data_sheets/ds182_Kintex_7_Data_Sheet.pdf) (`xc7k325tffg676-1`) @100MHz using Vivado 2020.2.
+
+| **Name**                          | **Slice LUTs** | **Slice Registers** | **F7 Muxes** | **F8 Muxes** | **Slice** | **LUT as Logic** |
+|-----------------------------------|:--------------:|:-------------------:|:------------:|:------------:|:---------:|:----------------:|
+| u_nox (nox)                       |      2308      |         1836        |      257     |      128     |    1039   |       2308       |
+|  u_wb (wb)                        |       32       |          33         |       0      |       0      |     36    |        32        |
+|  u_reset_sync (reset_sync)        |        1       |          2          |       0      |       0      |     2     |         1        |
+|  u_lsu (lsu)                      |       516      |          73         |       1      |       0      |    215    |        516       |
+|  u_fetch (fetch)                  |       294      |         134         |       0      |       0      |    158    |        294       |
+|   u_fifo_l0 (fifo)                |       261      |          68         |       0      |       0      |    118    |        261       |
+|  u_execute (execute)              |       224      |         356         |       0      |       0      |    250    |        224       |
+|   u_csr (csr)                     |       191      |         252         |       0      |       0      |    211    |        191       |
+|  u_decode (decode)                |      1246      |         1238        |      256     |      128     |    866    |       1246       |
+|   u_register_file (register_file) |       577      |         1056        |      256     |      128     |    595    |        577       |
+
 ## <a name="compliance"></a> RISC-V ISA Compliance tests
 To run the compliance tests, two steps needs to be followed.
 1. Compile nox_sim with 2MB IRAM / 128KB DRAM
