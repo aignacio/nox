@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 11.03.2022
+ * Last Modified Date: 13.03.2022
  */
 module csr
   import utils_pkg::*;
@@ -193,7 +193,7 @@ module csr
        irq_i.ext_irq               &&
        csr_mie_ff[`RV_MIE_MEIP]): begin
         next_mip[`RV_MIE_MEIP] = 'b1;
-        next_mepc              = pc_addr_i+'d4;
+        next_mepc              = pc_addr_i;
         next_mcause            = 'h8000_000B;
         next_mtval             = rdata_t'('h0);
         next_trap.active       = 'b1;
@@ -203,7 +203,7 @@ module csr
        irq_i.sw_irq                &&
        csr_mie_ff[`RV_MIE_MSIP]): begin
         next_mip[`RV_MIE_MSIP] = 'b1;
-        next_mepc              = pc_addr_i+'d4;
+        next_mepc              = pc_addr_i;
         next_mcause            = 'h8000_0003;
         next_mtval             = rdata_t'('h0);
         next_trap.active       = 'b1;
@@ -213,7 +213,7 @@ module csr
        irq_i.timer_irq             &&
        csr_mie_ff[`RV_MIE_MTIP]): begin
         next_mip[`RV_MIE_MTIP] = 'b1;
-        next_mepc              = pc_addr_i+'d4;
+        next_mepc              = pc_addr_i;
         next_mcause            = 'h8000_0007;
         next_mtval             = rdata_t'('h0);
         next_trap.active       = 'b1;
