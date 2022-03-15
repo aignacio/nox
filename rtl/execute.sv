@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 13.03.2022
+ * Last Modified Date: 15.03.2022
  */
 module execute
   import utils_pkg::*;
@@ -27,6 +27,7 @@ module execute
   output  s_ex_mem_wb_t ex_mem_wb_o,
   output  s_lsu_op_t    lsu_o,
   input                 lsu_bp_i,
+  input   pc_t          lsu_pc_i,
   // IRQs
   input   s_irq_t       irq_i,
   // To FETCH stg
@@ -165,10 +166,11 @@ module execute
                 (ex_mem_wb_ff.rd_addr == id_ex_i.rs2_addr) &&
                 (ex_mem_wb_ff.rd_addr != raddr_t'('h0));
 
-    lsu_o.op_typ = id_ex_i.lsu;
-    lsu_o.width  = id_ex_i.lsu_w;
-    lsu_o.addr   = res;
-    lsu_o.wdata  = rs2_data_i;
+    lsu_o.op_typ  = id_ex_i.lsu;
+    lsu_o.width   = id_ex_i.lsu_w;
+    lsu_o.addr    = res;
+    lsu_o.wdata   = rs2_data_i;
+    lsu_o.pc_addr = id_ex_i.pc_dec;
     if (fwd_wdata) begin
       // Lock means that we had a load but we had
       // to stall due to bp from the bus, thus we need
@@ -230,6 +232,7 @@ module execute
     .imm_i              (id_ex_i.imm),
     .csr_rd_o           (csr_rdata),
     .pc_addr_i          (id_ex_i.pc_dec),
+    .pc_lsu_i           (lsu_pc_i),
     .irq_i              (irq_i),
     .will_jump_i        (will_jump_next_clk),
     .eval_trap_i        (eval_trap),

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 13.03.2022
+ * Last Modified Date: 15.03.2022
  */
 module csr
   import utils_pkg::*;
@@ -20,6 +20,7 @@ module csr
   output  rdata_t       csr_rd_o,
   // Interrupts [async trap] & Exceptions [sync trap]
   input   pc_t          pc_addr_i,
+  input   pc_t          pc_lsu_i,
   input   s_irq_t       irq_i,
   input                 will_jump_i,
   input                 eval_trap_i,
@@ -255,13 +256,13 @@ module csr
         next_trap.active = 'b1;
       end
       lsu_trap_st_i.active: begin // TODO: test this feature
-        next_mepc        = pc_addr_i;
+        next_mepc        = pc_lsu_i;
         next_mcause      = 'd7;
         next_mtval       = pc_addr_i;
         next_trap.active = 'b1;
       end
       lsu_trap_ld_i.active: begin // TODO: test this feature
-        next_mepc        = pc_addr_i;
+        next_mepc        = pc_lsu_i;
         next_mcause      = 'd5;
         next_mtval       = pc_addr_i;
         next_trap.active = 'b1;

@@ -229,6 +229,7 @@
     lsu_w_t     width;
     lsu_addr_t  addr;
     rdata_t     wdata;
+    pc_t        pc_addr; // We have to store the pc in case of LSU exception
   } s_lsu_op_t;
 
   typedef struct packed {

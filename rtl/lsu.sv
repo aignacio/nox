@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 09.03.2022
+ * Last Modified Date: 15.03.2022
  */
 module lsu
   import utils_pkg::*;
@@ -17,8 +17,9 @@ module lsu
   input   s_lsu_op_t    lsu_i,
   // To EXE stg
   output  logic         lsu_bp_o,
-  output  logic         lsu_bp_data_o,
+  output  pc_t          lsu_pc_o,
   // To write-back datapath
+  output  logic         lsu_bp_data_o,
   output  s_lsu_op_t    wb_lsu_o,
   output  rdata_t       lsu_data_o,
   // Core data bus I/F
@@ -150,6 +151,7 @@ module lsu
 
     wb_lsu_o = lsu_ff;
     lsu_data_o = data_cb_miso_i.rd_data;
+    lsu_pc_o = lsu_ff.pc_addr;
   end
 
   always_comb begin : trap_lsu

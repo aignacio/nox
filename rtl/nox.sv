@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 08.03.2022
+ * Last Modified Date: 15.03.2022
  */
 module nox
   import utils_pkg::*;
@@ -63,6 +63,7 @@ module nox
   s_trap_info_t lsu_trap_ld;
   rdata_t       wb_fwd_load;
   logic         lock_wb;
+  pc_t          lsu_pc;
 
 `ifdef TARGET_FPGA
   reset_sync#(
@@ -185,6 +186,7 @@ module nox
     // To/From LSU
     .lsu_o                 (lsu_op),
     .lsu_bp_i              (lsu_bp),
+    .lsu_pc_i              (lsu_pc),
     // IRQs
     .irq_i                 (irq_i),
     // To FETCH stg
@@ -206,6 +208,7 @@ module nox
     .lsu_i                 (lsu_op),
     // To EXE stg
     .lsu_bp_o              (lsu_bp),
+    .lsu_pc_o              (lsu_pc),
     // To write-back datapath
     .lsu_bp_data_o         (lsu_bp_data),
     .wb_lsu_o              (lsu_op_wb),
