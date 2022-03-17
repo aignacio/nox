@@ -121,7 +121,8 @@ module clk_mgmt(
     // Other control and status signals
     .LOCKED              (clk_locked),
     .PWRDWN              (1'b0),
-    .RST                 (rst_in)
+    .RST                 ('b0)
+    //.RST                 (rst_in)
   );
 
   IBUF clkin1_ibufg(
