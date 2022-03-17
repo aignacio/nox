@@ -10,7 +10,8 @@ module axi_uart_wrapper
   input   s_axi_mosi_t  axi_mosi,
   output  s_axi_miso_t  axi_miso,
   output  logic         uart_tx_o,
-  input                 uart_rx_i
+  input                 uart_rx_i,
+  output                uart_rx_irq_o
 );
 
   /* verilator lint_off PINMISSING */
@@ -55,7 +56,8 @@ module axi_uart_wrapper
 		// CTS is the "Clear-to-send" hardware flow control signal.  We
 		// set it anytime our FIFO isn't full.  Feel free to ignore
 		// this output if you do not wish to use flow control.
-		.i_cts_n        ('1)
+		.i_cts_n        ('1),
+    .o_uart_rx_int  (uart_rx_irq_o)
   );
   /* verilator lint_on PINMISSING */
 

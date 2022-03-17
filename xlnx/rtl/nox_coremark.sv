@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 10.03.2022
+ * Last Modified Date: 17.03.2022
  */
 
 `default_nettype wire
@@ -211,7 +211,7 @@ module nox_coremark
   );
 `endif
 
-  axi_mem_wrapper #(
+  axi_mem_wrapper_coremark #(
     .MEM_KB(8)
   ) u_dram (
     .clk      (clk),

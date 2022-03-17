@@ -67,8 +67,8 @@ template<class module> class testbench {
     }
 
     virtual void tick(void) {
-      if (core->nox_soc->u_slave_1_mem->printfbufferReq()) {
-        printf("%c",core->nox_soc->u_slave_1_mem->getbufferReq());
+      if (core->nox_soc->u_axi_gpio->printfbufferReq()) {
+        printf("%c",core->nox_soc->u_axi_gpio->getbufferReq());
       }
 
       core->clk_in = 0;

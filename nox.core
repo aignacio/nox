@@ -89,17 +89,22 @@ filesets:
       - xlnx/rtl/nox_coremark.sv
       - xlnx/rtl/axi_rom_wrapper.sv
       - sw/coremark/boot_rom.sv
-      - xlnx/rtl/axi_mem_wrapper.sv
+      - xlnx/rtl/axi_mem_wrapper_coremark.sv
     file_type: systemVerilogSource
 
   synth_nox:
     files:
+      - xlnx/rtl/clk_mgmt.sv
       - xlnx/rtl/nox_soc.sv
+      - xlnx/rtl/axi_interconnect_wrapper.sv
       - xlnx/rtl/axi_rom_wrapper.sv
       - xlnx/rtl/axi_uart_wrapper.sv
-      - sw/soc_hello_world/output/boot_rom.sv
+      - sw/bootloader/output/boot_rom.sv
       - xlnx/rtl/axi_mem_wrapper.sv
-      - xlnx/rtl/axi_interconnect_wrapper.sv
+      - xlnx/rtl/cdc_2ff_sync.sv
+      - xlnx/rtl/nox_wrapper.sv
+      - xlnx/rtl/rst_ctrl.sv
+      - xlnx/rtl/axi_gpio.sv
     file_type: systemVerilogSource
 
   tb:
@@ -132,7 +137,7 @@ parameters:
     datatype: bool
     default : false
     paramtype: vlogdefine
-  NEXYS_VIDEO_70MHz:
+  NEXYS_VIDEO_50MHz:
     datatype: bool
     default : true
     paramtype: vlogdefine
@@ -140,7 +145,7 @@ parameters:
     datatype: bool
     default : true
     paramtype: vlogdefine
-  ARTY_A7_70MHz:
+  ARTY_A7_50MHz:
     datatype: bool
     default : true
     paramtype: vlogdefine
@@ -163,7 +168,7 @@ targets:
     <<: *default
     default_tool : vivado
     parameters:
-      - NEXYS_VIDEO_70MHz
+      - NEXYS_VIDEO_50MHz
       - DISPLAY_TEST
     description : Nexys Video board synthesis
     filesets_append:
@@ -195,7 +200,7 @@ targets:
     <<: *default
     default_tool : vivado
     parameters:
-      - ARTY_A7_70MHz
+      - ARTY_A7_50MHz
       - DISPLAY_TEST
     description : Arty A7 - 35 board synthesis
     filesets_append:
@@ -211,7 +216,7 @@ targets:
     <<: *default
     default_tool : vivado
     parameters:
-      - ARTY_A7_70MHz
+      - ARTY_A7_50MHz
       - DISPLAY_TEST
     description : Arty A7 - 35 board synthesis
     filesets_append:

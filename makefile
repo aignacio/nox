@@ -34,6 +34,13 @@ _SOC_VERILOG 	+=	xlnx/rtl/axi_mem_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_rom_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_uart_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_crossbar_wrapper.sv
+_SOC_VERILOG 	+=	xlnx/rtl/cdc_2ff_sync.sv
+_SOC_VERILOG 	+=	xlnx/rtl/clk_mgmt.sv
+_SOC_VERILOG 	+=	xlnx/rtl/rst_ctrl.sv
+_SOC_VERILOG 	+=	xlnx/rtl/axi_gpio.sv
+_SOC_VERILOG 	+=	xlnx/rtl/nox_wrapper.sv
+_SOC_VERILOG 	+=	sw/bootloader/output/boot_rom.sv
+
 ifeq ($(AXI_IF),0)
 _SOC_VERILOG 	+=	xlnx/rtl/nox_soc_ahb.sv
 else
@@ -106,7 +113,7 @@ RUN_CMD_COMP	:=	docker run --rm --name ship_nox	\
 									/test/riscof_compliance aignacio/riscof
 
 RUN_SW				:=	sw/hello_world/output/hello_world.elf
-RUN_SW_SOC		:=	sw/soc_hello_world/output/soc_hello_world.elf
+RUN_SW_SOC		:=	sw/bootloader/output/bootloader.elf
 
 CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
 									-Werror																\
@@ -229,7 +236,7 @@ soc: clean $(VERI_EXE_SOC)
 	@echo "\n"
 
 $(RUN_SW_SOC):
-	make -C sw/soc_hello_world all
+	make -C sw/bootloader all
 
 run_soc: $(RUN_SW_SOC)
 	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 100000 -e $<

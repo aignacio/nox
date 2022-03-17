@@ -5,8 +5,14 @@
 #include "printf.h"
 #include "riscv_csr_encoding.h"
 
-#define LEDS_ADDR   0xA0000008
-#define PRINT_ADDR  0xA0000000
+#define FREQ_SYSTEM 50000000
+#define BR_UART     115200
+#define REAL_UART
+
+#define ERR_CFG     0xFFFF0000
+#define PRINT_ADDR  0xD0000008
+#define LEDS_ADDR   0xD0000000
+#define RST_CFG     0xC0000000
 #define UART_TX     0xB000000C
 #define UART_RX     0xB0000008
 #define UART_STATS  0xB0000004
@@ -18,6 +24,8 @@ volatile uint32_t* const uart_stats = (uint32_t*) UART_STATS;
 volatile uint32_t* const uart_print = (uint32_t*) UART_TX;
 volatile uint32_t* const uart_rx    = (uint32_t*) UART_RX;
 volatile uint32_t* const uart_cfg   = (uint32_t*) UART_CFG;
+volatile uint32_t* const rst_cfg    = (uint32_t*) RST_CFG;
+volatile uint32_t* const err_cfg    = (uint32_t*) ERR_CFG;
 
 #if 0
 void _putchar(char character){
@@ -27,7 +35,6 @@ void _putchar(char character){
 void _putchar(char character){
   while((*uart_stats & 0x10000) == 0);
   *uart_print = character;
-  *addr_print = character;
 }
 
 #endif
@@ -69,22 +76,23 @@ int main(void) {
   uint8_t leds_out = 0x01;
   int i = 0;
 
-  *addr_leds = leds_out;
+  /**addr_leds = leds_out;*/
   // 50MHz / 115200 = 434
   *uart_cfg = 434;
   print_logo();
 
-  while(true){
-    if (i == 60000){
-      i = 0;
-      if (leds_out == 8)
-        leds_out = 1;
-      else
-        leds_out = leds_out << 1;
-      *addr_leds = leds_out;
+  while(true);
+  /*{*/
+    /*if (i == 60000){*/
+      /*i = 0;*/
+      /*if (leds_out == 8)*/
+        /*leds_out = 1;*/
+      /*else*/
+        /*leds_out = leds_out << 1;*/
+      /**addr_leds = leds_out;*/
 
-      print_logo();
-    }
-    i++;
-  }
+      /*print_logo();*/
+    /*}*/
+    /*i++;*/
+  /*}*/
 }
