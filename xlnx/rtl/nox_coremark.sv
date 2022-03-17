@@ -31,11 +31,11 @@ module nox_coremark
 
   assign csr_out[3:0] = csr_out_int[3:0];
 
-`ifdef ARTY_A7_70MHz
-  `define NEXYS_VIDEO_70MHz
+`ifdef ARTY_A7_50MHz
+  `define NEXYS_VIDEO_50MHz
 `endif
 
-`ifdef NEXYS_VIDEO_70MHz
+`ifdef NEXYS_VIDEO_50MHz
   assign rst_int = ~rst_cpu;
   assign uart_tx_mirror_o = uart_tx_o;
 
