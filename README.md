@@ -7,6 +7,7 @@
 * [Introduction](#intro)
 * [Quickstart](#quick)
 * [RTL uArch](#uarch)
+* [NoX SoC](#nox_soc)
 * [Compliance Tests](#compliance)
 * [CoreMark](#coremark)
 * [License](#lic)
@@ -94,18 +95,71 @@ In the file [rtl/inc/nox_pkg.svh](rtl/inc/nox_pkg.svh), there are two presets of
 
 As an estimative of resources utilization, listed below are the synthesis numbers of the design for the [Kintex 7 K325T](https://www.xilinx.com/support/documentation/data_sheets/ds182_Kintex_7_Data_Sheet.pdf) (`xc7k325tffg676-1`) @100MHz using Vivado 2020.2.
 
-| **Name**                          | **Slice LUTs** | **Slice Registers** | **F7 Muxes** | **F8 Muxes** | **Slice** | **LUT as Logic** |
-|-----------------------------------|:--------------:|:-------------------:|:------------:|:------------:|:---------:|:----------------:|
-| u_nox (nox)                       |      2308      |         1836        |      257     |      128     |    1039   |       2308       |
-|  u_wb (wb)                        |       32       |          33         |       0      |       0      |     36    |        32        |
-|  u_reset_sync (reset_sync)        |        1       |          2          |       0      |       0      |     2     |         1        |
-|  u_lsu (lsu)                      |       516      |          73         |       1      |       0      |    215    |        516       |
-|  u_fetch (fetch)                  |       294      |         134         |       0      |       0      |    158    |        294       |
-|   u_fifo_l0 (fifo)                |       261      |          68         |       0      |       0      |    118    |        261       |
-|  u_execute (execute)              |       224      |         356         |       0      |       0      |    250    |        224       |
-|   u_csr (csr)                     |       191      |         252         |       0      |       0      |    211    |        191       |
-|  u_decode (decode)                |      1246      |         1238        |      256     |      128     |    866    |       1246       |
-|   u_register_file (register_file) |       577      |         1056        |      256     |      128     |    595    |        577       |
+| **Name**                           | **Slice LUTs** | **Slice Registers** | **F7 Muxes** | **F8 Muxes** | **Slice** | **LUT as Logic** |
+|------------------------------------|:--------------:|:-------------------:|:------------:|:------------:|:---------:|:----------------:|
+|   u_nox (nox)                      |   2517         |   1873              |   182        |   89         |   1225    |   2517           |
+|   u_wb (wb)                        |   32           |   33                |   0          |   0          |   34      |   32             |
+|   u_reset_sync (reset_sync)        |   1            |   2                 |   0          |   0          |   2       |   1              |
+|   u_lsu (lsu)                      |   538          |   105               |   1          |   0          |   266     |   538            |
+|   u_fetch (fetch)                  |   276          |   134               |   0          |   0          |   154     |   276            |
+|   u_fifo_l0 (fifo)                 |   259          |   68                |   0          |   0          |   125     |   259            |
+|   u_execute (execute)              |   229          |   359               |   0          |   0          |   254     |   229            |
+|   u_csr (csr)                      |   187          |   255               |   0          |   0          |   206     |   187            |
+|   u_decode (decode)                |   1445         |   1240              |   181        |   89         |   1000    |   1445           |
+|   u_register_file (register_file)  |   615          |   1056              |   181        |   89         |   664     |   615            |
+
+## <a name="nox_soc"></a> NoX SoC
+
+Inside this repository it is also available a System-on-a-chip **(SoC)** with the following micro-architecture. It contains a **boot ROM** memory with the bootloader program [(sw/bootloader)](sw/bootloader) that can be used to transfer new programs to the SoC by using the [bootloader_elf.py](sw/bootloader_elf.py) script. The script will read an [ELF file](https://youtu.be/nC1U1LJQL8o) and transfer it through the serial UART to the address defined in its content memory map, also in the end of the transfer, it will set the `entry point address` of the ELF to the **RST Ctrl** peripheral forcing the NoX CPU to boot from this address in the next reset cycle. To return back to the bootloader program, an additional input (`bootloader_i`), once it is asserted, will force the RST Ctrl to be set back to the boot ROM address. To program an `Arty A7 FPGA` and download a program to the SoC, follow the steps below.
+
+![nox_soc](docs/img/nox_soc.png)
+
+To generate the FPGA image and program the board (vivado required):
+```bash
+fusesoc library add core  .
+fusesoc run --run --target=a7_synth core:nox:v0.0.1
+```
+
+Once it is finished and the board is programmed, the following output will be shown:
+```bash
+  __    __            __    __         ______              ______   
+ |  \  |  \          |  \  |  \       /      \            /      \  
+ | $$\ | $$  ______  | $$  | $$      |  $$$$$$\  ______  |  $$$$$$\ 
+ | $$$\| $$ /      \  \$$\/  $$      | $$___\$$ /      \ | $$   \$$ 
+ | $$$$\ $$|  $$$$$$\  >$$  $$        \$$    \ |  $$$$$$\| $$       
+ | $$\$$ $$| $$  | $$ /  $$$$\        _\$$$$$$\| $$  | $$| $$   __  
+ | $$ \$$$$| $$__/ $$|  $$ \$$\      |  \__| $$| $$__/ $$| $$__/  \ 
+ | $$  \$$$ \$$    $$| $$  | $$       \$$    $$ \$$    $$ \$$    $$ 
+  \$$   \$$  \$$$$$$  \$$   \$$        \$$$$$$   \$$$$$$   \$$$$$$  
+
+ NoX SoC UART Bootloader 
+
+ CSRs:
+ mstatus        0x1880
+ misa           0x40000100
+ mhartid        0x0
+ mie            0x0
+ mip            0x0
+ mtvec          0x101
+ mepc           0x0
+ mscratch       0x0
+ mtval          0x0
+ mcause         0x0
+ cycle          2823444
+
+ Freq. system:  50000000 Hz
+ UART Speed:    115200 bits/s
+ Type h+[ENTER] for help!
+
+> 
+```
+
+To transfer a program through the bootloader script:
+```bash
+make -C sw/soc_hello_world all
+python3 sw/bootloader_elf.py --elf sw/soc_hello_world/output/soc_hello_world.elf
+# Press rst button in the board
+```
 
 ## <a name="compliance"></a> RISC-V ISA Compliance tests
 To run the compliance tests, two steps needs to be followed.

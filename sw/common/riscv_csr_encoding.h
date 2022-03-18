@@ -297,6 +297,7 @@
 #define rdcycle() read_csr(cycle)
 #define rdinstret() read_csr(instret)
 
+#define wfi() asm volatile ("wfi")
 #endif
 
 #endif

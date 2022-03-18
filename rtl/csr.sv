@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 15.03.2022
+ * Last Modified Date: 18.03.2022
  */
 module csr
   import utils_pkg::*;
@@ -30,7 +30,7 @@ module csr
   input                 ecall_i,
   input                 ebreak_i,
   input                 mret_i,
-  input                 wfi_i, // TODO: Implement WFI
+  input                 wfi_i,
   input   s_trap_info_t lsu_trap_st_i,
   input   s_trap_info_t lsu_trap_ld_i,
   output  s_trap_info_t trap_o
@@ -71,6 +71,8 @@ module csr
   s_wr_csr_t csr_wr_args;
 
   s_trap_info_t trap_ff, next_trap;
+
+  logic [2:0] irq_vec;
 
   function automatic rdata_t wr_csr_val(s_wr_csr_t wr_arg);
     rdata_t wr_val;
@@ -271,6 +273,7 @@ module csr
       default: next_trap  = s_trap_info_t'('0);
     endcase
 
+    irq_vec = {dbg_irq_mtime, dbg_irq_msoft, dbg_irq_mtime};
     // In case we have one of the following traps
     // we don't need to wait till it's in the exec
     // stage to evaluate
@@ -279,7 +282,7 @@ module csr
                                 lsu_trap_ld_i.active);
 
     if (~traps_can_happen_wo_exec) begin
-      if (~eval_trap_i) begin
+      if (~eval_trap_i && ~wfi_i) begin
         next_mepc        = csr_mepc_ff;
         next_mip         = csr_mip_ff;
         next_mcause      = csr_mcause_ff;
@@ -315,6 +318,12 @@ module csr
       //of xIE; xIE is set to 0; and xPP is set to y.
       next_mstatus[`RV_MST_MPIE] = csr_mstatus_ff[`RV_MST_MIE];
       next_mstatus[`RV_MST_MIE]  = 'b0;
+      if (wfi_i && (|irq_vec)) begin
+        // In this case, ISA says:
+        //...If an enabled interrupt is present or later becomes present while the hart is stalled, the interrupt exception
+        //will be taken on the following instruction, i.e., execution resumes in the trap handler and mepc = pc + 4.
+        next_mepc = next_mepc + 'd4;
+      end
     end
 
     if (mret_i) begin

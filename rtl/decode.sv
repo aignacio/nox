@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 11.03.2022
+ * Last Modified Date: 18.03.2022
  */
 module decode
   import utils_pkg::*;
@@ -32,24 +32,33 @@ module decode
   valid_t     dec_valid_ff, next_vld_dec;
   s_instr_t   instr_dec;
   logic       wait_inst_ff, next_wait_inst;
-
-  s_id_ex_t     id_ex_ff, next_id_ex;
+  logic       wfi_stop_ff, next_wfi_stop;
+  s_id_ex_t   id_ex_ff, next_id_ex;
 
   always_comb begin
     next_vld_dec  = fetch_valid_i;
-    fetch_ready_o = id_ready_i;
+    fetch_ready_o = id_ready_i && ~wfi_stop_ff;
     id_valid_o    = dec_valid_ff;
   end
 
-  always_comb begin : dec_op
+  always_comb begin
     if (jump_i) begin
-      // ..Insert a NOP
+      // ...Insert a NOP
       id_ex_o = s_id_ex_t'('0);
+      id_ex_o.pc_dec = id_ex_ff.pc_dec;
+    end
+    else if (wfi_stop_ff) begin
+      // ...Insert a WFI
+      id_ex_o = s_id_ex_t'('0);
+      id_ex_o.pc_dec = id_ex_ff.pc_dec;
+      id_ex_o.wfi    = 'b1;
     end
     else begin
       id_ex_o = id_ex_ff;
     end
+  end
 
+  always_comb begin : dec_op
     instr_dec   = fetch_instr_i;
 
     // Defaults
@@ -192,7 +201,7 @@ module decode
       end
     endcase
 
-    if (fetch_valid_i && id_ready_i && wait_inst_ff) begin
+    if (fetch_valid_i && id_ready_i && wait_inst_ff && ~wfi_stop_ff) begin
       next_id_ex.pc_dec  = id_ex_ff.pc_dec + 'd4;
     end
     else begin
@@ -213,6 +222,22 @@ module decode
       next_wait_inst = 'b0;
     end
 
+    // If we have a WFI, first we insert a NOP
+    // to avoid any pending operations when
+    // WFI reaches execute stage
+    next_wfi_stop = wfi_stop_ff;
+    if (wfi_stop_ff == 'b0) begin
+      if (fetch_valid_i && next_id_ex.wfi && id_ready_i) begin
+        next_wfi_stop = 'b1;
+      end
+    end
+
+    if (wfi_stop_ff) begin
+      if (jump_i) begin
+        next_wfi_stop = 'b0;
+      end
+    end
+
     // We are stalling due to bp on the LSU
     if (~id_ready_i) begin
       next_id_ex = id_ex_ff;
@@ -225,11 +250,13 @@ module decode
       id_ex_ff        <= `OP_RST_L;
       id_ex_ff.pc_dec <= pc_reset_i;
       wait_inst_ff    <= 'b0;
+      wfi_stop_ff     <= 'b0;
     end
     else begin
       dec_valid_ff    <= next_vld_dec;
       id_ex_ff        <= next_id_ex;
       wait_inst_ff    <= next_wait_inst;
+      wfi_stop_ff     <= next_wfi_stop;
     end
   end
 

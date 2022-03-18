@@ -286,5 +286,6 @@ int main(void) {
   print_welcome();
   set_csr(mie,1<<IRQ_M_EXT);
   set_csr(mstatus,MSTATUS_MIE);
-  while(true);
+  while(true)
+    wfi();
 }
