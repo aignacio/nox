@@ -63,7 +63,7 @@ int main(void) {
   print_logo();
   /*set_csr(mie,1<<IRQ_M_EXT);*/
   /*set_csr(mie,1<<IRQ_M_SOFT);*/
-  set_csr(mie,1<<IRQ_M_TIMER);
+  /*set_csr(mie,1<<IRQ_M_TIMER);*/
   set_csr(mstatus,MSTATUS_MIE);
   while(true){
     wfi();
