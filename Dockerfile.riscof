@@ -33,6 +33,7 @@ RUN echo "export PATH=\"$PATH:/sail-riscv/c_emulator/\""  >> /root/.bashrc
 WORKDIR /
 RUN git clone https://github.com/riscv-software-src/riscv-isa-sim.git
 RUN cd riscv-isa-sim       && mkdir build
-RUN cd riscv-isa-sim/build && ../configure --prefix=/riscv_isa_sim/
-RUN cd riscv-isa-sim/build && make
+RUN cd riscv-isa-sim/build && ../configure --enable-misaligned
+RUN cd riscv-isa-sim/build && make -j10
 RUN cd riscv-isa-sim/build && make install
+RUN ln -s /riscv-isa-sim/bin/* /usr/bin/
