@@ -18,7 +18,6 @@ NoX is a 32-bit RISC-V core designed in System Verilog language aiming both `FPG
 - RV32IZicsr
 - 4 stages / single-issue / in-order pipeline
 - M-mode privileged spec.
-- Misaligned loads & stores support
 - Software/External/Timer interrupt
 - Support non/vectored IRQs
 - Configurable fetch FIFO size
