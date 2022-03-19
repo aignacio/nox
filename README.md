@@ -169,7 +169,7 @@ To run the compliance tests, two steps needs to be followed.
 make build_comp # It might take a while...
 make run_comp
 ```
-Once it is finished, you can open the report file available at **riscof_compliance/riscof_work/report.html** to check the status.
+Once it is finished, you can open the report file available at **riscof_compliance/riscof_work/report.html** to check the status. The run should finished with a similiar report like the one available at [docs/report_compliance.html](docs/report_compliance.html).
 
 ## <a name="coremark"></a> CoreMark
 Inside the [sw/coremark](sw/coremark), there is a folder called **nox** which is the platform port of the [CoreMark benchmark](https://github.com/eembc/coremark) to the core. NoX CoreMark score is **125** or **2.5 CoreMark/MHz**. If you have [Vivado](https://www.xilinx.com/products/design-tools/vivado.html) installed and want to try running in the [Arty A7 FPGA board](https://digilent.com/shop/arty-a7-artix-7-fpga-development-board/), please follow the commands below.
