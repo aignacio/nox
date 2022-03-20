@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 18.03.2022
+ * Last Modified Date: 20.03.2022
  */
 module csr
   import utils_pkg::*;
@@ -11,29 +11,28 @@ module csr
   parameter int SUPPORT_DEBUG = 1,
   parameter int MTVEC_DEFAULT_VAL = 'h1000 // 4KB
 )(
-  input                 clk,
-  input                 rst,
-  input                 stall_i,
-  input   s_csr_t       csr_i,
-  input   rdata_t       rs1_data_i,
-  input   imm_t         imm_i,
-  output  rdata_t       csr_rd_o,
+  input                     clk,
+  input                     rst,
+  input                     stall_i,
+  input   s_csr_t           csr_i,
+  input   rdata_t           rs1_data_i,
+  input   imm_t             imm_i,
+  output  rdata_t           csr_rd_o,
   // Interrupts [async trap] & Exceptions [sync trap]
-  input   pc_t          pc_addr_i,
-  input   pc_t          pc_lsu_i,
-  input   s_irq_t       irq_i,
-  input                 will_jump_i,
-  input                 eval_trap_i,
-  input   s_trap_info_t dec_trap_i,
-  input   s_trap_info_t instr_addr_mis_i,
-  input   s_trap_info_t fetch_trap_i,
-  input                 ecall_i,
-  input                 ebreak_i,
-  input                 mret_i,
-  input                 wfi_i,
-  input   s_trap_info_t lsu_trap_st_i,
-  input   s_trap_info_t lsu_trap_ld_i,
-  output  s_trap_info_t trap_o
+  input   pc_t              pc_addr_i,
+  input   pc_t              pc_lsu_i,
+  input   s_irq_t           irq_i,
+  input                     will_jump_i,
+  input                     eval_trap_i,
+  input   s_trap_info_t     dec_trap_i,
+  input   s_trap_info_t     instr_addr_mis_i,
+  input   s_trap_info_t     fetch_trap_i,
+  input                     ecall_i,
+  input                     ebreak_i,
+  input                     mret_i,
+  input                     wfi_i,
+  input   s_trap_lsu_info_t lsu_trap_i,
+  output  s_trap_info_t     trap_o
 );
   typedef struct packed {
     csr_t   op;
@@ -257,15 +256,27 @@ module csr
         next_mtval       = rdata_t'('h0);
         next_trap.active = 'b1;
       end
-      lsu_trap_st_i.active: begin // TODO: test this feature
+      lsu_trap_i.st.active: begin // TODO: test this feature
         next_mepc        = pc_lsu_i;
         next_mcause      = 'd7;
         next_mtval       = pc_addr_i;
         next_trap.active = 'b1;
       end
-      lsu_trap_ld_i.active: begin // TODO: test this feature
+      lsu_trap_i.ld.active: begin // TODO: test this feature
         next_mepc        = pc_lsu_i;
         next_mcause      = 'd5;
+        next_mtval       = pc_addr_i;
+        next_trap.active = 'b1;
+      end
+      lsu_trap_i.st_mis.active: begin // TODO: test this feature
+        next_mepc        = pc_lsu_i;
+        next_mcause      = 'd6;
+        next_mtval       = pc_addr_i;
+        next_trap.active = 'b1;
+      end
+      lsu_trap_i.ld_mis.active: begin // TODO: test this feature
+        next_mepc        = pc_lsu_i;
+        next_mcause      = 'd4;
         next_mtval       = pc_addr_i;
         next_trap.active = 'b1;
       end
@@ -277,9 +288,11 @@ module csr
     // In case we have one of the following traps
     // we don't need to wait till it's in the exec
     // stage to evaluate
-    traps_can_happen_wo_exec = (fetch_trap_i.active  ||
-                                lsu_trap_st_i.active ||
-                                lsu_trap_ld_i.active);
+    traps_can_happen_wo_exec = (fetch_trap_i.active       ||
+                                lsu_trap_i.st.active      ||
+                                lsu_trap_i.ld.active      ||
+                                lsu_trap_i.st_mis.active  ||
+                                lsu_trap_i.ld_mis.active);
 
     if (~traps_can_happen_wo_exec) begin
       if (~eval_trap_i && ~wfi_i) begin

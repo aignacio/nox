@@ -3,15 +3,16 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 15.03.2022
+ * Last Modified Date: 20.03.2022
  */
 module nox
   import utils_pkg::*;
 #(
-  parameter int SUPPORT_DEBUG     = 1,
-  parameter int MTVEC_DEFAULT_VAL = 'h1000, // 4KB
-  parameter int L0_BUFFER_SIZE    = 2,  // Max instrs locally stored
-  parameter int SUPPORT_WR_RESP   = 1   // IF I/F supports wr_resp
+  parameter int SUPPORT_DEBUG         = 1,
+  parameter int MTVEC_DEFAULT_VAL     = 'h1000, // 4KB
+  parameter int L0_BUFFER_SIZE        = 2,      // Max instrs locally stored
+  parameter int TRAP_ON_MIS_LSU_ADDR  = 0,      // Trap in case of misaligned addr on LSU
+  parameter int TRAP_ON_LSU_ERROR     = 1       // Trap in case of LSU error
 )(
   input                 clk,
   input                 arst,
@@ -38,32 +39,31 @@ module nox
 );
   logic rst;
 
-  s_cb_mosi_t   instr_cb_mosi, lsu_cb_mosi;
-  s_cb_miso_t   instr_cb_miso, lsu_cb_miso;
+  s_cb_mosi_t       instr_cb_mosi, lsu_cb_mosi;
+  s_cb_miso_t       instr_cb_miso, lsu_cb_miso;
 
-  valid_t       fetch_valid;
-  ready_t       fetch_ready;
-  instr_raw_t   fetch_instr;
-  s_id_ex_t     id_ex;
-  rdata_t       rs1_data;
-  rdata_t       rs2_data;
-  valid_t       id_valid;
-  ready_t       id_ready;
-  s_ex_mem_wb_t ex_mem_wb;
-  s_lsu_op_t    lsu_op;
-  logic         lsu_bp;
-  rdata_t       lsu_rd_data;
-  s_lsu_op_t    lsu_op_wb;
-  logic         fetch_req;
-  pc_t          fetch_addr;
-  s_wb_t        wb_dec;
-  logic         lsu_bp_data;
-  s_trap_info_t fetch_trap;
-  s_trap_info_t lsu_trap_st;
-  s_trap_info_t lsu_trap_ld;
-  rdata_t       wb_fwd_load;
-  logic         lock_wb;
-  pc_t          lsu_pc;
+  valid_t           fetch_valid;
+  ready_t           fetch_ready;
+  instr_raw_t       fetch_instr;
+  s_id_ex_t         id_ex;
+  rdata_t           rs1_data;
+  rdata_t           rs2_data;
+  valid_t           id_valid;
+  ready_t           id_ready;
+  s_ex_mem_wb_t     ex_mem_wb;
+  s_lsu_op_t        lsu_op;
+  logic             lsu_bp;
+  rdata_t           lsu_rd_data;
+  s_lsu_op_t        lsu_op_wb;
+  logic             fetch_req;
+  pc_t              fetch_addr;
+  s_wb_t            wb_dec;
+  logic             lsu_bp_data;
+  s_trap_info_t     fetch_trap;
+  s_trap_lsu_info_t lsu_trap;
+  rdata_t           wb_fwd_load;
+  logic             lock_wb;
+  pc_t              lsu_pc;
 
 `ifdef TARGET_FPGA
   reset_sync#(
@@ -194,13 +194,13 @@ module nox
     .fetch_addr_o          (fetch_addr),
     // From diff stgs
     .fetch_trap_i          (fetch_trap),
-    .lsu_trap_st_i         (lsu_trap_st),
-    .lsu_trap_ld_i         (lsu_trap_ld)
+    .lsu_trap_i            (lsu_trap)
   );
 
   lsu #(
-    .SUPPORT_DEBUG         (SUPPORT_DEBUG),
-    .SUPPORT_WR_RESP       (SUPPORT_WR_RESP)
+    .SUPPORT_DEBUG        (SUPPORT_DEBUG),
+    .TRAP_ON_MIS_LSU_ADDR (TRAP_ON_MIS_LSU_ADDR),
+    .TRAP_ON_LSU_ERROR    (TRAP_ON_LSU_ERROR)
   ) u_lsu (
     .clk                   (clk),
     .rst                   (rst),
@@ -216,9 +216,8 @@ module nox
     // Core data bus I/F
     .data_cb_mosi_o        (lsu_cb_mosi),
     .data_cb_miso_i        (lsu_cb_miso),
-    // Trap - MEM access fault
-    .trap_info_st_o        (lsu_trap_st),
-    .trap_info_ld_o        (lsu_trap_ld)
+    // Trap - MEM access fault or MEM misaligned addr
+    .lsu_trap_o            (lsu_trap)
   );
 
   wb u_wb(

@@ -3,41 +3,40 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 15.03.2022
+ * Last Modified Date: 20.03.2022
  */
 module lsu
   import utils_pkg::*;
 #(
-  parameter int SUPPORT_DEBUG   = 1,
-  parameter int SUPPORT_WR_RESP = 1
+  parameter int SUPPORT_DEBUG         = 1,
+  parameter int TRAP_ON_MIS_LSU_ADDR  = 0,
+  parameter int TRAP_ON_LSU_ERROR     = 0
 )(
-  input                 clk,
-  input                 rst,
+  input                     clk,
+  input                     rst,
   // From EXE stg
-  input   s_lsu_op_t    lsu_i,
+  input   s_lsu_op_t        lsu_i,
   // To EXE stg
-  output  logic         lsu_bp_o,
-  output  pc_t          lsu_pc_o,
-  // To write-back datapath
-  output  logic         lsu_bp_data_o,
-  output  s_lsu_op_t    wb_lsu_o,
-  output  rdata_t       lsu_data_o,
+  output  logic             lsu_bp_o,
+  output  pc_t              lsu_pc_o,
+  // To write-back datap    ath
+  output  logic             lsu_bp_data_o,
+  output  s_lsu_op_t        wb_lsu_o,
+  output  rdata_t           lsu_data_o,
   // Core data bus I/F
-  output  s_cb_mosi_t   data_cb_mosi_o,
-  input   s_cb_miso_t   data_cb_miso_i,
-  // Trap - MEM access fault
-  output  s_trap_info_t trap_info_st_o,
-  output  s_trap_info_t trap_info_ld_o
+  output  s_cb_mosi_t       data_cb_mosi_o,
+  input   s_cb_miso_t       data_cb_miso_i,
+  output  s_trap_lsu_info_t lsu_trap_o
 );
   s_lsu_op_t lsu_ff, next_lsu;
 
-  logic bp_addr, bp_data;
-  logic ap_txn, ap_rd_txn, ap_wr_txn;
-  logic dp_txn, dp_rd_txn, dp_wr_txn;
-
-  logic dp_done_ff, next_dp_done;
-
+  logic       bp_addr, bp_data;
+  logic       ap_txn, ap_rd_txn, ap_wr_txn;
+  logic       dp_txn, dp_rd_txn, dp_wr_txn;
+  logic       dp_done_ff, next_dp_done;
   logic       lock_ff, next_lock;
+  logic       unaligned_lsu;
+
   cb_addr_t   locked_addr_ff, next_locked_addr;
   cb_addr_t   lsu_req_addr;
 
@@ -155,15 +154,25 @@ module lsu
   end
 
   always_comb begin : trap_lsu
-    trap_info_st_o = s_trap_info_t'('0);
-    trap_info_ld_o = s_trap_info_t'('0);
+    lsu_trap_o = s_trap_lsu_info_t'('0);
 
-    if ((SUPPORT_WR_RESP == 1) && data_cb_miso_i.wr_resp_valid && (data_cb_miso_i.wr_resp_error != CB_OKAY)) begin
-      trap_info_st_o.active = 'b1;
+    // Check if we have an unaligned xfer
+    unaligned_lsu = ((lsu_i.op_typ != NO_LSU) && (lsu_i.addr[1:0] != 'b00));
+
+    if (unaligned_lsu) begin
+      if (lsu_i.op_typ == LSU_LOAD)
+        lsu_trap_o.ld_mis.active = (TRAP_ON_MIS_LSU_ADDR == 'b1);
+
+      if (lsu_i.op_typ == LSU_STORE)
+        lsu_trap_o.st_mis.active = (TRAP_ON_MIS_LSU_ADDR == 'b1);
+    end
+
+    if (data_cb_miso_i.wr_resp_valid && (data_cb_miso_i.wr_resp_error != CB_OKAY)) begin
+      lsu_trap_o.st.active = (TRAP_ON_LSU_ERROR == 'b1);
     end
 
     if (data_cb_miso_i.rd_valid && (data_cb_miso_i.rd_resp != CB_OKAY)) begin
-      trap_info_ld_o.active = 'b1;
+      lsu_trap_o.ld.active = (TRAP_ON_LSU_ERROR == 'b1);
     end
   end : trap_lsu
 

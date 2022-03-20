@@ -183,6 +183,15 @@
   } s_trap_info_t;
 
   typedef struct packed {
+    // Trap - MEM access fault
+    s_trap_info_t st;
+    s_trap_info_t ld;
+    // Trap - MEM misaligned addr
+    s_trap_info_t st_mis;
+    s_trap_info_t ld_mis;
+  } s_trap_lsu_info_t;
+
+  typedef struct packed {
     logic         we_rd;
     pc_t          pc_dec;
     oper_mux_t    rs1_op;

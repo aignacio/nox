@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 18.03.2022
+ * Last Modified Date: 20.03.2022
  */
 module execute
   import utils_pkg::*;
@@ -11,32 +11,31 @@ module execute
   parameter int SUPPORT_DEBUG     = 1,
   parameter int MTVEC_DEFAULT_VAL = 'h1000 // 4KB
 )(
-  input                 clk,
-  input                 rst,
+  input                     clk,
+  input                     rst,
   // Control signals
-  input   rdata_t       wb_value_i,
-  input   rdata_t       wb_load_i,
-  input                 lock_wb_i,
+  input   rdata_t           wb_value_i,
+  input   rdata_t           wb_load_i,
+  input                     lock_wb_i,
   // From DEC stg I/F
-  input   s_id_ex_t     id_ex_i,
-  input   rdata_t       rs1_data_i,
-  input   rdata_t       rs2_data_i,
-  input   valid_t       id_valid_i,
-  output  ready_t       id_ready_o,
+  input   s_id_ex_t         id_ex_i,
+  input   rdata_t           rs1_data_i,
+  input   rdata_t           rs2_data_i,
+  input   valid_t           id_valid_i,
+  output  ready_t           id_ready_o,
   // To MEM/WB stg I/F
-  output  s_ex_mem_wb_t ex_mem_wb_o,
-  output  s_lsu_op_t    lsu_o,
-  input                 lsu_bp_i,
-  input   pc_t          lsu_pc_i,
+  output  s_ex_mem_wb_t     ex_mem_wb_o,
+  output  s_lsu_op_t        lsu_o,
+  input                     lsu_bp_i,
+  input   pc_t              lsu_pc_i,
   // IRQs
-  input   s_irq_t       irq_i,
+  input   s_irq_t           irq_i,
   // To FETCH stg
-  output  logic         fetch_req_o,
-  output  pc_t          fetch_addr_o,
+  output  logic             fetch_req_o,
+  output  pc_t              fetch_addr_o,
   // Trap signals
-  input   s_trap_info_t fetch_trap_i,
-  input   s_trap_info_t lsu_trap_st_i,
-  input   s_trap_info_t lsu_trap_ld_i
+  input   s_trap_info_t     fetch_trap_i,
+  input   s_trap_lsu_info_t lsu_trap_i
 );
   typedef enum logic {
     NO_FWD,
@@ -243,8 +242,7 @@ module execute
     .ebreak_i           (id_ex_i.ebreak),
     .mret_i             (id_ex_i.mret),
     .wfi_i              (id_ex_i.wfi),
-    .lsu_trap_st_i      (lsu_trap_st_i),
-    .lsu_trap_ld_i      (lsu_trap_ld_i),
+    .lsu_trap_i         (lsu_trap_i),
     .trap_o             (trap_out)
   );
 endmodule
