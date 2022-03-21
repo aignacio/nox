@@ -169,8 +169,8 @@ module lsu
     endcase
 
     // We only evaluate unaligned xfer if we're not stalling due to bus bp
-    if ((lsu_i.op_typ != NO_LSU) && unaligned_lsu && ) begin
-      if (lsu_i.op_typ == LSU_LOAD && data_cb_mosi_o.rd_addr_valid)
+    if ((lsu_i.op_typ != NO_LSU) && unaligned_lsu) begin
+      if ((lsu_i.op_typ == LSU_LOAD) && data_cb_mosi_o.rd_addr_valid)
         lsu_trap_o.ld_mis.active = (TRAP_ON_MIS_LSU_ADDR == 'b1);
 
       if ((lsu_i.op_typ == LSU_STORE) && data_cb_mosi_o.wr_addr_valid)
