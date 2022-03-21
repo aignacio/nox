@@ -111,7 +111,7 @@ As an estimative of resources utilization, listed below are the synthesis number
 
 Inside this repository it is also available a System-on-a-chip **(SoC)** with the following micro-architecture. It contains a **boot ROM** memory with the bootloader program [(sw/bootloader)](sw/bootloader) that can be used to transfer new programs to the SoC by using the [bootloader_elf.py](sw/bootloader_elf.py) script. The script will read an [ELF file](https://youtu.be/nC1U1LJQL8o) and transfer it through the serial UART to the address defined in its content memory map, also in the end of the transfer, it will set the `entry point address` of the ELF to the **RST Ctrl** peripheral forcing the NoX CPU to boot from this address in the next reset cycle. To return back to the bootloader program, an additional input (`bootloader_i`), once it is asserted, will force the RST Ctrl to be set back to the boot ROM address. To program an `Arty A7 FPGA` and download a program to the SoC, follow the steps below.
 
-![nox_soc](docs/img/nox_soc.png)
+![nox_soc](docs/img/nox_soc.svg)
 
 To generate the FPGA image and program the board (vivado required):
 ```bash
