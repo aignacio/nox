@@ -159,12 +159,18 @@ module lsu
     // Check if we have an unaligned xfer
     unaligned_lsu = 'b0;
 
+    // Some signals are stable during AP:
+    // -lsu_i.width
+    // -lsu_i.op_typ
+    // Other signals we have to take from the lsu
+    // bus once bp can happen, that's why we use
+    // lsu_req_addr / data_cb_mosi_o.XX_addr_valid
     case (lsu_i.width)
       RV_LSU_B:  unaligned_lsu = 'b0;
-      RV_LSU_H:  unaligned_lsu = (lsu_i.addr[1:0] == 'd3);
+      RV_LSU_H:  unaligned_lsu = (lsu_req_addr[1:0] == 'd3);
       RV_LSU_BU: unaligned_lsu = 'b0;
-      RV_LSU_HU: unaligned_lsu = (lsu_i.addr[1:0] == 'd3);
-      RV_LSU_W:  unaligned_lsu = (lsu_i.addr[1:0] != 'd0);
+      RV_LSU_HU: unaligned_lsu = (lsu_req_addr[1:0] == 'd3);
+      RV_LSU_W:  unaligned_lsu = (lsu_req_addr[1:0] != 'd0);
       default:   unaligned_lsu = 'b0;
     endcase
 
