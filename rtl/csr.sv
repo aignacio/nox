@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 20.03.2022
+ * Last Modified Date: 21.03.2022
  */
 module csr
   import utils_pkg::*;
@@ -256,28 +256,28 @@ module csr
         next_mtval       = rdata_t'('h0);
         next_trap.active = 'b1;
       end
-      lsu_trap_i.st.active: begin // TODO: test this feature
+      lsu_trap_i.ld_mis.active: begin // TODO: test this feature
         next_mepc        = pc_lsu_i;
-        next_mcause      = 'd7;
-        next_mtval       = pc_addr_i;
+        next_mcause      = 'd4;
+        next_mtval       = pc_lsu_i;
         next_trap.active = 'b1;
       end
-      lsu_trap_i.ld.active: begin // TODO: test this feature
+      lsu_trap_i.ld.active: begin     // TODO: test this feature
         next_mepc        = pc_lsu_i;
         next_mcause      = 'd5;
-        next_mtval       = pc_addr_i;
+        next_mtval       = pc_lsu_i;
         next_trap.active = 'b1;
       end
       lsu_trap_i.st_mis.active: begin // TODO: test this feature
         next_mepc        = pc_lsu_i;
         next_mcause      = 'd6;
-        next_mtval       = pc_addr_i;
+        next_mtval       = pc_lsu_i;
         next_trap.active = 'b1;
       end
-      lsu_trap_i.ld_mis.active: begin // TODO: test this feature
+      lsu_trap_i.st.active: begin     // TODO: test this feature
         next_mepc        = pc_lsu_i;
-        next_mcause      = 'd4;
-        next_mtval       = pc_addr_i;
+        next_mcause      = 'd7;
+        next_mtval       = pc_lsu_i;
         next_trap.active = 'b1;
       end
       // Added the below statement due to error while synthesizing on vivado

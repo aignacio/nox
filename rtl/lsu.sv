@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 04.12.2021
- * Last Modified Date: 20.03.2022
+ * Last Modified Date: 21.03.2022
  */
 module lsu
   import utils_pkg::*;
@@ -157,9 +157,18 @@ module lsu
     lsu_trap_o = s_trap_lsu_info_t'('0);
 
     // Check if we have an unaligned xfer
-    unaligned_lsu = ((lsu_i.op_typ != NO_LSU) && (lsu_i.addr[1:0] != 'b00));
+    unaligned_lsu = 'b0;
 
-    if (unaligned_lsu) begin
+    case (lsu_i.width)
+      RV_LSU_B:  unaligned_lsu = 'b0;
+      RV_LSU_H:  unaligned_lsu = (lsu_i.addr[1:0] == 'd3);
+      RV_LSU_BU: unaligned_lsu = 'b0;
+      RV_LSU_HU: unaligned_lsu = (lsu_i.addr[1:0] == 'd3);
+      RV_LSU_W:  unaligned_lsu = (lsu_i.addr[1:0] != 'd0);
+      default:   unaligned_lsu = 'b0;
+    endcase
+
+    if ((lsu_i.op_typ != NO_LSU) && unaligned_lsu) begin
       if (lsu_i.op_typ == LSU_LOAD)
         lsu_trap_o.ld_mis.active = (TRAP_ON_MIS_LSU_ADDR == 'b1);
 

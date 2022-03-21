@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 20.03.2022
+ * Last Modified Date: 21.03.2022
  */
 module nox
   import utils_pkg::*;
@@ -11,7 +11,7 @@ module nox
   parameter int SUPPORT_DEBUG         = 1,
   parameter int MTVEC_DEFAULT_VAL     = 'h1000, // 4KB
   parameter int L0_BUFFER_SIZE        = 2,      // Max instrs locally stored
-  parameter int TRAP_ON_MIS_LSU_ADDR  = 0,      // Trap in case of misaligned addr on LSU
+  parameter int TRAP_ON_MIS_LSU_ADDR  = 1,      // Trap in case of misaligned addr on LSU
   parameter int TRAP_ON_LSU_ERROR     = 1       // Trap in case of LSU error
 )(
   input                 clk,
