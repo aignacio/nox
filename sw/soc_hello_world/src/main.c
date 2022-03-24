@@ -7,6 +7,9 @@
 
 #define FREQ_SYSTEM 50000000
 #define BR_UART     115200
+
+/*#define FREQ_SYSTEM 100000000*/
+/*#define BR_UART     230400*/
 #define REAL_UART
 
 #define ERR_CFG     0xFFFF0000
@@ -78,7 +81,7 @@ int main(void) {
 
   /**addr_leds = leds_out;*/
   // 50MHz / 115200 = 434
-  *uart_cfg = 434;
+  *uart_cfg = FREQ_SYSTEM/BR_UART;
   print_logo();
 
   while(true);

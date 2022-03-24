@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 17.03.2022
+ * Last Modified Date: 24.03.2022
  */
 
 `default_nettype wire
@@ -27,6 +27,7 @@ module nox_soc import utils_pkg::*; (
 
   logic        clk;
   logic        rst;
+  logic        bootloader_int;
   logic        uart_rx_irq;
   logic        start_fetch;
   logic [31:0] core_rst;
@@ -40,8 +41,18 @@ module nox_soc import utils_pkg::*; (
   assign csr_out = '0;
   assign start_fetch = '1;
 `else
+
+`ifdef QMTECH_KINTEX_7_100MHz
+  assign bootloader_int = bootloader_i;
+  assign rst = rst_cpu;
+  assign clk_locked_o = start_fetch;
+`endif
+
+`ifdef NEXYS_VIDEO_50MHz
+  assign bootloader_int = ~bootloader_i;
   assign rst = ~rst_cpu;
   assign clk_locked_o = start_fetch;
+`endif
 
   clk_mgmt u_clk_mgmt(
     .clk_in     (clk_in),
@@ -122,7 +133,7 @@ module nox_soc import utils_pkg::*; (
 
   rst_ctrl u_rst_ctrl(
     .clk              (clk),
-    .rst              (~bootloader_i),
+    .rst              (bootloader_int),
     .axi_mosi         (slaves_axi_mosi[4]),
     .axi_miso         (slaves_axi_miso[4]),
     .rst_addr_o       (core_rst)
