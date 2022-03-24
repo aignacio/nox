@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 21.03.2022
+ * Last Modified Date: 24.03.2022
  */
 module nox
   import utils_pkg::*;
@@ -11,6 +11,7 @@ module nox
   parameter int SUPPORT_DEBUG         = 1,
   parameter int MTVEC_DEFAULT_VAL     = 'h1000, // 4KB
   parameter int L0_BUFFER_SIZE        = 2,      // Max instrs locally stored
+  parameter int ENABLE_M_EXT          = 0,      // TODO: Enable M-extension (on mul* instructions) - DIV/REM NOT IMPLEMENTED
   parameter int TRAP_ON_MIS_LSU_ADDR  = 1,      // Trap in case of misaligned addr on LSU
   parameter int TRAP_ON_LSU_ERROR     = 1       // Trap in case of LSU error
 )(
@@ -143,7 +144,8 @@ module nox
   );
 
   decode #(
-    .SUPPORT_DEBUG         (SUPPORT_DEBUG)
+    .SUPPORT_DEBUG         (SUPPORT_DEBUG),
+    .ENABLE_M_EXT          (ENABLE_M_EXT)
   ) u_decode (
     .clk                   (clk),
     .rst                   (rst),
@@ -167,7 +169,8 @@ module nox
 
   execute #(
     .SUPPORT_DEBUG         (SUPPORT_DEBUG),
-    .MTVEC_DEFAULT_VAL     (MTVEC_DEFAULT_VAL)
+    .MTVEC_DEFAULT_VAL     (MTVEC_DEFAULT_VAL),
+    .ENABLE_M_EXT          (ENABLE_M_EXT)
   ) u_execute (
     .clk                   (clk),
     .rst                   (rst),

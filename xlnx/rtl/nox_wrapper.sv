@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 17.03.2022
+ * Last Modified Date: 23.03.2022
  */
 module nox_wrapper import utils_pkg::*; (
   input                 clk,
@@ -37,7 +37,9 @@ module nox_wrapper import utils_pkg::*; (
     irq_core.ext_irq    = irq_sync[0];
   end
 
-  nox u_nox (
+  nox #(
+    .ENABLE_M_EXT     (1)
+  ) u_nox (
     .clk              (clk),
     .arst             (rst),
     .irq_i            (irq_core),

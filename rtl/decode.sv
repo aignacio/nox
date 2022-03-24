@@ -3,12 +3,13 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 18.03.2022
+ * Last Modified Date: 23.03.2022
  */
 module decode
   import utils_pkg::*;
 #(
-  parameter int SUPPORT_DEBUG = 1
+  parameter int SUPPORT_DEBUG = 1,
+  parameter int ENABLE_M_EXT  = 0
 )(
   input                 clk,
   input                 rst,
@@ -78,14 +79,14 @@ module decode
         next_id_ex.we_rd  = 1'b1;
       end
       RV_LUI: begin
-        next_id_ex.f3     = RV_F3_ADD_SUB;
+        next_id_ex.f3     = RV_F3_ADD_SUB_MUL;
         next_id_ex.rs1_op = ZERO;
         next_id_ex.rs2_op = IMM;
         next_id_ex.imm    = gen_imm(fetch_instr_i, U_IMM);
         next_id_ex.we_rd  = 1'b1;
       end
       RV_AUIPC: begin
-        next_id_ex.f3     = RV_F3_ADD_SUB;
+        next_id_ex.f3     = RV_F3_ADD_SUB_MUL;
         next_id_ex.rs1_op = PC;
         next_id_ex.rs2_op = IMM;
         next_id_ex.imm    = gen_imm(fetch_instr_i, U_IMM);
@@ -95,13 +96,13 @@ module decode
         next_id_ex.f3     = instr_dec.f3;
         next_id_ex.rs1_op = REG_RF;
         next_id_ex.rs2_op = REG_RF;
-        next_id_ex.f7     = instr_dec[30] ? RV_F7_1 : RV_F7_0;
+        next_id_ex.f7     = instr_dec.f7;
         next_id_ex.rshift = instr_dec[30] ? RV_SRA : RV_SRL;
         next_id_ex.we_rd  = 1'b1;
       end
       RV_JAL: begin
         next_id_ex.jump   = 1'b1;
-        next_id_ex.f3     = RV_F3_ADD_SUB;
+        next_id_ex.f3     = RV_F3_ADD_SUB_MUL;
         next_id_ex.rs1_op = PC;
         next_id_ex.rs2_op = IMM;
         next_id_ex.imm    = gen_imm(fetch_instr_i, J_IMM);
@@ -109,7 +110,7 @@ module decode
       end
       RV_JALR: begin
         next_id_ex.jump   = 1'b1;
-        next_id_ex.f3     = RV_F3_ADD_SUB;
+        next_id_ex.f3     = RV_F3_ADD_SUB_MUL;
         next_id_ex.rs1_op = REG_RF;
         next_id_ex.rs2_op = IMM;
         next_id_ex.imm    = gen_imm(fetch_instr_i, I_IMM);
@@ -124,7 +125,7 @@ module decode
       end
       RV_LOAD: begin
         next_id_ex.lsu    = LSU_LOAD;
-        next_id_ex.f3     = RV_F3_ADD_SUB;
+        next_id_ex.f3     = RV_F3_ADD_SUB_MUL;
         next_id_ex.rs1_op = REG_RF;
         next_id_ex.rs2_op = IMM;
         next_id_ex.we_rd  = 1'b1;
@@ -133,23 +134,23 @@ module decode
       end
       RV_STORE: begin
         next_id_ex.lsu     = LSU_STORE;
-        next_id_ex.f3      = RV_F3_ADD_SUB;
+        next_id_ex.f3      = RV_F3_ADD_SUB_MUL;
         next_id_ex.rs1_op  = REG_RF;
         next_id_ex.rs2_op  = IMM;
         next_id_ex.lsu_w   = lsu_w_t'(instr_dec.f3);
         next_id_ex.imm     = gen_imm(fetch_instr_i, S_IMM);
       end
       RV_MISC_MEM: begin
-        next_id_ex.f3     = RV_F3_ADD_SUB;
+        next_id_ex.f3     = RV_F3_ADD_SUB_MUL;
         next_id_ex.rs1_op = ZERO;
         next_id_ex.rs2_op = ZERO;
       end
       RV_SYSTEM: begin
-        next_id_ex.f3         = RV_F3_ADD_SUB;
+        next_id_ex.f3         = RV_F3_ADD_SUB_MUL;
         next_id_ex.rs1_op     = ZERO;
         next_id_ex.rs2_op     = ZERO;
         next_id_ex.imm        = gen_imm(fetch_instr_i, CSR_IMM);
-        if ((instr_dec.f3 != RV_F3_ADD_SUB) && (instr_dec.f3 != RV_F3_XOR)) begin
+        if ((instr_dec.f3 != RV_F3_ADD_SUB_MUL) && (instr_dec.f3 != RV_F3_XOR_DIV)) begin
           next_id_ex.rs1_op   = REG_RF;
           next_id_ex.csr.op   = csr_t'(instr_dec.f3);
           next_id_ex.csr.addr = instr_dec[31:20];
@@ -159,7 +160,7 @@ module decode
             next_id_ex.we_rd  = 1'b1;
           end
         end
-        else if ((instr_dec.f3 == RV_F3_ADD_SUB) &&
+        else if ((instr_dec.f3 == RV_F3_ADD_SUB_MUL) &&
                  (instr_dec.rd == 'h0) &&
                  (instr_dec.rs1 == 'h0)) begin
           case (1)

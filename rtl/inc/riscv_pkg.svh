@@ -92,14 +92,10 @@
   } rshift_t;
 
   typedef enum logic [6:0]{
-    RV_F7_SRL = 7'b0000000,
-    RV_F7_SRA = 7'b0100000
+    RV_F7_SRL    = 7'b0000000,
+    RV_F7_SRA    = 7'b0100000,
+    RV_F7_MULDIV = 7'b0000001
   } funct7_t;
-
-  typedef enum logic {
-    RV_F7_0,
-    RV_F7_1
-  } sfunct7_t;
 
   typedef enum logic {
     RV_TYPE_JAL,
@@ -116,14 +112,14 @@
   } branch_t;
 
   typedef enum logic [2:0]{
-    RV_F3_ADD_SUB = 3'b000,
-    RV_F3_SLT     = 3'b010,
-    RV_F3_SLTU    = 3'b011,
-    RV_F3_XOR     = 3'b100,
-    RV_F3_OR      = 3'b110,
-    RV_F3_AND     = 3'b111,
-    RV_F3_SLL     = 3'b001,
-    RV_F3_SRL_SRA = 3'b101
+    RV_F3_ADD_SUB_MUL   = 3'b000,
+    RV_F3_SLL_MULH      = 3'b001,
+    RV_F3_SLT_MULHSU    = 3'b010,
+    RV_F3_SLTU_MULHU    = 3'b011,
+    RV_F3_XOR_DIV       = 3'b100,
+    RV_F3_SRL_SRA_DIVU  = 3'b101,
+    RV_F3_OR_REM        = 3'b110,
+    RV_F3_AND_REMU      = 3'b111
   } funct3_t;
 
   typedef enum logic [6:0]{
@@ -200,7 +196,7 @@
     lsu_w_t       lsu_w;
     logic         branch;
     logic         jump;
-    sfunct7_t     f7;
+    funct7_t      f7;
     raddr_t       rd_addr;
     funct3_t      f3;
     rshift_t      rshift;

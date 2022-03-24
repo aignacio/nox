@@ -3,13 +3,14 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 21.03.2022
+ * Last Modified Date: 23.03.2022
  */
 module csr
   import utils_pkg::*;
 #(
-  parameter int SUPPORT_DEBUG = 1,
-  parameter int MTVEC_DEFAULT_VAL = 'h1000 // 4KB
+  parameter int SUPPORT_DEBUG     = 1,
+  parameter int MTVEC_DEFAULT_VAL = 'h1000, // 4KB
+  parameter int ENABLE_M_EXT      = 0
 )(
   input                     clk,
   input                     rst,
@@ -172,7 +173,7 @@ module csr
       //RV_CSR_INSTRETH:  csr_rd_o = csr_minstret_ff[63:32];
       //RV_CSR_TIME:      csr_rd_o = csr_time_ff[31:0];
       //RV_CSR_TIMEH:     csr_rd_o = csr_time_ff[63:32];
-      RV_CSR_MISA:      csr_rd_o = `M_ISA_ID;
+      RV_CSR_MISA:      csr_rd_o = (ENABLE_M_EXT == 1) ? `M_ISA_ID_M : `M_ISA_ID;
       //RV_CSR_MVENDORID: csr_rd_o = `M_VENDOR_ID;
       //RV_CSR_MARCHID:   csr_rd_o = `M_ARCH_ID;
       //RV_CSR_MIMPLID:   csr_rd_o = `M_IMPL_ID;

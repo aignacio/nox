@@ -34,6 +34,7 @@
   //`define M_IMPL_ID     "4STG"
   `define M_HART_ID     0
   `define M_ISA_ID      'h40000100
+  `define M_ISA_ID_M    'h40001100
 
   // Reset Macros for different sets
   `ifdef ACT_H_RESET

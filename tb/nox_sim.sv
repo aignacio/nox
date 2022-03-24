@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.12.2021
- * Last Modified Date: 10.03.2022
+ * Last Modified Date: 23.03.2022
  */
 module nox_sim import utils_pkg::*; (
   input               clk,
@@ -120,7 +120,13 @@ module nox_sim import utils_pkg::*; (
   );
   /* verilator lint_on PINMISSING */
 
-  nox u_nox(
+  nox #(
+  `ifdef ENABLE_M_EXT
+    .ENABLE_M_EXT     (1)
+  `else
+    .ENABLE_M_EXT     (0)
+  `endif
+  ) u_nox (
     .clk              (clk),
     .arst             (rst),
     .start_fetch_i    ('b1),

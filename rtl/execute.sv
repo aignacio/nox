@@ -3,13 +3,14 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 20.03.2022
+ * Last Modified Date: 24.03.2022
  */
 module execute
   import utils_pkg::*;
 #(
   parameter int SUPPORT_DEBUG     = 1,
-  parameter int MTVEC_DEFAULT_VAL = 'h1000 // 4KB
+  parameter int MTVEC_DEFAULT_VAL = 'h1000, // 4KB
+  parameter int ENABLE_M_EXT      = 0
 )(
   input                     clk,
   input                     rst,
@@ -54,6 +55,44 @@ module execute
   logic         will_jump_next_clk;
   logic         eval_trap;
   s_trap_info_t instr_addr_misaligned;
+
+  function automatic alu_t alu_compute(alu_t op1, alu_t op2, s_id_ex_t id_ex_i);
+    if ((ENABLE_M_EXT == 1) && (id_ex_i.f7 == RV_F7_MULDIV)) begin
+      alu_t multiplier, multiplicand;
+      rdata_ext_t res_m;
+      case (id_ex_i.f3) inside
+        RV_F3_ADD_SUB_MUL, RV_F3_SLL_MULH,
+        RV_F3_SLTU_MULHU,  RV_F3_SLT_MULHSU: begin
+          multiplicand = (id_ex_i.f3 == RV_F3_SLTU_MULHU) ? unsigned'(op1) : signed'(op1);
+          multiplier   = (id_ex_i.f3 == RV_F3_SLL_MULH)   ? signed'(op2)   : unsigned'(op2);
+          res_m = multiplicand * multiplier;
+          if (id_ex_i.f3 inside {RV_F3_SLL_MULH,
+                                 RV_F3_SLTU_MULHU,
+                                 RV_F3_SLT_MULHSU}) begin
+            res = res_m[63:32];
+          end
+          else begin
+            res = res_m[31:0];
+          end
+        end
+        default: res = 'd0;
+      endcase
+    end
+    else begin
+      case (id_ex_i.f3)
+        RV_F3_ADD_SUB_MUL:  res = (id_ex_i.f7[5]) ? op1 - op2 : op1 + op2;
+        RV_F3_SLT_MULHSU:   res = (signed'(op1) < signed'(op2)) ? 'd1 : 'd0;
+        RV_F3_SLTU_MULHU:   res = (op1 < op2) ? 'd1 : 'd0;
+        RV_F3_XOR_DIV:      res = (op1 ^ op2);
+        RV_F3_OR_REM:       res = (op1 | op2);
+        RV_F3_AND_REMU:     res = (op1 & op2);
+        RV_F3_SLL_MULH:     res = (id_ex_i.rs2_op == IMM) ? (op1 << op2[4:0]) : (op1 << op2[4:0]);
+        RV_F3_SRL_SRA_DIVU: res = (id_ex_i.rshift == RV_SRA) ? signed'((signed'(op1) >>> op2[4:0])) : (op1 >> op2[4:0]);
+        default:            res = 'd0;
+      endcase
+    end
+    return res;
+  endfunction
 
   function automatic branch_dec(branch_t op, rdata_t rs1, rdata_t rs2);
     logic         take_branch;
@@ -115,17 +154,7 @@ module execute
     op2 = (rs2_fwd == FWD_REG) ? wb_value_i : op2;
 
     // ALU compute
-    case (id_ex_i.f3)
-      RV_F3_ADD_SUB:  res = (id_ex_i.f7 == RV_F7_1) ? op1 - op2 : op1 + op2;
-      RV_F3_SLT:      res = (signed'(op1) < signed'(op2)) ? 'd1 : 'd0;
-      RV_F3_SLTU:     res = (op1 < op2) ? 'd1 : 'd0;
-      RV_F3_XOR:      res = (op1 ^ op2);
-      RV_F3_OR:       res = (op1 | op2);
-      RV_F3_AND:      res = (op1 & op2);
-      RV_F3_SLL:      res = (id_ex_i.rs2_op == IMM) ? (op1 << op2[4:0]) : (op1 << op2[4:0]);
-      RV_F3_SRL_SRA:  res = (id_ex_i.rshift == RV_SRA) ? signed'((signed'(op1) >>> op2[4:0])) : (op1 >> op2[4:0]);
-      default:        res = 'd0;
-    endcase
+    res = alu_compute(op1, op2, id_ex_i);
 
     next_ex_mem_wb.result  = (id_ex_i.jump) ? alu_t'(id_ex_i.pc_dec+'d4) : res;
     next_ex_mem_wb.rd_addr = id_ex_i.rd_addr;
