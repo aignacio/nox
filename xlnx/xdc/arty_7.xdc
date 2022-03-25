@@ -11,7 +11,7 @@ set_property -dict { PACKAGE_PIN J4    IOSTANDARD LVCMOS33 } [get_ports { csr_ou
 set_property -dict { PACKAGE_PIN G3    IOSTANDARD LVCMOS33 } [get_ports { csr_out[5] }]; #IO_L20N_T3_35 Sch=led1_r
 set_property -dict { PACKAGE_PIN H4    IOSTANDARD LVCMOS33 } [get_ports { csr_out[6] }]; #IO_L21N_T3_DQS_35 Sch=led2_b
 set_property -dict { PACKAGE_PIN J2    IOSTANDARD LVCMOS33 } [get_ports { csr_out[7] }]; #IO_L22N_T3_35 Sch=led2_g
-set_property -dict { PACKAGE_PIN J3    IOSTANDARD LVCMOS33 } [get_ports { csr_out[8] }]; #IO_L22P_T3_35 Sch=led2_r
+#set_property -dict { PACKAGE_PIN J3    IOSTANDARD LVCMOS33 } [get_ports { csr_out[8] }]; #IO_L22P_T3_35 Sch=led2_r
 set_property -dict { PACKAGE_PIN K2    IOSTANDARD LVCMOS33 } [get_ports { clk_locked_o }]; #IO_L23P_T3_35 Sch=led3_b
 #set_property -dict { PACKAGE_PIN H6    IOSTANDARD LVCMOS33 } [get_ports { uart_tx_mirror_o }]; #IO_L24P_T3_35 Sch=led3_g
 set_property -dict { PACKAGE_PIN K1    IOSTANDARD LVCMOS33 } [get_ports { uart_irq_o }]; #IO_L23N_T3_35 Sch=led3_r
