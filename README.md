@@ -13,7 +13,7 @@
 * [License](#lic)
 
 ## <a name="intro"></a> Introduction
-NoX is a 32-bit RISC-V core designed in System Verilog language aiming both `FPGA` and `ASIC` flows. The core was projected to be easily integrated and simulated as part of an SoC, with `makefile` targets for simple standalone simulation or with an interconnect and peripherals. In short, it is specifications are listed:
+NoX is a 32-bit RISC-V core designed in System Verilog language aiming both `FPGA` and `ASIC` flows. The core was projected to be easily integrated and simulated as part of an SoC, with `makefile` targets for simple standalone simulation or with an interconnect and peripherals. In short, the core specs are listed here:
 
 - RV32IZicsr
 - 4 stages / single-issue / in-order pipeline
