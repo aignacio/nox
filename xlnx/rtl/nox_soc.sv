@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 24.03.2022
+ * Last Modified Date: 25.03.2022
  */
 
 `default_nettype wire
@@ -13,7 +13,7 @@ module nox_soc import utils_pkg::*; (
   input               rst_cpu,
   input               rst_clk,
   input               bootloader_i,
-  output  logic [8:0] csr_out,
+  output  logic [7:0] csr_out,
   output  logic       clk_locked_o,
   output  logic       uart_tx_o,
   output  logic       uart_tx_mirror_o,

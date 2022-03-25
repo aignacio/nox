@@ -3,7 +3,7 @@ module axi_gpio import utils_pkg::*; (
   input                 rst,
   input   s_axi_mosi_t  axi_mosi,
   output  s_axi_miso_t  axi_miso,
-  output  logic [8:0]   csr_o
+  output  logic [7:0]   csr_o
 );
   s_axi_mosi_t  axi_mosi_int;
   s_axi_miso_t  axi_miso_int;
@@ -25,7 +25,7 @@ module axi_gpio import utils_pkg::*; (
 `endif
 
   /* verilator lint_off WIDTH */
-  logic [8:0] csr_output_ff, next_csr;
+  logic [7:0] csr_output_ff, next_csr;
   logic print_ff, next_print;
   logic csr_decode_ff, next_dec_csr;
   logic bvalid_ff, next_bvalid;

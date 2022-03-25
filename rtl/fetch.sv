@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 09.03.2022
+ * Last Modified Date: 25.03.2022
  */
 module fetch
   import utils_pkg::*;
@@ -167,7 +167,7 @@ module fetch
     end
   end : fetch_proc_if
 
-  fifo #(
+  fifo_nox #(
     .SLOTS    (L0_BUFFER_SIZE),
     .WIDTH    (32)
   ) u_fifo_l0 (

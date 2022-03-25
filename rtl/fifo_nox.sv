@@ -3,11 +3,11 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 04.12.2021
+ * Last Modified Date: 25.03.2022
  *
  * Simple FIFO SLOTSxWIDTH with async reads
  */
-module fifo
+module fifo_nox
 #(
   parameter int SLOTS = 2,
   parameter int WIDTH = 8

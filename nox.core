@@ -12,7 +12,7 @@ filesets:
       - rtl/inc/riscv_pkg.svh: {is_include_file: true}
       - rtl/inc/utils_pkg.sv
       - rtl/fetch.sv
-      - rtl/fifo.sv
+      - rtl/fifo_nox.sv
       - rtl/nox.sv
       - rtl/wb.sv
       - rtl/reset_sync.sv
