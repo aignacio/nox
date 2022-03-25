@@ -5,9 +5,6 @@ module axi_gpio import utils_pkg::*; (
   output  s_axi_miso_t  axi_miso,
   output  logic [7:0]   csr_o
 );
-  s_axi_mosi_t  axi_mosi_int;
-  s_axi_miso_t  axi_miso_int;
-
 `ifdef SIMULATION
   function [7:0] getbufferReq;
     /* verilator public */
