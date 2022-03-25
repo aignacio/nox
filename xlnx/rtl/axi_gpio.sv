@@ -34,6 +34,8 @@ module axi_gpio import utils_pkg::*; (
   always_comb begin
     axi_miso = s_axi_miso_t'('0);
     axi_miso.bvalid = bvalid_ff;
+    axi_miso.awready = 'b1;
+    axi_miso.arready = 'b1;
 
     csr_o = csr_output_ff;
     next_dec_csr = csr_decode_ff;
