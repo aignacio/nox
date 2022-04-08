@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 25.03.2022
+ * Last Modified Date: 08.04.2022
  */
 
 `default_nettype wire
@@ -51,6 +51,12 @@ module nox_soc import utils_pkg::*; (
 `ifdef NEXYS_VIDEO_50MHz
   assign bootloader_int = ~bootloader_i;
   assign rst = ~rst_cpu;
+  assign clk_locked_o = start_fetch;
+`endif
+
+`ifdef DE10_LITE_50MHz
+  assign bootloader_int = bootloader_i;
+  assign rst = rst_cpu;
   assign clk_locked_o = start_fetch;
 `endif
 

@@ -132,6 +132,11 @@ filesets:
     files:
       - xlnx/xdc/arty_7.xdc: {file_type: xdc}
 
+  de10lite_constraints:
+    files:
+      - intel/de10_lite/constraints.sdc: {file_type  : SDC}
+      - intel/de10_lite/pinmap.tcl: {file_type  : tclSource}
+
 parameters:
   DISPLAY_TEST:
     datatype: bool
@@ -146,6 +151,10 @@ parameters:
     default : true
     paramtype: vlogdefine
   ARTY_A7_50MHz:
+    datatype: bool
+    default : true
+    paramtype: vlogdefine
+  DE10_LITE_50MHz:
     datatype: bool
     default : true
     paramtype: vlogdefine
@@ -227,3 +236,19 @@ targets:
       vivado:
         part : xc7a35ticsg324-1L
     toplevel: nox_coremark
+
+  de10_lite:
+    <<: *default
+    default_tool : quartus
+    parameters:
+      - DE10_LITE_50MHz
+    description : DE10-Lite
+    filesets_append:
+      - synth_nox
+      - de10lite_constraints
+    tools:
+      quartus:
+        family : Max 10
+        device : 10M50DAF484C7G
+    toplevel: mpsoc
+

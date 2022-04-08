@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 17.03.2022
- * Last Modified Date: 17.03.2022
+ * Last Modified Date: 08.04.2022
  */
 
 `default_nettype wire
@@ -139,6 +139,11 @@ module clk_mgmt(
     .O (clk_out),
     .I (clk_out_clk_wiz_2)
   );
+`endif
+
+`ifdef DE10_LITE_50MHz
+  assign clk_out = clk_in;
+  assign clk_locked = 'b1;
 `endif
 
 endmodule
