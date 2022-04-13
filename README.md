@@ -1,6 +1,7 @@
 [![Lint](https://github.com/aignacio/nox/actions/workflows/lint.yaml/badge.svg)](https://github.com/aignacio/nox/actions/workflows/lint.yaml)
-<img align="right" alt="nox_logo" src="docs/img/rv_logo.png" width="100"/>
+<img align="right" alt="rvss" src="docs/img/rv_logo.png" width="100"/>
 
+![nox_logo](docs/img/logo_nox.svg)
 # NoX RISC-V Core
 
 ## Table of Contents
