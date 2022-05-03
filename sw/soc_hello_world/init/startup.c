@@ -56,6 +56,11 @@ void __attribute__((section(".init"),naked)) _reset(void) {
     /* Set up vectored interrupt, with starting at offset 0x100 */
     asm volatile("csrw mtvec, %0":: "r"((uint8_t *)(&_start_vector) + 1));
 
+// Bootloader script will write to the DRAM and not write the _stored_data
+// as it only loads to the Virtual Address, thus the code below must not
+// run as it'll overwrite nothing to the initialized (by the Bootloader Script)
+// data segment in DRAM.
+#ifndef NOT_USING_BOOTLOADER_SCRIPT
     src = (uint32_t *) &_stored_data;
     dst = (uint32_t *) &_start_data;
 
@@ -72,7 +77,7 @@ void __attribute__((section(".init"),naked)) _reset(void) {
         *dst = 0U;
         dst++;
     }
-
+#endif
     /* Run the program! */
     main();
 }
