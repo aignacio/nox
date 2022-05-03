@@ -24,6 +24,8 @@ rst_ctrl       = 'C0000000'
 
 def _start_seq(serial_p):
     ser = serial.Serial(serial_p['port'], serial_p['speed'], timeout=1)
+    data = bytes('\r','UTF-8')
+    ser.write(data)
     for i in range(10):
         led = 1<<i
         led = '{0:0>8x}'.format(led)
@@ -31,8 +33,6 @@ def _start_seq(serial_p):
         # print(data)
         ser.write(data)
         time.sleep(0.02)
-    data = bytes('\r','UTF-8')
-    ser.write(data)
     data = bytes('w'+gpio_addr+'d00000092\r','UTF-8')
     ser.write(data)
     time.sleep(0.05)
