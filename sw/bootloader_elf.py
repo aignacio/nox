@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 16.03.2022
-# Last Modified Date: 17.03.2022
+# Last Modified Date: 03.05.2022
 # Description       : Bootloader script to download binaries using the UART port
 #                     for the Pixel SoC bootloader ROM
 import serial
@@ -31,6 +31,8 @@ def _start_seq(serial_p):
         # print(data)
         ser.write(data)
         time.sleep(0.02)
+    data = bytes('\r','UTF-8')
+    ser.write(data)
     data = bytes('w'+gpio_addr+'d00000092\r','UTF-8')
     ser.write(data)
     time.sleep(0.05)
@@ -109,10 +111,14 @@ def _transfer_program(elf, serial_p):
             if segment.header.p_filesz != segment.header.p_memsz:
                 print('Contain uninitialized data segment (.bss/.sbss/...)')
 
-            if (seg_info['type'] == 'PT_LOAD') and (seg_info['memsz'] != 0):
-                print('Loading %d bytes in the location %s...'%(seg_info['memsz'],seg_info['paddr']))
+            if (seg_info['type'] == 'PT_LOAD') and (seg_info['filesz'] != 0):
+                print('Loading %d bytes in the location %s...'%(seg_info['filesz'],seg_info['vaddr']))
                 ready_to_send = _fmt_data(segment.data(), seg_info['filesz'], seg_info['memsz'])
-                _program(seg_info['paddr'], ready_to_send, serial_p)
+                _program(seg_info['vaddr'], ready_to_send, serial_p)
+            elif (seg_info['type'] == 'PT_LOAD') and (seg_info['filesz'] == 0):
+                print('Zeroing %d bytes in the location %s...'%(seg_info['memsz'],seg_info['vaddr']))
+                ready_to_send = _fmt_data(segment.data(), seg_info['filesz'], seg_info['memsz'])
+                _program(seg_info['vaddr'], ready_to_send, serial_p)
         _end_seq(serial_p, entry_point)
         print('All segments are programmed!, please press the reset button')
 
