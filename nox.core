@@ -105,6 +105,8 @@ filesets:
       - xlnx/rtl/nox_wrapper.sv
       - xlnx/rtl/rst_ctrl.sv
       - xlnx/rtl/axi_gpio.sv
+      - xlnx/rtl/axi_spi_master.sv
+      - xlnx/rtl/cdc_async_fifo.sv
     file_type: systemVerilogSource
 
   tb:

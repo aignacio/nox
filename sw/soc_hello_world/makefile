@@ -43,10 +43,14 @@ TARGET			:=	$(ODIR)/$(TARGET_NAME)
 LD					:=	sections.ld
 _INC				:=	../common
 _INC				+=	../printf
+_INC				+=	../tft_lcd
+_INC				+=	../spi
 INC					:=	$(addprefix -I,$(_INC))
 _OBJ    		:=	$(patsubst printf/%,%.o,$(basename $(wildcard printf/*.c)))
 _OBJ    		+=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.S)))
 _OBJ    		+=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.c)))
+_OBJ    		+=	$(patsubst spi/%,%.o,$(basename $(wildcard spi/*.c)))
+_OBJ    		+=	$(patsubst tft_lcd/%,%.o,$(basename $(wildcard tft_lcd/*.c)))
 _OBJ    		+=	$(patsubst src/%,%.o,$(basename $(wildcard src/*.c)))
 OBJ					:=	$(patsubst %,$(TEMP)/%,$(_OBJ))
 
@@ -97,9 +101,13 @@ $(TEMP)/%.o:  src/%.c
 	@echo "Building $@"
 	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
 
-$(TEMP)/%.o:
+$(TEMP)/%.o: tft_lcd/%.c
 	@echo "Building $@"
 	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
+
+$(TEMP)/%.o:
+	@echo "Building $@"
+	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $*/$*.c -o $@
 
 dbg:
 	@echo "Use disass /m name_of_the_function to search for a function in assembly/c\n"

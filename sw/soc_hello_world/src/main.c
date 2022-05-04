@@ -4,6 +4,7 @@
 #include <string.h>
 #include "printf.h"
 #include "riscv_csr_encoding.h"
+#include "tft_lcd.h"
 
 #define FREQ_SYSTEM 50000000
 #define BR_UART     115200
@@ -78,24 +79,19 @@ void print_logo(void){
 int main(void) {
   uint8_t leds_out = 0x01;
   int i = 0;
+  uint8_t str[100];
 
-  /**addr_leds = leds_out;*/
   // 50MHz / 115200 = 434
   *uart_cfg = FREQ_SYSTEM/BR_UART;
   print_logo();
 
-  while(true);
-  /*{*/
-    /*if (i == 60000){*/
-      /*i = 0;*/
-      /*if (leds_out == 8)*/
-        /*leds_out = 1;*/
-      /*else*/
-        /*leds_out = leds_out << 1;*/
-      /**addr_leds = leds_out;*/
-
-      /*print_logo();*/
-    /*}*/
-    /*i++;*/
-  /*}*/
+  ILI9341_Init();
+  ILI9341_Set_Rotation(SCREEN_HORIZONTAL_1);
+  ILI9341_Fill_Screen(ORANGE);
+  ILI9341_Draw_Text("NoX SoC", 10, 20, WHITE, 3, BLACK);
+  ILI9341_Draw_Text("-> mcycle:", 10, 80, WHITE, 2, BLACK);
+  while(1){
+    sprintf(str, "%u", rdcycle());
+    ILI9341_Draw_Text(str, 10, 110, WHITE, 2, BLACK);
+  }
 }

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 25.03.2022
+ * Last Modified Date: 04.05.2022
  */
 
 `default_nettype wire
@@ -18,12 +18,17 @@ module nox_soc import utils_pkg::*; (
   output  logic       uart_tx_o,
   output  logic       uart_tx_mirror_o,
   output  logic       uart_irq_o,
-  input               uart_rx_i
+  input               uart_rx_i,
+  output              spi_clk_o,
+  output              spi_mosi_o,
+  input               spi_miso_i,
+  output              spi_csn_o,
+  output  logic [9:0] spi_gpio_o
 );
   s_axi_mosi_t  [1:0] masters_axi_mosi;
   s_axi_miso_t  [1:0] masters_axi_miso;
-  s_axi_mosi_t  [5:0] slaves_axi_mosi;
-  s_axi_miso_t  [5:0] slaves_axi_miso;
+  s_axi_mosi_t  [6:0] slaves_axi_mosi;
+  s_axi_miso_t  [6:0] slaves_axi_miso;
 
   logic        clk;
   logic        rst;
@@ -64,14 +69,16 @@ module nox_soc import utils_pkg::*; (
 
   axi_interconnect_wrapper #(
     .N_MASTERS      (2),
-    .N_SLAVES       (6),
-    .M_BASE_ADDR    ({32'hD000_0000,    // GPIO
+    .N_SLAVES       (7),
+    .M_BASE_ADDR    ({32'hE000_0000,    // SPI
+                      32'hD000_0000,    // GPIO
                       32'hC000_0000,    // RST Ctrl
                       32'hB000_0000,    // UART
                       32'hA000_0000,    // 128KB IMEM
                       32'h1000_0000,    // DRAM - 8KB
                       32'h0000_0000}),  // BOOTROM
     .M_ADDR_WIDTH   ({32'd17,
+                      32'd17,
                       32'd17,
                       32'd17,
                       32'd17,
@@ -145,6 +152,20 @@ module nox_soc import utils_pkg::*; (
     .axi_mosi         (slaves_axi_mosi[5]),
     .axi_miso         (slaves_axi_miso[5]),
     .csr_o            (csr_out)
+  );
+
+  axi_spi_master #(
+    .BASE_ADDR('hE000_0000)
+  ) u_axi_spi_master (
+    .clk              (clk),
+    .arst             (~rst),
+    .axi_mosi         (slaves_axi_mosi[6]),
+    .axi_miso         (slaves_axi_miso[6]),
+    .sck_o            (spi_clk_o),
+    .mosi_o           (spi_mosi_o),
+    .miso_i           (spi_miso_i),
+    .cs_n_o           (spi_csn_o),
+    .spi_out_o        (spi_gpio_o)
   );
   /* verilator lint_on PINMISSING */
 
