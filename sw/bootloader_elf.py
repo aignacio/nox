@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 16.03.2022
-# Last Modified Date: 03.05.2022
+# Last Modified Date: 07.05.2022
 # Description       : Bootloader script to download binaries using the UART port
 #                     for the Pixel SoC bootloader ROM
 import serial
@@ -112,9 +112,9 @@ def _transfer_program(elf, serial_p):
                 print('Contain uninitialized data segment (.bss/.sbss/...)')
 
             if (seg_info['type'] == 'PT_LOAD') and (seg_info['filesz'] != 0):
-                print('Loading %d bytes in the location %s...'%(seg_info['filesz'],seg_info['vaddr']))
+                print('Loading %d bytes in the location %s...'%(seg_info['filesz'],seg_info['paddr']))
                 ready_to_send = _fmt_data(segment.data(), seg_info['filesz'], seg_info['memsz'])
-                _program(seg_info['vaddr'], ready_to_send, serial_p)
+                _program(seg_info['paddr'], ready_to_send, serial_p)
             elif (seg_info['type'] == 'PT_LOAD') and (seg_info['filesz'] == 0):
                 print('Zeroing %d bytes in the location %s...'%(seg_info['memsz'],seg_info['vaddr']))
                 ready_to_send = _fmt_data(segment.data(), seg_info['filesz'], seg_info['memsz'])
