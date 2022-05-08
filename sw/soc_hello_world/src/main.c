@@ -8,9 +8,6 @@
 
 #define FREQ_SYSTEM 50000000
 #define BR_UART     115200
-
-/*#define FREQ_SYSTEM 100000000*/
-/*#define BR_UART     230400*/
 #define REAL_UART
 
 #define ERR_CFG     0xFFFF0000
@@ -22,6 +19,11 @@
 #define UART_STATS  0xB0000004
 #define UART_CFG    0xB0000000
 
+#define MTIMER_LSB      0xF0000000
+#define MTIMER_MSB      0xF0000004
+#define MTIMER_CMP_LSB  0xF0000008
+#define MTIMER_CMP_MSB  0xF000000C
+
 volatile uint32_t* const addr_leds  = (uint32_t*) LEDS_ADDR;
 volatile uint32_t* const addr_print = (uint32_t*) PRINT_ADDR;
 volatile uint32_t* const uart_stats = (uint32_t*) UART_STATS;
@@ -31,7 +33,10 @@ volatile uint32_t* const uart_cfg   = (uint32_t*) UART_CFG;
 volatile uint32_t* const rst_cfg    = (uint32_t*) RST_CFG;
 volatile uint32_t* const err_cfg    = (uint32_t*) ERR_CFG;
 
-#if 0
+volatile uint64_t* const mtimer     = (uint64_t*) MTIMER_LSB;
+volatile uint64_t* const mtimer_cmp = (uint64_t*) MTIMER_CMP_LSB;
+
+#ifndef REAL_UART
 void _putchar(char character){
   *addr_print = character;
 }
@@ -40,8 +45,8 @@ void _putchar(char character){
   while((*uart_stats & 0x10000) == 0);
   *uart_print = character;
 }
-
 #endif
+
 void print_logo(void){
   int mstatus_csr  = read_csr(mstatus);
   int misa_csr     = read_csr(misa);
@@ -60,7 +65,7 @@ void print_logo(void){
   printf("\n\r |  \\| | / _ \\ \\  /   ");
   printf("\n\r | |\\  || (_) |/  \\   ");
   printf("\n\r |_| \\_| \\___//_/\\_\\  ");
-  printf("\n\r NoX RISC-V Core RV32I \n");
+  printf("\n\r NoX SoC RISC-V Core RV32I \n");
   printf("\n\r CSRs:");
   printf("\n\r mstatus \t0x%x",mstatus_csr);
   printf("\n\r misa    \t0x%x",misa_csr);
@@ -76,6 +81,17 @@ void print_logo(void){
   printf("\n\r");
 }
 
+uint8_t gLEDsAddr = 0x00;
+
+void irq_timer_callback(void){
+  printf("\n\r ------> MTIMER IRQ!");
+  uint64_t mtime_half_second = *mtimer;
+  mtime_half_second += 25000000;
+  *mtimer_cmp = mtime_half_second;
+  gLEDsAddr ^= 0xff;
+  *addr_leds = gLEDsAddr;
+}
+
 int main(void) {
   uint8_t leds_out = 0x01;
   int i = 0;
@@ -83,8 +99,20 @@ int main(void) {
 
   // 50MHz / 115200 = 434
   *uart_cfg = FREQ_SYSTEM/BR_UART;
-  print_logo();
+  /*print_logo();*/
+  printf("\n\r Hello....");
+  set_csr(mie,1<<IRQ_M_TIMER);
+  set_csr(mstatus,MSTATUS_MIE);
+#ifndef LCD_EN
+  uint64_t mtime_half_second = *mtimer;
+  mtime_half_second += 25000000;
+  *mtimer_cmp = mtime_half_second;
 
+  while(1){
+    /*printf("\n\rMtimer: %d",*mtimer);*/
+    wfi();
+  }
+#else
   ILI9341_Init();
   ILI9341_Set_Rotation(SCREEN_HORIZONTAL_1);
   ILI9341_Fill_Screen(ORANGE);
@@ -94,4 +122,5 @@ int main(void) {
     sprintf(str, "%u", rdcycle());
     ILI9341_Draw_Text(str, 10, 110, WHITE, 2, BLACK);
   }
+#endif
 }

@@ -31,6 +31,8 @@
 extern void trap_entry(void);
 extern void trap_exit(void);
 
+extern void freertos_risc_v_trap_handler(void);
+
 extern uint32_t  _start_vector;
 extern uint32_t  _stored_data;
 extern uint32_t  _start_data;
@@ -46,7 +48,6 @@ static int initialized_variable_in_data = 42;
 static int toggle = 0;
 
 extern void irq_callback(void);
-extern void irq_timer_callback(void);
 extern void main(void);
 
 void __attribute__((section(".init"),naked)) _reset(void) {
@@ -54,14 +55,7 @@ void __attribute__((section(".init"),naked)) _reset(void) {
 
     // asm volatile("la gp, _my_global_pointer");
     // asm volatile("la sp, _end_stack");
-    /* Set up vectored interrupt, with starting at offset 0x100 */
-    asm volatile("csrw mtvec, %0":: "r"((uint8_t *)(&_start_vector) + 1));
-
-// Bootloader script will write to the DRAM and not write the _stored_data
-// as it only loads to the Virtual Address, thus the code below must not
-// run as it'll overwrite nothing to the initialized (by the Bootloader Script)
-// data segment in DRAM.
-#ifndef NOT_USING_BOOTLOADER_SCRIPT
+    asm volatile("csrw mtvec, %0":: "r"((uint8_t *)(&freertos_risc_v_trap_handler)));
     src = (uint32_t *) &_stored_data;
     dst = (uint32_t *) &_start_data;
 
@@ -78,7 +72,6 @@ void __attribute__((section(".init"),naked)) _reset(void) {
         *dst = 0U;
         dst++;
     }
-#endif
     /* Run the program! */
     main();
 }
@@ -117,9 +110,8 @@ void __attribute__((weak)) isr_m_software(void)
 
 void __attribute__((weak)) isr_m_timer(void)
 {
-  /*clear_csr(mie,1<<IRQ_M_TIMER);*/
+  clear_csr(mie,1<<IRQ_M_TIMER);
   write_csr(mip, (0 << IRQ_M_TIMER));
-  irq_timer_callback();
   return;
   while(1);
 }
@@ -128,6 +120,12 @@ void __attribute__((weak)) isr_m_external(void)
 {
   clear_csr(mie,1<<IRQ_M_EXT);
   write_csr(mip, (0 << IRQ_M_EXT));
+  /*irq_callback();*/
   return;
   while(1);
+}
+
+void __attribute__((weak)) handle_trap(void)
+{
+  return;
 }

@@ -107,6 +107,7 @@ filesets:
       - xlnx/rtl/axi_gpio.sv
       - xlnx/rtl/axi_spi_master.sv
       - xlnx/rtl/cdc_async_fifo.sv
+      - xlnx/rtl/axi_mtimer.sv
     file_type: systemVerilogSource
 
   tb:

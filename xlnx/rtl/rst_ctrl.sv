@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 13.03.2022
- * Last Modified Date: 14.03.2022
+ * Last Modified Date: 08.05.2022
  */
 module rst_ctrl import utils_pkg::*; (
   input                 clk,
@@ -19,6 +19,7 @@ module rst_ctrl import utils_pkg::*; (
   logic        wr_rst_ff,   next_wr_rst;
   logic        rd_rst_ff,   next_rd_rst;
   logic        bvalid_ff,   next_bvalid;
+  logic [31:0] rst_loading;
 
   /* verilator lint_off WIDTH */
   always_comb begin
@@ -65,7 +66,11 @@ module rst_ctrl import utils_pkg::*; (
 
   always_ff @(posedge clk) begin
     if (~rst) begin
+    `ifdef SIMULATION
+      rst_addr_ff <= rst_loading;
+    `else
       rst_addr_ff <= '0;
+    `endif
       wr_rst_ff   <= '0;
       bvalid_ff   <= '0;
       rd_rst_ff   <= '0;

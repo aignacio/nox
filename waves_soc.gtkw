@@ -1,46 +1,33 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Sun Mar  6 10:32:23 2022
+[*] Sun May  8 13:55:11 2022
 [*]
 [dumpfile] "/Users/aignacio/projects/nox/nox_waves.fst"
-[dumpfile_mtime] "Sun Mar  6 10:31:46 2022"
-[dumpfile_size] 1103137
+[dumpfile_mtime] "Sun May  8 13:51:15 2022"
+[dumpfile_size] 2524284
 [savefile] "/Users/aignacio/projects/nox/waves_soc.gtkw"
-[timestart] 1
-[size] 3308 1723
-[pos] 132 288
-*-13.940657 389 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 122125
+[size] 2242 1293
+[pos] 422 608
+*-6.323879 122315 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.nox_soc.
-[treeopen] TOP.nox_soc.u_nox.u_execute.u_csr.
+[treeopen] TOP.nox_soc.u_nox_wrapper.
+[treeopen] TOP.nox_soc.u_nox_wrapper.u_nox.
+[treeopen] TOP.nox_soc.u_nox_wrapper.u_nox.u_execute.
+[treeopen] TOP.nox_soc.u_nox_wrapper.u_nox.u_execute.u_csr.
 [sst_width] 323
 [signals_width] 389
 [sst_expanded] 1
-[sst_vpaned_height] 871
+[sst_vpaned_height] 636
 @28
 TOP.nox_soc.clk_in
 TOP.nox_soc.clk
 TOP.nox_soc.rst_cpu
-@29
 TOP.nox_soc.uart_tx_o
-@28
 TOP.nox_soc.start_fetch
-@8022
-TOP.nox_soc.csr_out[3:0]
-@28
-+{enter_in_a_trap} TOP.nox_soc.u_nox.u_execute.trap_out.active
-@100000028
-TOP.nox_soc.u_nox.u_fetch.fetch_st_ff[1:0]
-@28
-[color] 1
-TOP.nox_soc.u_nox.u_fetch.fetch_req_i
-@22
-[color] 1
-TOP.nox_soc.u_nox.u_fetch.fetch_addr_i[31:0]
 @800200
 -nox_instr_mosi
-@28
-TOP.nox_soc.u_nox.instr_axi_mosi_o.arid
 @c00022
 TOP.nox_soc.masters_axi_mosi[0].araddr[31:0]
 @28
@@ -92,6 +79,10 @@ TOP.nox_soc.masters_axi_mosi[0].arsize[2:0]
 @28
 TOP.nox_soc.masters_axi_mosi[0].arvalid
 @22
+TOP.nox_soc.u_nox_wrapper.instr_axi_miso_i.rdata[31:0]
+@28
+TOP.nox_soc.u_nox_wrapper.instr_axi_miso_i.rvalid
+@22
 TOP.nox_soc.masters_axi_mosi[0].awaddr[31:0]
 @100000028
 TOP.nox_soc.masters_axi_mosi[0].awburst[1:0]
@@ -135,20 +126,8 @@ TOP.nox_soc.masters_axi_miso[0].rvalid
 TOP.nox_soc.masters_axi_miso[0].wready
 @1401200
 -nox_instr_miso
-@22
-TOP.nox_soc.u_nox.u_execute.u_csr.csr_mcause_ff[31:0]
-@28
-TOP.nox_soc.u_nox.u_lsu.lock_ff
-@22
-TOP.nox_soc.u_nox.u_lsu.lsu_req_addr[31:0]
-TOP.nox_soc.u_nox.u_lsu.lsu_i.addr[31:0]
 @800200
 -nox_lsu_mosi
-@28
-TOP.nox_soc.u_iram.axi_miso.awready
-TOP.nox_soc.u_iram.axi_miso.rvalid
-TOP.nox_soc.u_iram.axi_mosi.rready
-TOP.nox_soc.u_nox.u_lsu.lock_ff
 @22
 [color] 2
 TOP.nox_soc.masters_axi_mosi[1].awaddr[31:0]
@@ -157,7 +136,6 @@ TOP.nox_soc.masters_axi_mosi[1].awaddr[31:0]
 TOP.nox_soc.masters_axi_mosi[1].awvalid
 [color] 2
 TOP.nox_soc.masters_axi_miso[1].awready
-TOP.nox_soc.u_nox.lsu_axi_mosi_o.wlast
 [color] 2
 TOP.nox_soc.masters_axi_mosi[1].wvalid
 [color] 2
@@ -254,11 +232,6 @@ TOP.nox_soc.masters_axi_mosi[1].araddr[31:0]
 TOP.nox_soc.masters_axi_mosi[1].arvalid
 [color] 3
 TOP.nox_soc.masters_axi_miso[1].arready
-@22
-TOP.nox_soc.u_dram.mem_loading[1998][31:0]
-TOP.nox_soc.u_dram.mem_loading[1999][31:0]
-TOP.nox_soc.u_dram.mem_loading[2000][31:0]
-@28
 [color] 3
 TOP.nox_soc.masters_axi_mosi[1].rready
 [color] 3
@@ -270,69 +243,20 @@ TOP.nox_soc.masters_axi_miso[1].rdata[31:0]
 TOP.nox_soc.masters_axi_miso[1].bvalid
 TOP.nox_soc.masters_axi_mosi[1].bready
 @100000028
-TOP.nox_soc.u_nox.lsu_axi_miso_i.rresp[1:0]
 TOP.nox_soc.masters_axi_miso[1].bresp[1:0]
-TOP.nox_soc.u_nox.lsu_axi_miso_i.rresp[1:0]
 @1000200
 -nox_lsu_mosi
-@28
-TOP.nox_soc.u_nox.u_lsu.lsu_bp_o
-TOP.nox_soc.u_nox.u_lsu.bp_data
-TOP.nox_soc.u_nox.u_lsu.bp_addr
-@22
-TOP.nox_soc.u_slave_1_mem.csr_output_ff[7:0]
-TOP.nox_soc.u_nox.u_execute.id_ex_i.pc_dec[31:0]
-@100000028
-[color] 7
-TOP.nox_soc.u_nox.u_decode.instr_dec.op[6:0]
-@22
-[color] 7
-TOP.nox_soc.u_nox.u_decode.next_id_ex.pc_dec[31:0]
 @c00200
 -rf
-@22
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[0][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[1][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[2][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[3][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[4][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[5][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[6][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[7][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[8][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[9][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[10][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[11][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[12][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[13][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[14][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[15][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[16][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[17][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[18][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[19][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[20][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[21][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[22][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[23][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[24][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[25][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[26][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[27][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[28][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[29][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[30][31:0]
-TOP.nox_soc.u_nox.u_decode.u_register_file.reg_file_ff[31][31:0]
 @1401200
 -rf
-@24
-[color] 1
-TOP.nox_soc.u_nox.u_decode.wb_dec_i.rd_addr[4:0]
-@22
-[color] 1
-TOP.nox_soc.u_nox.u_decode.wb_dec_i.rd_data[31:0]
+@29
+TOP.nox_soc.u_nox_wrapper.u_nox.u_execute.u_csr.wfi_i
 @28
-[color] 1
-TOP.nox_soc.u_nox.u_decode.wb_dec_i.we_rd
+TOP.nox_soc.u_nox_wrapper.u_nox.u_execute.u_csr.mret_i
+TOP.nox_soc.u_axi_mtimer.mtimer_irq_o
+@24
+TOP.nox_soc.u_axi_mtimer.mtimer_ff[63:0]
+TOP.nox_soc.u_axi_mtimer.mtimercmp_ff[63:0]
 [pattern_trace] 1
 [pattern_trace] 0

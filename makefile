@@ -39,6 +39,9 @@ _SOC_VERILOG 	+=	xlnx/rtl/clk_mgmt.sv
 _SOC_VERILOG 	+=	xlnx/rtl/rst_ctrl.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_gpio.sv
 _SOC_VERILOG 	+=	xlnx/rtl/nox_wrapper.sv
+_SOC_VERILOG 	+=	xlnx/rtl/cdc_async_fifo.sv
+_SOC_VERILOG 	+=	xlnx/rtl/axi_spi_master.sv
+_SOC_VERILOG 	+=	xlnx/rtl/axi_mtimer.sv
 _SOC_VERILOG 	+=	sw/bootloader/output/boot_rom.sv
 
 ifeq ($(AXI_IF),0)
@@ -54,10 +57,10 @@ INCS_VLOG			:=	$(addprefix -I,$(_INCS_VLOG))
 
 # Parameters of simulation
 #IRAM_KB_SIZE	?=	2*1024 #2MB due to J-Tests on RV Compliance tests
-IRAM_KB_SIZE	?=	16
-DRAM_KB_SIZE	?=	8
+IRAM_KB_SIZE	?=	128
+DRAM_KB_SIZE	?=	32
 ENTRY_ADDR		?=	\'h8000_0000
-IRAM_ADDR			?=	0x80000000
+IRAM_ADDR			?=	0xa0000000
 DRAM_ADDR			?=	0x10000000
 DISPLAY_TEST	?=	0 # Enable $display in axi_mem.sv [compliance test]
 WAVEFORM_USE	?=	1 # Use 0 to not generate waves [compliance test]
@@ -113,7 +116,9 @@ RUN_CMD_COMP	:=	docker run --rm --name ship_nox	\
 									/test/riscof_compliance aignacio/riscof
 
 RUN_SW				:=	sw/hello_world/output/hello_world.elf
-RUN_SW_SOC		:=	sw/bootloader/output/bootloader.elf
+#RUN_SW_SOC		:=	sw/bootloader/output/bootloader.elf
+#RUN_SW_SOC		:=	sw/soc_hello_world/output/soc_hello_world.elf
+RUN_SW_SOC		:=	sw/FreeRTOS/output/FreeRTOS.elf
 
 CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
 									-Werror																\
@@ -235,11 +240,14 @@ soc: clean $(VERI_EXE_SOC)
 	@echo "$(VERI_EXE_SOC) -h"
 	@echo "\n"
 
+#$(RUN_SW_SOC):
+	#make -C sw/soc_hello_world all
+
 $(RUN_SW_SOC):
-	make -C sw/bootloader all
+	make -C sw/FreeRTOS all
 
 run_soc: $(RUN_SW_SOC)
-	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 100000 -e $<
+	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 500000 -e $<
 
 ##########################
 #	RISC-V Compliance test #

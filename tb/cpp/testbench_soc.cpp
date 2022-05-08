@@ -165,6 +165,8 @@ bool loadELF(testbench<Vnox_soc> *sim, string program_path, const bool en_print)
       }
     }
   }
+
+  sim->core->nox_soc->writeRstAddr(program.get_entry());
   cout << std::endl;
   return 0;
 }
