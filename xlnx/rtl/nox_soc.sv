@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 08.05.2022
+ * Last Modified Date: 18.05.2022
  */
 
 `default_nettype wire
@@ -190,6 +190,17 @@ module nox_soc import utils_pkg::*; (
     .mtimer_irq_o     (mtimer_irq)
   );
   /* verilator lint_on PINMISSING */
+
+  //ila_0 u_ila_aignacio (
+    //.clk(clk),
+    //.probe0 (masters_axi_mosi[0].arvalid),                             // 1
+    //.probe1 (masters_axi_mosi[0].araddr),                              // 32
+    //.probe2 (masters_axi_miso[0].rvalid),                              // 1
+    //.probe3 (masters_axi_miso[0].rdata),                               // 32
+    //.probe4 (u_nox_wrapper.irq_i[0]),                                  // 1
+    //.probe5 (u_nox_wrapper.irq_i[1]),                                  // 1
+    //.probe6 (u_nox_wrapper.irq_i[2])                                   // 1
+  //);
 
   //ila_0 u_ila_aignacio (
     //.clk(clk),

@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 16.03.2022
-# Last Modified Date: 07.05.2022
+# Last Modified Date: 17.05.2022
 # Description       : Bootloader script to download binaries using the UART port
 #                     for the Pixel SoC bootloader ROM
 import serial
@@ -41,7 +41,7 @@ def _end_seq(serial_p, rst_addr):
     with serial.Serial(serial_p['port'], serial_p['speed'], timeout=1) as ser:
         data = bytes('w'+gpio_addr+'d00000000\r','UTF-8')
         ser.write(data)
-        time.sleep(0.01)
+        time.sleep(0.5)
         data = bytes('w'+rst_ctrl+'d'+rst_addr+'\r','UTF-8')
         ser.write(data)
         print('Reset address changed to: %s'%(rst_addr))

@@ -176,7 +176,7 @@ void proc_single_read(){
 
 void act_fast_mode(void){
   s_req_t fast_req = getReq();
-  printf("\n\r> Burst Mode ON - Addr[%x]",fast_req.addr);
+  printf("\n\r> Burst Mode ON - Addr[%x] - No echo",fast_req.addr);
   printf("\n\r> ");
   gFast_mode = true;
   gFast_addr = fast_req.addr;

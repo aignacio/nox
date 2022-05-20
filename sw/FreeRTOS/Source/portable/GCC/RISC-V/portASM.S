@@ -111,6 +111,7 @@ at the top of this file. */
 .extern Timer_IRQHandler
 .extern pullMachineTimerCompareRegister
 .extern pullNextTime
+.extern handle_trap
 .extern uxTimerIncrementsForOneTick /* size_t type so 32-bit on 32-bit core and 64-bits on 64-bit core. */
 .extern xISRStackTop
 .extern portasmHANDLE_INTERRUPT
@@ -241,6 +242,7 @@ is_exception:
 	csrr t0, mcause						/* For viewing in the debugger only. */
 	csrr t1, mepc						/* For viewing in the debugger only */
 	csrr t2, mstatus
+  j handle_trap
 	j is_exception						/* No other exceptions handled yet. */
 
 as_yet_unhandled:

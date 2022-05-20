@@ -131,7 +131,6 @@ void * pvPortMalloc( size_t xWantedSize )
         {
             mtCOVERAGE_TEST_MARKER();
         }
-
         /* Check the requested block size is not so large that the top bit is
          * set.  The top bit of the block size member of the BlockLink_t structure
          * is used to determine who owns the block - the application or the

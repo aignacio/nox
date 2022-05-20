@@ -127,5 +127,7 @@ void __attribute__((weak)) isr_m_external(void)
 
 void __attribute__((weak)) handle_trap(void)
 {
+  printf("\n\rHANDLE TRAP");
   return;
 }
+

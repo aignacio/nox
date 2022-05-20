@@ -8,7 +8,7 @@
 #define FREQ_SYSTEM 50000000
 #define BR_UART     115200
 
-/*#define REAL_UART*/
+#define REAL_UART
 
 #define ERR_CFG     0xFFFF0000
 #define PRINT_ADDR  0xD0000008
@@ -35,7 +35,7 @@ volatile uint32_t* const err_cfg    = (uint32_t*) ERR_CFG;
 #define	mainQUEUE_SEND_TASK_PRIORITY		( tskIDLE_PRIORITY + 1 )
 /* The rate at which data is sent to the queue.  The 200ms value is converted
 to ticks using the pdMS_TO_TICKS() macro. */
-#define mainQUEUE_SEND_FREQUENCY_MS			pdMS_TO_TICKS( 1000 )
+#define mainQUEUE_SEND_FREQUENCY_MS			pdMS_TO_TICKS( 200 )
 /* The maximum number items the queue can hold.  The priority of the receiving
 task is above the priority of the sending task, so the receiving task will
 preempt the sending task and remove the queue items each time the sending task
@@ -121,6 +121,8 @@ void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
 	configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook
 	function is called if a stack overflow is detected. */
 	taskDISABLE_INTERRUPTS();
+  printf("\n\rStack Overflow task: ");
+  vSendString(pcTaskName);
 	for( ;; );
 }
 /*-----------------------------------------------------------*/
@@ -153,29 +155,33 @@ static void prvQueueSendTask( void *pvParameters )
 
 	/* Remove compiler warning about unused parameter. */
 	( void ) pvParameters;
-
+  uint32_t	free_heap_size;
 	/* Initialise xNextWakeTime - this only needs to be done once. */
-	xNextWakeTime = xTaskGetTickCount();
-
+	/*xNextWakeTime = xTaskGetTickCount();*/
+  /*printf("\n\rSend task: %d / %d",xNextWakeTime, mainQUEUE_SEND_FREQUENCY_MS);*/
 	for( ;; )
 	{
 
-    vSendString("\n\r Task: prvQueueSendTask");
+    /*vSendString("\n\r Task: prvQueueSendTask");*/
 		/* Place this task in the blocked state until it is time to run again. */
-		vTaskDelayUntil( &xNextWakeTime, mainQUEUE_SEND_FREQUENCY_MS );
+    /*vTaskDelayUntil( &xNextWakeTime, mainQUEUE_SEND_FREQUENCY_MS );*/
+    vTaskDelay(100);
 
 		ulValueToSend++;
-
-		char buf[40];
-		sprintf( buf, "%d: %s: send %ld", xGetCoreID(),
-				pcTaskGetName( xTaskGetCurrentTaskHandle() ),
-				ulValueToSend );
-		vSendString( buf );
+    free_heap_size = xPortGetFreeHeapSize();
+		/*char buf[40];*/
+		/*sprintf( buf, "%d: %s: send %ld", xGetCoreID(),*/
+				/*pcTaskGetName( xTaskGetCurrentTaskHandle() ),*/
+				/*ulValueToSend );*/
+		/*vSendString( buf );*/
+    /*asm volatile("add x0, 0(%[mbx])"::[mbx]"r"(&mbox_aligned_addr)*/
+    /*asm volatile("sw sp, 0(%[val])"::[val]"r"(&free_heap_size));*/
+    printf( "\n\r[%d] Tx: %d", free_heap_size, ulValueToSend );
 
 		/* 0 is used as the block time so the sending operation will not block -
 		 * it shouldn't need to block as the queue should always be empty at
 		 * this point in the code. */
-		xQueueSend( xQueue, &ulValueToSend, 0U );
+    xQueueSend( xQueue, &ulValueToSend, 0U );
 	}
 }
 
@@ -186,22 +192,25 @@ static void prvQueueReceiveTask( void *pvParameters )
 	/* Remove compiler warning about unused parameter. */
 	( void ) pvParameters;
 
+  vSendString("\n\rReceive task");
+
 	for( ;; )
 	{
 
-    vSendString("\n\r Task: prvQueueReceiveTask");
+    /*vSendString("\n\r Task: prvQueueReceiveTask");*/
 		unsigned long ulReceivedValue;
 		/* Wait until something arrives in the queue - this task will block
 		indefinitely provided INCLUDE_vTaskSuspend is set to 1 in
 		FreeRTOSConfig.h. */
 		xQueueReceive( xQueue, &ulReceivedValue, portMAX_DELAY );
 
+    /*printf( "\n\rRx: %d", ulReceivedValue );*/
 		/*  To get here something must have been received from the queue. */
-		char buf[40];
-		sprintf( buf, "%d: %s: received %ld", xGetCoreID(),
-				pcTaskGetName( xTaskGetCurrentTaskHandle() ),
-				ulReceivedValue );
-		vSendString( buf );
+		/*char buf[40];*/
+		/*sprintf( buf, "%d: %s: received %ld", xGetCoreID(),*/
+				/*pcTaskGetName( xTaskGetCurrentTaskHandle() ),*/
+				/*ulReceivedValue );*/
+		/*vSendString( buf );*/
 	}
 }
 
@@ -209,7 +218,10 @@ static void prvQueueReceiveTask( void *pvParameters )
 
 int main_blinky( void )
 {
-	vSendString( "\n\rHello FreeRTOS!" );
+  if (configSUPPORT_DYNAMIC_ALLOCATION)
+  	vSendString( "\n\rHello FreeRTOS!" );
+  else
+  	vSendString( "\n\rHello FreeRTOS! - No support" );
 
 	/* Create the queue. */
 	xQueue = xQueueCreate( mainQUEUE_LENGTH, sizeof( unsigned long ) );
@@ -218,8 +230,8 @@ int main_blinky( void )
 	{
 		/* Start the two tasks as described in the comments at the top of this
 		file. */
-		xTaskCreate( prvQueueReceiveTask, "Rx", configMINIMAL_STACK_SIZE * 2U, NULL,
-					mainQUEUE_RECEIVE_TASK_PRIORITY, NULL );
+    xTaskCreate( prvQueueReceiveTask, "Rx", configMINIMAL_STACK_SIZE * 2U, NULL,
+          mainQUEUE_RECEIVE_TASK_PRIORITY, NULL );
 		xTaskCreate( prvQueueSendTask, "Tx", configMINIMAL_STACK_SIZE * 2U, NULL,
 					mainQUEUE_SEND_TASK_PRIORITY, NULL );
 	}
