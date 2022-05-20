@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 21.03.2022
+ * Last Modified Date: 20.05.2022
  */
 module csr
   import utils_pkg::*;
@@ -296,10 +296,6 @@ module csr
 
     if (~traps_can_happen_wo_exec) begin
       if (~eval_trap_i && ~wfi_i) begin
-        next_mepc        = csr_mepc_ff;
-        next_mip         = csr_mip_ff;
-        next_mcause      = csr_mcause_ff;
-        next_mtval       = csr_mtval_ff;
         next_trap.active = 'b0;
       end
     end
