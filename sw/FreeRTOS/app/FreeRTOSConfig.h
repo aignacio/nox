@@ -40,20 +40,27 @@
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
 
-#define configISR_STACK_SIZE_WORDS        ( 2000 )
+//#define configISR_STACK_SIZE_WORDS        ( 2000 )
 #define configMTIME_BASE_ADDRESS		      ( 0xF0000000 )
 #define configMTIMECMP_BASE_ADDRESS		    ( 0xF0000008 )
-
-#define configUSE_PREEMPTION			        0
-#define configUSE_IDLE_HOOK				        0
-#define configUSE_TICK_HOOK				        1
 #define configCPU_CLOCK_HZ				        ( 50000000 )
 #define configTICK_RATE_HZ				        ( ( TickType_t ) 1000 )
-#define configMAX_PRIORITIES			        ( 3 )
-#define configMINIMAL_STACK_SIZE		      ( ( unsigned short ) 200 )
-#define configTOTAL_HEAP_SIZE			        ( ( size_t ) 10000 )
+
+/* Ensure stdint is only used by the compiler, and not the assembler. */
+#if defined( __GNUC__ )
+    #include <stdint.h>
+#endif
+
+#define configCLINT_BASE_ADDRESS		      0 /* There is no CLINT so the base address must be set to 0. */
+#define configUSE_PREEMPTION			        1
+#define configUSE_IDLE_HOOK				        1
+#define configUSE_TICK_HOOK				        1
+#define configMAX_PRIORITIES			        ( 5 )
+#define configMINIMAL_STACK_SIZE		      ( ( unsigned short ) 200 ) /* Can be as low as 60 but some of the demo tasks that use this constant require it to be higher. */
+#define configAPPLICATION_ALLOCATED_HEAP  1 /* we want to put the heap into special section */
+#define configTOTAL_HEAP_SIZE			        ( ( size_t ) ( 16 * 1024 ) )
 #define configMAX_TASK_NAME_LEN			      ( 16 )
-#define configUSE_TRACE_FACILITY		      0
+#define configUSE_TRACE_FACILITY		      1 /* TODO: 0 */
 #define configUSE_16_BIT_TICKS			      0
 #define configIDLE_SHOULD_YIELD			      0
 #define configUSE_MUTEXES				          1
@@ -64,8 +71,14 @@
 #define configUSE_APPLICATION_TASK_TAG	  0
 #define configUSE_COUNTING_SEMAPHORES	    1
 #define configGENERATE_RUN_TIME_STATS	    0
-#define configUSE_PORT_OPTIMISED_TASK_SELECTION 1
-//#define configSTACK_ALLOCATION_FROM_SEPARATE_HEAP 1
+
+// TODO: investigate (gw)
+//#define configOVERRIDE_DEFAULT_TICK_CONFIGURATION    1
+//#define configRECORD_STACK_HIGH_ADDRESS              1
+//#define configUSE_POSIX_ERRNO                        1
+
+/* newlib reentrancy */
+#define configUSE_NEWLIB_REENTRANT        1
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES 			      0
 #define configMAX_CO_ROUTINE_PRIORITIES   ( 2 )
@@ -73,8 +86,13 @@
 /* Software timer definitions. */
 #define configUSE_TIMERS				          1
 #define configTIMER_TASK_PRIORITY		      ( configMAX_PRIORITIES - 1 )
-#define configTIMER_QUEUE_LENGTH		      6
-#define configTIMER_TASK_STACK_DEPTH	    ( 200 )
+#define configTIMER_QUEUE_LENGTH		      4
+#define configTIMER_TASK_STACK_DEPTH	    ( configMINIMAL_STACK_SIZE )
+
+/* Task priorities.  Allow these to be overridden. */
+#ifndef uartPRIMARY_PRIORITY
+	#define uartPRIMARY_PRIORITY		( configMAX_PRIORITIES - 3 )
+#endif
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
@@ -91,4 +109,7 @@ to exclude the API function. */
 #define INCLUDE_xTaskGetHandle				    1
 #define INCLUDE_xSemaphoreGetMutexHolder	1
 
-#endif /* FREERTOS_CONFIG_H */
+#define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
+#define configKERNEL_INTERRUPT_PRIORITY   7
+
+#endif

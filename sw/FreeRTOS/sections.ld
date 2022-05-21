@@ -1,3 +1,4 @@
+
 /**
  * RISC-V bootup test
  * Author: Daniele Lacamera <root@danielinux.net>
@@ -94,6 +95,7 @@ SECTIONS
 }
 
 PROVIDE(_start_stack = ORIGIN(DRAM) + LENGTH(DRAM));
+PROVIDE(__freertos_irq_stack_top = ORIGIN(DRAM) + LENGTH(DRAM));
 PROVIDE(_end_stack = ORIGIN(DRAM) + (LENGTH(DRAM) - _stack_size));
 PROVIDE(_start_heap = __BSS_END__);
 PROVIDE(_end_heap = _end_stack);

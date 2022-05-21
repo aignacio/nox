@@ -37,7 +37,8 @@ LDFLAGS	:=	-g									\
 # Add this if you want to implement your own libgcc functions
 #-nostdlib			 			\
 
-TARGET_NAME	:= $(notdir $(shell pwd))
+TARGET_NAME	:=	$(notdir $(shell pwd))
+FreeRTOS_ver:=	FreeRTOS-LTS-V10.4.6
 ODIR				:=	output
 TEMP				:=	output_temp
 TARGET			:=	$(ODIR)/$(TARGET_NAME)
@@ -45,17 +46,17 @@ LD					:=	sections.ld
 _INC				:=	../common
 _INC				+=	printf
 _INC				+=	app
-_INC				+=	Source/include
-_INC				+=	Source/portable/GCC/RISC-V
-_INC				+=	Source/portable/GCC/RISC-V/chip_specific_extensions/NoX_no_extensions
+_INC				+=	$(FreeRTOS_ver)/include
+_INC				+=	$(FreeRTOS_ver)/portable/GCC/RISC-V
+_INC				+=	app/NoX_no_extensions
 INC					:=	$(addprefix -I,$(_INC))
 _OBJ    		:=	$(patsubst printf/%,%.o,$(basename $(wildcard printf/*.c)))
 _OBJ    		+=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.S)))
 _OBJ    		+=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.c)))
-_OBJ    		+=	$(patsubst Source/%,%.o,$(basename $(wildcard Source/*.c)))
+_OBJ    		+=	$(patsubst $(FreeRTOS_ver)/%,%.o,$(basename $(wildcard $(FreeRTOS_ver)/*.c)))
 _OBJ    		+=	$(patsubst app/%,%.o,$(basename $(wildcard app/*.c)))
-_OBJ    		+=	$(patsubst Source/portable/GCC/RISC-V/%,%.o,$(basename $(wildcard Source/portable/GCC/RISC-V/*.c)))
-_OBJ    		+=	$(patsubst Source/portable/GCC/RISC-V/%,%.o,$(basename $(wildcard Source/portable/GCC/RISC-V/*.S)))
+_OBJ    		+=	$(patsubst $(FreeRTOS_ver)/portable/GCC/RISC-V/%,%.o,$(basename $(wildcard $(FreeRTOS_ver)/portable/GCC/RISC-V/*.c)))
+_OBJ    		+=	$(patsubst $(FreeRTOS_ver)/portable/GCC/RISC-V/%,%.o,$(basename $(wildcard $(FreeRTOS_ver)/portable/GCC/RISC-V/*.S)))
 OBJ					:=	$(patsubst %,$(TEMP)/%,$(_OBJ))
 
 $(shell   mkdir -p $(ODIR)_temp)
@@ -104,15 +105,15 @@ $(TEMP)/%.o:  app/%.c
 	@echo "Building $@"
 	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
 
-$(TEMP)/%.o: Source/%.c
+$(TEMP)/%.o: $(FreeRTOS_ver)/%.c
 	@echo "Building $@"
 	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
 
-$(TEMP)/%.o: Source/portable/GCC/RISC-V/%.c
+$(TEMP)/%.o: $(FreeRTOS_ver)/portable/GCC/RISC-V/%.c
 	@echo "Building $@"
 	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
 
-$(TEMP)/%.o: Source/portable/GCC/RISC-V/%.S
+$(TEMP)/%.o: $(FreeRTOS_ver)/portable/GCC/RISC-V/%.S
 	@echo "Building $@"
 	$(CC) $(CFLAGS) -save-temps=obj $(INC) -c $< -o $@
 

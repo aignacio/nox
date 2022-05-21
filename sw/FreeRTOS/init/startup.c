@@ -73,7 +73,7 @@ void __attribute__((section(".init"),naked)) _reset(void) {
         dst++;
     }
     /* Run the program! */
-    main();
+    main_blinky();
 }
 
 static uint32_t synctrap_cause = 0;
