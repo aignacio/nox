@@ -120,6 +120,7 @@ static QueueHandle_t xQueue = NULL;
 
 void main_blinky( void )
 {
+  *uart_cfg = FREQ_SYSTEM/BR_UART;
 
 	printf( "Calling %s\n", __func__);
 	printf( "testing if 2nd call comes\n" );

@@ -38,7 +38,7 @@ LDFLAGS	:=	-g									\
 #-nostdlib			 			\
 
 TARGET_NAME	:=	$(notdir $(shell pwd))
-FreeRTOS_ver:=	FreeRTOS-LTS-V10.4.6
+FreeRTOS_ver:=	FreeRTOS_Kernel
 ODIR				:=	output
 TEMP				:=	output_temp
 TARGET			:=	$(ODIR)/$(TARGET_NAME)
