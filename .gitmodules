@@ -7,6 +7,3 @@
 [submodule "xlnx/rtl/wbuart32"]
 	path = xlnx/rtl/wbuart32
 	url = https://github.com/ZipCPU/wbuart32.git
-[submodule "sw/FreeRTOS/FreeRTOS-LTS-V10.4.6"]
-	path = sw/FreeRTOS/FreeRTOS-LTS-V10.4.6
-	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git
