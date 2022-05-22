@@ -25,11 +25,7 @@
 
 #include <stdint.h>
 #include "riscv_csr_encoding.h"
-
-/*volatile uint32_t* const mtime_addr = (uint32_t*) MTIME_ADDR;*/
-
-extern void trap_entry(void);
-extern void trap_exit(void);
+#include "printf.h"
 
 extern void freertos_risc_v_trap_handler(void);
 
@@ -43,18 +39,11 @@ extern uint32_t  _end_stack;
 extern uint32_t  _start_heap;
 extern uint32_t  _my_global_pointer;
 
-static int zeroed_variable_in_bss;
-static int initialized_variable_in_data = 42;
-static int toggle = 0;
-
-extern void irq_callback(void);
-extern void main(void);
+extern void main_blinky(void);
 
 void __attribute__((section(".init"),naked)) _reset(void) {
     register uint32_t *src, *dst;
 
-    // asm volatile("la gp, _my_global_pointer");
-    // asm volatile("la sp, _end_stack");
     asm volatile("csrw mtvec, %0":: "r"((uint8_t *)(&freertos_risc_v_trap_handler)));
     src = (uint32_t *) &_stored_data;
     dst = (uint32_t *) &_start_data;
@@ -74,55 +63,6 @@ void __attribute__((section(".init"),naked)) _reset(void) {
     }
     /* Run the program! */
     main_blinky();
-}
-
-static uint32_t synctrap_cause = 0;
-
-void isr_synctrap(void)
-{
-  write_csr(mip, (0 << IRQ_M_EXT));
-  uint32_t mepc_return = read_csr(mepc)+0x4;
-  // If not vectored IRQ, do not add 4 to the MEPC
-  write_csr(mepc, mepc_return);
-  /*irq_callback();*/
-  /*[>asm volatile("csrr %0,mcause" : "=r"(synctrap_cause));<]*/
-  /*[>asm volatile("ebreak");<]*/
-  /*clear_csr(mie,1<<IRQ_M_SOFT);*/
-  /*write_csr(mip, (0 << IRQ_M_SOFT));*/
-  /*clear_csr(mie,1<<IRQ_M_TIMER);*/
-  /*write_csr(mip, (0 << IRQ_M_TIMER));*/
-  /*clear_csr(mie,1<<IRQ_M_EXT);*/
-  /*write_csr(mip, (0 << IRQ_M_EXT));*/
-  return;
-}
-
-// Using the attr below it'll bkp a5 and use
-// mret in the return, as we do that manually
-// in asm, it's not needed to use this
-/*__attribute__ ((interrupt ("machine"))) */
-void __attribute__((weak)) isr_m_software(void)
-{
-  clear_csr(mie,1<<IRQ_M_SOFT);
-  write_csr(mip, (0 << IRQ_M_SOFT));
-  return;
-  while(1);
-}
-
-void __attribute__((weak)) isr_m_timer(void)
-{
-  clear_csr(mie,1<<IRQ_M_TIMER);
-  write_csr(mip, (0 << IRQ_M_TIMER));
-  return;
-  while(1);
-}
-
-void __attribute__((weak)) isr_m_external(void)
-{
-  clear_csr(mie,1<<IRQ_M_EXT);
-  write_csr(mip, (0 << IRQ_M_EXT));
-  /*irq_callback();*/
-  return;
-  while(1);
 }
 
 void __attribute__((weak)) handle_trap(void)

@@ -87,7 +87,7 @@ void _putchar(char character){
 
 /* The rate at which data is sent to the queue.  The 200ms value is converted
 to ticks using the pdMS_TO_TICKS() macro. */
-#define mainQUEUE_SEND_FREQUENCY_MS			pdMS_TO_TICKS( 10 )
+#define mainQUEUE_SEND_FREQUENCY_MS			pdMS_TO_TICKS( 200 )
 
 /* The maximum number items the queue can hold.  The priority of the receiving
 task is above the priority of the sending task, so the receiving task will
@@ -158,6 +158,10 @@ void main_blinky( void )
 }
 /*-----------------------------------------------------------*/
 
+void vToggleLED( void ){
+  *addr_leds ^= 1;
+}
+
 static void prvQueueSendTask( void *pvParameters )
 {
 TickType_t xNextWakeTime;
@@ -170,6 +174,7 @@ BaseType_t xReturned;
 
 	/* Initialise xNextWakeTime - this only needs to be done once. */
 	xNextWakeTime = xTaskGetTickCount();
+  uint32_t val_to_send = 0;
 
 	for( ;; )
 	{
@@ -180,7 +185,9 @@ BaseType_t xReturned;
 		toggle the LED.  0 is used as the block time so the sending operation
 		will not block - it shouldn't need to block as the queue should always
 		be empty at this point in the code. */
-		xReturned = xQueueSend( xQueue, &ulValueToSend, 0U );
+    val_to_send++;
+		xReturned = xQueueSend( xQueue, &val_to_send, 0U );
+    printf("\n\rTX=%d",val_to_send);
 		configASSERT( xReturned == pdPASS );
 	}
 }
@@ -205,19 +212,19 @@ extern void vSendString( const char * const pcString );
 		indefinitely provided INCLUDE_vTaskSuspend is set to 1 in
 		FreeRTOSConfig.h. */
 		xQueueReceive( xQueue, &ulReceivedValue, portMAX_DELAY );
-
+    printf("\n\rRX=%d",ulReceivedValue);
 		/*  To get here something must have been received from the queue, but
 		is it the expected value?  If it is, toggle the LED. */
-		if( ulReceivedValue == ulExpectedValue )
-		{
-			vSendString( pcPassMessage );
-			/*vToggleLED();*/
-			ulReceivedValue = 0U;
-		}
-		else
-		{
-			vSendString( pcFailMessage );
-		}
+		/*if( ulReceivedValue == ulExpectedValue )*/
+		/*{*/
+			/*vSendString( pcPassMessage );*/
+      vToggleLED();
+			/*ulReceivedValue = 0U;*/
+		/*}*/
+		/*else*/
+		/*{*/
+			/*vSendString( pcFailMessage );*/
+		/*}*/
 	}
 }
 /*-----------------------------------------------------------*/
@@ -263,7 +270,8 @@ void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
 	/* Run time stack overflow checking is performed if
 	configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook
 	function is called if a stack overflow is detected. */
-  printf("\n\rStack Overflow");
+  printf("\n\rStack Overflow ");
+  printf("%s",pcTaskName);
 	taskDISABLE_INTERRUPTS();
 	__asm volatile( "ebreak" );
 	for( ;; );
