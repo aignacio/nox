@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.01.2022
- * Last Modified Date: 20.05.2022
+ * Last Modified Date: 22.05.2022
  */
 module csr
   import utils_pkg::*;
@@ -189,12 +189,19 @@ module csr
     // Priority decoder:
     // 1) IRQS [async traps]
     // 2) Exceptions [sync traps]
-    //
+
+
+    // Acording to the priv. spec, these two bits needs to be
+    // cleared by HW, mtip (mtimer) as soon as we reflect mtimecmp change
+    // and meip (external) as soon as the IRQ controller turns it off
+    next_mip[`RV_MIE_MTIP] = irq_i.timer_irq;
+    next_mip[`RV_MIE_MEIP] = irq_i.ext_irq;
+
     priority case(1)
       (csr_mstatus_ff[`RV_MST_MIE] &&
        irq_i.ext_irq               &&
        csr_mie_ff[`RV_MIE_MEIP]): begin
-        next_mip[`RV_MIE_MEIP] = 'b1;
+        //next_mip[`RV_MIE_MEIP] = 'b1;
         next_mepc              = pc_addr_i;
         next_mcause            = 'h8000_000B;
         next_mtval             = rdata_t'('h0);
@@ -214,7 +221,7 @@ module csr
       (csr_mstatus_ff[`RV_MST_MIE] &&
        irq_i.timer_irq             &&
        csr_mie_ff[`RV_MIE_MTIP]): begin
-        next_mip[`RV_MIE_MTIP] = 'b1;
+        //next_mip[`RV_MIE_MTIP] = 'b1;
         next_mepc              = pc_addr_i;
         next_mcause            = 'h8000_0007;
         next_mtval             = rdata_t'('h0);

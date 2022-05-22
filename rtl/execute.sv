@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 21.11.2021
- * Last Modified Date: 20.03.2022
+ * Last Modified Date: 22.05.2022
  */
 module execute
   import utils_pkg::*;
@@ -145,6 +145,12 @@ module execute
     end
 
     ex_mem_wb_o = ex_mem_wb_ff;
+    // If we are in a trap, stop RegFile impact
+    // of the pending instruction that is saved
+    // in the MEPC
+    if (trap_out.active) begin
+      ex_mem_wb_o.we_rd = 'b0;
+    end
   end : alu_proc
 
   always_comb begin : jump_lsu_mgmt

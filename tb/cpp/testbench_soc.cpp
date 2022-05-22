@@ -202,6 +202,9 @@ int main(int argc, char** argv, char** env){
   dut->reset(2);
   while(!Verilated::gotFinish() && setup.sim_cycles--) {
     dut->tick();
+    if (((sim_cycles_timeout - setup.sim_cycles)%100000) == 0) {
+      cout << "\n[SIM] Cycle = " << setup.sim_cycles << std::endl;
+    }
   }
 
   cout << "\n[SIM Summary]" << std::endl;

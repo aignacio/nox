@@ -247,7 +247,7 @@ $(RUN_SW_SOC):
 	make -C sw/FreeRTOS all
 
 run_soc: $(RUN_SW_SOC)
-	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 500000 -e $<
+	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 2500000 -e $<
 
 ##########################
 #	RISC-V Compliance test #
