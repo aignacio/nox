@@ -253,7 +253,7 @@ run_soc: $(RUN_SW_SOC)
 #	RISC-V Compliance test #
 ##########################
 build_comp:
-	make all RV_COMPLIANCE=1 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
+	make all RV_COMPLIANCE=1 IRAM_ADDR=0x80000000 DRAM_ADDR=0x10000000 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
 
 run_comp:
 	$(RUN_CMD_COMP) riscof --verbose info arch-test --clone
