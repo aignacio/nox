@@ -3,13 +3,18 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 18.05.2022
+ * Last Modified Date: 26.05.2022
  */
 
 `default_nettype wire
 
 module nox_soc import utils_pkg::*; (
+`ifdef KC705_KINTEX_7_100MHz
+  input               clk_in_p,
+  input               clk_in_n,
+`else
   input               clk_in,
+`endif
   input               rst_cpu,
   input               rst_clk,
   input               bootloader_i,
@@ -48,6 +53,12 @@ module nox_soc import utils_pkg::*; (
   assign start_fetch = '1;
 `else
 
+`ifdef KC705_KINTEX_7_100MHz
+  assign bootloader_int = ~bootloader_i;
+  assign rst = ~rst_cpu;
+  assign clk_locked_o = start_fetch;
+`endif
+
 `ifdef QMTECH_KINTEX_7_100MHz
   assign bootloader_int = bootloader_i;
   assign rst = rst_cpu;
@@ -61,10 +72,18 @@ module nox_soc import utils_pkg::*; (
 `endif
 
   clk_mgmt u_clk_mgmt(
+`ifdef KC705_KINTEX_7_100MHz
+    .clk_in_p   (clk_in_p),
+    .clk_in_n   (clk_in_n),
+    .rst_in     (rst_clk),
+    .clk_out    (clk),
+    .clk_locked (start_fetch)
+`else
     .clk_in     (clk_in),
     .rst_in     (rst_clk),
     .clk_out    (clk),
     .clk_locked (start_fetch)
+`endif
   );
 `endif
 

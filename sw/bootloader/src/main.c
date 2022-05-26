@@ -7,7 +7,7 @@
 #include "riscv_csr_encoding.h"
 
 #define FREQ_SYSTEM 50000000
-#define BR_UART     460800
+#define BR_UART     115200 //460800
 #define REAL_UART
 
 #define ERR_CFG     0xFFFF0000

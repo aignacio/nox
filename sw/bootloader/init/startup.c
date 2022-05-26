@@ -83,7 +83,7 @@ void __attribute__((section(".init"),naked)) _reset(void) {
 void isr_synctrap(void)
 {
   /*uint32_t mepc_return = read_csr(mepc)+0x4;*/
-  uint32_t mepc_return = read_csr(mepc)+0x8;
+  uint32_t mepc_return = read_csr(mepc)+0x4;
   uint32_t mcause_csr  = read_csr(mcause);
   // If not vectored IRQ, do not add 4 to the MEPC
   write_csr(mepc, mepc_return);

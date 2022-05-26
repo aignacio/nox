@@ -127,9 +127,13 @@ filesets:
     files:
       - xlnx/xdc/nexys_video.xdc: {file_type: xdc}
 
-  kintex7_constraints:
+  k7_qmtech_constraints:
     files:
       - xlnx/xdc/kintex7_qmtech.xdc: {file_type: xdc}
+
+  kc705_constraints:
+    files:
+      - xlnx/xdc/kc705.xdc: {file_type: xdc}
 
   arty7_constraints:
     files:
@@ -149,6 +153,10 @@ parameters:
     default : true
     paramtype: vlogdefine
   ARTY_A7_50MHz:
+    datatype: bool
+    default : true
+    paramtype: vlogdefine
+  KC705_KINTEX_7_100MHz:
     datatype: bool
     default : true
     paramtype: vlogdefine
@@ -192,7 +200,7 @@ targets:
     description : Kintex 7 board synthesis
     filesets_append:
       - synth_nox
-      - kintex7_constraints
+      - k7_qmtech_constraints
       - files_tcl
     tools:
       vivado:
@@ -230,3 +238,19 @@ targets:
       vivado:
         part : xc7a35ticsg324-1L
     toplevel: nox_coremark
+
+  kc705_synth:
+    <<: *default
+    default_tool : vivado
+    parameters:
+      - KC705_KINTEX_7_100MHz
+      - DISPLAY_TEST
+    description : Kintex 7 board synthesis
+    filesets_append:
+      - synth_nox
+      - kc705_constraints
+      - files_tcl
+    tools:
+      vivado:
+        part : xc7k325tffg900-2
+    toplevel: nox_soc
