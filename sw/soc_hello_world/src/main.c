@@ -83,7 +83,7 @@ void print_logo(void){
   printf("\n\r");
 }
 
-uint8_t gLEDsAddr = 0x00;
+uint8_t gLEDsAddr = 0x20;
 uint64_t gCounter = 0x00;
 uint8_t str[100];
 
@@ -92,7 +92,14 @@ void irq_timer_callback(void){
   uint64_t mtime_half_second = *mtimer;
   mtime_half_second += 10000000;
   *mtimer_cmp = mtime_half_second;
-  *addr_leds = gLEDsAddr++;
+  if (gLEDsAddr == 0x2) {
+    gLEDsAddr = 0x20;
+    *addr_leds = ~gLEDsAddr;
+  }
+  else {
+    gLEDsAddr = (gLEDsAddr >> 1);
+    *addr_leds = ~gLEDsAddr;
+  }
   sprintf(str, "%u", gCounter++);
   ILI9341_Draw_Text(str, 10, 110, WHITE, 2, BLACK);
 }

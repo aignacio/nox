@@ -61,7 +61,7 @@ void __attribute__((section(".init"),naked)) _reset(void) {
 // as it only loads to the Virtual Address, thus the code below must not
 // run as it'll overwrite nothing to the initialized (by the Bootloader Script)
 // data segment in DRAM.
-#ifndef NOT_USING_BOOTLOADER_SCRIPT
+//#ifndef NOT_USING_BOOTLOADER_SCRIPT
     src = (uint32_t *) &_stored_data;
     dst = (uint32_t *) &_start_data;
 
@@ -78,7 +78,7 @@ void __attribute__((section(".init"),naked)) _reset(void) {
         *dst = 0U;
         dst++;
     }
-#endif
+//#endif
     /* Run the program! */
     main();
 }
@@ -87,6 +87,7 @@ static uint32_t synctrap_cause = 0;
 
 void isr_synctrap(void)
 {
+  /*printf("\n\rSync. TRAP!");*/
   write_csr(mip, (0 << IRQ_M_EXT));
   uint32_t mepc_return = read_csr(mepc)+0x4;
   // If not vectored IRQ, do not add 4 to the MEPC

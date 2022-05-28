@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 16.03.2022
-# Last Modified Date: 26.05.2022
+# Last Modified Date: 28.05.2022
 # Description       : Bootloader script to download binaries using the UART port
 #                     for the Pixel SoC bootloader ROM
 import serial
@@ -70,8 +70,23 @@ def _fmt_data(data, size_file, size_mem):
     # If they differ it's because we have zeroed data in the memory
     if (size_file != 0):
         for i in range(0,size_file,4):
-            word_int  = data[i+3]<<24|data[i+2]<<16|data[i+1]<<8|data[i]
+            word_int = 0
+            if (i < size_file):
+                word_int = data[i]
+
+            if ((i+1) < size_file):
+                word_int |= data[i+1]<<8
+
+            if ((i+2) < size_file):
+                word_int |= data[i+2]<<16
+
+            if ((i+3) < size_file):
+                word_int |= data[i+3]<<24
+
+            # print(">>I=%d", i)
+            # word_int  = data[i+3]<<24|data[i+2]<<16|data[i+1]<<8|data[i]
             word_str  = '{0:0>8x}'.format(word_int)
+            # print('W=%s' % word_str)
             byte_list.append(bytes('@'+word_str+'\r','UTF-8'))
 
     if size_file != size_mem:
