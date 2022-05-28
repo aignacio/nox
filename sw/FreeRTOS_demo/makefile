@@ -38,17 +38,17 @@ LDFLAGS	:=	-g									\
 #-nostdlib			 			\
 
 TARGET_NAME	:=	$(notdir $(shell pwd))
-FreeRTOS_ver:=	FreeRTOS_Kernel
+FreeRTOS_ver:=	FreeRTOS-Kernel
 ODIR				:=	output
 TEMP				:=	output_temp
 TARGET			:=	$(ODIR)/$(TARGET_NAME)
 LD					:=	sections.ld
 _INC				:=	../common
-_INC				+=	printf
-_INC				+=	app
-_INC				+=	$(FreeRTOS_ver)/include
-_INC				+=	$(FreeRTOS_ver)/portable/GCC/RISC-V
+_INC				+=	../libs/printf
+_INC				+=	../libs/FreeRTOS-Kernel/include
+_INC				+=	../libs/FreeRTOS-Kernel/portable/GCC/RISC-V
 _INC				+=	app/NoX_no_extensions
+_INC				+=	app
 INC					:=	$(addprefix -I,$(_INC))
 _OBJ    		:=	$(patsubst printf/%,%.o,$(basename $(wildcard printf/*.c)))
 _OBJ    		+=	$(patsubst init/%,%.o,$(basename $(wildcard init/*.S)))
