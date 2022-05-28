@@ -8,7 +8,9 @@
 
 #define FREQ_SYSTEM 50000000
 #define BR_UART     115200
+
 #define REAL_UART
+#define LCD_EN
 
 #define ERR_CFG     0xFFFF0000
 #define PRINT_ADDR  0xD0000008
@@ -35,8 +37,6 @@ volatile uint32_t* const err_cfg    = (uint32_t*) ERR_CFG;
 
 volatile uint64_t* const mtimer     = (uint64_t*) MTIMER_LSB;
 volatile uint64_t* const mtimer_cmp = (uint64_t*) MTIMER_CMP_LSB;
-
-#define LCD_EN
 
 #ifndef REAL_UART
 void _putchar(char character){
@@ -90,10 +90,9 @@ uint8_t str[100];
 void irq_timer_callback(void){
   printf("\n\r ------> MTIMER IRQ!");
   uint64_t mtime_half_second = *mtimer;
-  mtime_half_second += 2500000;
+  mtime_half_second += 10000000;
   *mtimer_cmp = mtime_half_second;
-  gLEDsAddr ^= 0xff;
-  *addr_leds = gLEDsAddr;
+  *addr_leds = gLEDsAddr++;
   sprintf(str, "%u", gCounter++);
   ILI9341_Draw_Text(str, 10, 110, WHITE, 2, BLACK);
 }
@@ -118,7 +117,7 @@ int main(void) {
   }
 #else
   uint64_t mtime_half_second = *mtimer;
-  mtime_half_second += 25000000;
+  mtime_half_second += 50000000;
   *mtimer_cmp = mtime_half_second;
 
   ILI9341_Init();
