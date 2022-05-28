@@ -118,7 +118,7 @@ RUN_CMD_COMP	:=	docker run --rm --name ship_nox	\
 RUN_SW				:=	sw/hello_world/output/hello_world.elf
 #RUN_SW_SOC		:=	sw/bootloader/output/bootloader.elf
 #RUN_SW_SOC		:=	sw/soc_hello_world/output/soc_hello_world.elf
-RUN_SW_SOC		:=	sw/FreeRTOS/output/FreeRTOS.elf
+RUN_SW_SOC		:=	sw/FreeRTOS_demo/output/FreeRTOS_demo.elf
 
 CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
 									-Werror																\
@@ -244,7 +244,7 @@ soc: clean $(VERI_EXE_SOC)
 	#make -C sw/soc_hello_world all
 
 $(RUN_SW_SOC):
-	make -C sw/FreeRTOS all
+	make -C sw/FreeRTOS_demo all
 
 run_soc: $(RUN_SW_SOC)
 	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 2500000 -e $<
