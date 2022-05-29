@@ -163,6 +163,19 @@ python3 sw/bootloader_elf.py --elf sw/soc_hello_world/output/soc_hello_world.elf
 # Press rst button in the board
 ```
 
+### Example running on Kintex 7 Qmtech Board
+
+If you have a [Kintex 7 Qmtech board](https://github.com/ChinaQMTECH/QMTECH_XC7K325T_CORE_BOARD?spm=a2g0o.detail.1000023.1.425dffdb5DOMQd), you can build/program the target with the commands below. 
+```bash
+fusesoc library add core  .
+fusesoc run --run --target=x7_synth core:nox:v0.0.1
+# Once the FPGA bitstream is downloaed, change the program to the demo
+python3 sw/bootloader_elf.py --elf sw/soc_hello_world/output/soc_hello_world.elf --device YOUR_SERIAL_ADAPTER --speed 230400
+```
+
+The bootloader PB and the reset CPU are respectively SW2 and SW1 for the [K7 core board](https://github.com/ChinaQMTECH/DB_FPGA/blob/main/QMTECH_DB_For_FPGA_V04.pdf). You should have something like this:
+![NoX SoC K7](docs/img/nox_soc_qmtech_k7.gif)
+
 ## <a name="compliance"></a> RISC-V ISA Compliance tests
 To run the compliance tests, two steps needs to be followed.
 1. Compile nox_sim with 2MB IRAM / 128KB DRAM

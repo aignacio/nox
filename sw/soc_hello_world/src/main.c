@@ -124,14 +124,14 @@ int main(void) {
   }
 #else
   uint64_t mtime_half_second = *mtimer;
-  mtime_half_second += 50000000;
+  mtime_half_second += 10000000;
   *mtimer_cmp = mtime_half_second;
 
   ILI9341_Init();
   ILI9341_Set_Rotation(SCREEN_HORIZONTAL_1);
-  ILI9341_Fill_Screen(ORANGE);
+  ILI9341_Fill_Screen(BLACK);
   ILI9341_Draw_Text("NoX SoC", 10, 20, WHITE, 3, BLACK);
-  ILI9341_Draw_Text("-> mcycle:", 10, 80, WHITE, 2, BLACK);
+  ILI9341_Draw_Text("-> mtimer 100ms tick:", 10, 80, WHITE, 2, BLACK);
   set_csr(mie,1<<IRQ_M_TIMER);
   while(1){
     wfi();

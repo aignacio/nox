@@ -66,6 +66,7 @@ SECTIONS
     _end_data = .;
   } > DRAM
 
+  . = ALIGN(. != 0 ? 32 / 8 : 1);
    _start_bss = .;
 
   .bss : AT (_stored_data) {
