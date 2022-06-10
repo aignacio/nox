@@ -7,6 +7,7 @@ RUN_PY	?=	docker run --rm --name sw_nox					\
 						-v $(abspath ../..):/nox_files -w			\
 						/nox_files/sw/$(notdir $(shell pwd))	\
 						aignacio/nox python3
+UART_MODE ?= REAL_UART
 CC			:=	$(PREFIX)gcc
 OBJDUMP	:=	$(PREFIX)objdump
 OBJCOPY	:=	$(PREFIX)objcopy
@@ -21,6 +22,7 @@ CFLAGS	:=	-march=rv32i	    	\
 						-O0 -g							\
 						--specs=nano.specs	\
 						-Wall -Wno-main			\
+						-D$(UART_MODE)												\
 						-DPRINTF_DISABLE_SUPPORT_FLOAT				\
 						-DPRINTF_DISABLE_SUPPORT_EXPONENTIAL	\
 						-DPRINTF_DISABLE_SUPPORT_LONG_LONG

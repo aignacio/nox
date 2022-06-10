@@ -9,7 +9,7 @@
 #define FREQ_SYSTEM 50000000
 #define BR_UART     115200
 
-#define REAL_UART
+//#define REAL_UART
 #define LCD_EN
 
 #define ERR_CFG     0xFFFF0000
@@ -38,7 +38,7 @@ volatile uint32_t* const err_cfg    = (uint32_t*) ERR_CFG;
 volatile uint64_t* const mtimer     = (uint64_t*) MTIMER_LSB;
 volatile uint64_t* const mtimer_cmp = (uint64_t*) MTIMER_CMP_LSB;
 
-#ifndef REAL_UART
+#ifdef UART_SIM
 void _putchar(char character){
   *addr_print = character;
 }
@@ -110,7 +110,7 @@ int main(void) {
 
   // 50MHz / 115200 = 434
   *uart_cfg = FREQ_SYSTEM/BR_UART;
-  /*print_logo();*/
+  print_logo();
   printf("\n\r Hello....");
   set_csr(mstatus,MSTATUS_MIE);
 #ifndef LCD_EN

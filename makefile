@@ -60,8 +60,11 @@ INCS_VLOG			:=	$(addprefix -I,$(_INCS_VLOG))
 IRAM_KB_SIZE	?=	128
 DRAM_KB_SIZE	?=	32
 ENTRY_ADDR		?=	\'h8000_0000
-IRAM_ADDR			?=	0xa0000000
+IRAM_ADDR			?=	0x80000000
 DRAM_ADDR			?=	0x10000000
+# For NoX SoC
+IRAM_ADDR_SOC	?=	0xa0000000
+DRAM_ADDR_SOC	?=	0x10000000
 DISPLAY_TEST	?=	0 # Enable $display in axi_mem.sv [compliance test]
 WAVEFORM_USE	?=	1 # Use 0 to not generate waves [compliance test]
 
@@ -117,8 +120,8 @@ RUN_CMD_COMP	:=	docker run --rm --name ship_nox	\
 
 RUN_SW				:=	sw/hello_world/output/hello_world.elf
 #RUN_SW_SOC		:=	sw/bootloader/output/bootloader.elf
-#RUN_SW_SOC		:=	sw/soc_hello_world/output/soc_hello_world.elf
-RUN_SW_SOC		:=	sw/FreeRTOS_demo/output/FreeRTOS_demo.elf
+RUN_SW_SOC		:=	sw/soc_hello_world/output/soc_hello_world.elf
+#RUN_SW_SOC		:=	sw/FreeRTOS_demo/output/FreeRTOS_demo.elf
 
 CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
 									-Werror																\
@@ -133,8 +136,8 @@ CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
 CPPFLAGS_SOC	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
 									-DIRAM_KB_SIZE=\"$(IRAM_KB_SIZE)\"		\
 									-DDRAM_KB_SIZE=\"$(DRAM_KB_SIZE)\"		\
-									-DIRAM_ADDR=\"$(IRAM_ADDR)\"					\
-									-DDRAM_ADDR=\"$(DRAM_ADDR)\"					\
+									-DIRAM_ADDR=\"$(IRAM_ADDR_SOC)\"			\
+									-DDRAM_ADDR=\"$(DRAM_ADDR_SOC)\"			\
 									-DWAVEFORM_USE=\"$(WAVEFORM_USE)\"	  \
 									-DWAVEFORM_FST=\"$(WAVEFORM_FST)\""
 									#-Wunknown-warning-option"
@@ -244,10 +247,10 @@ soc: clean $(VERI_EXE_SOC)
 	#make -C sw/soc_hello_world all
 
 $(RUN_SW_SOC):
-	make -C sw/FreeRTOS_demo all
+	make -C sw/soc_hello_world all UART_MODE=UART_SIM
 
 run_soc: $(RUN_SW_SOC)
-	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 2500000 -e $<
+	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 100000 -e $<
 
 ##########################
 #	RISC-V Compliance test #
