@@ -27,15 +27,19 @@
   `endif
 
   `ifndef AXI_USER_RESP_WIDTH
-      `define AXI_USER_RESP_WIDTH 2
+      `define AXI_USER_RESP_WIDTH 1
   `endif
 
   `ifndef AXI_USER_REQ_WIDTH
-      `define AXI_USER_REQ_WIDTH  2
+      `define AXI_USER_REQ_WIDTH  1
   `endif
 
   `ifndef AXI_USER_DATA_WIDTH
-      `define AXI_USER_DATA_WIDTH 2
+      `define AXI_USER_DATA_WIDTH 1
+  `endif
+
+  `ifndef AXI_TXN_ID_WIDTH
+      `define AXI_TXN_ID_WIDTH    1
   `endif
 
   typedef logic [`AXI_ADDR_WIDTH-1:0]      axi_addr_t;
@@ -45,6 +49,7 @@
   typedef logic [`AXI_USER_REQ_WIDTH-1:0]  axi_user_req_t;
   typedef logic [`AXI_USER_DATA_WIDTH-1:0] axi_user_data_t;
   typedef logic [`AXI_USER_RESP_WIDTH-1:0] axi_user_rsp_t;
+  typedef logic [`AXI_TXN_ID_WIDTH-1:0]    axi_tid_t;
 
   typedef enum logic [`AXI_ASIZE_WIDTH-1:0] {
     AXI_BYTE,
@@ -79,34 +84,35 @@
 
   typedef struct packed {
     // Globals
-    logic          aclk;
-    logic          arst;
+    logic           aclk;
+    logic           arst;
   } s_axi_glb_t;
 
+  // AXI
   typedef struct packed {
     // Write Addr channel
-    logic          awready;
+    logic           awready;
     // Write Data channel
-    logic          wready;
+    logic           wready;
     // Write Response channel
-    logic          bid;
-    axi_error_t    bresp;
-    axi_user_rsp_t buser;
-    logic          bvalid;
+    axi_tid_t       bid;
+    axi_error_t     bresp;
+    axi_user_rsp_t  buser;
+    logic           bvalid;
     // Read addr channel
-    logic          arready;
+    logic           arready;
     // Read data channel
-    logic          rid;
-    axi_data_t     rdata;
-    axi_error_t    rresp;
-    logic          rlast;
-    axi_user_req_t ruser;
-    logic          rvalid;
+    axi_tid_t       rid;
+    axi_data_t      rdata;
+    axi_error_t     rresp;
+    logic           rlast;
+    axi_user_req_t  ruser;
+    logic           rvalid;
   } s_axi_miso_t;
 
   typedef struct packed {
     // Write Address channel
-    logic           awid;
+    axi_tid_t       awid;
     axi_addr_t      awaddr;
     axi_alen_t      awlen;
     axi_size_t      awsize;
@@ -128,7 +134,7 @@
     // Write Response channel
     logic           bready;
     // Read Address channel
-    logic           arid;
+    axi_tid_t       arid;
     axi_addr_t      araddr;
     axi_alen_t      arlen;
     axi_size_t      arsize;
@@ -143,6 +149,42 @@
     // Read Data channel
     logic           rready;
   } s_axi_mosi_t;
+
+  // AXI Lite
+  typedef struct packed {
+    // Write Addr channel
+    logic           awready;
+    // Write Data channel
+    logic           wready;
+    // Write Response channel
+    axi_error_t     bresp;
+    logic           bvalid;
+    // Read addr channel
+    logic           arready;
+    // Read data channel
+    axi_data_t      rdata;
+    axi_error_t     rresp;
+    logic           rvalid;
+  } s_axil_miso_t;
+
+  typedef struct packed {
+    // Write Address channel
+    axi_addr_t      awaddr;
+    axi_prot_t      awprot;
+    logic           awvalid;
+    // Write Data channel
+    axi_data_t      wdata;
+    axi_wr_strb_t   wstrb;
+    logic           wvalid;
+    // Write Response channel
+    logic           bready;
+    // Read Address channel
+    axi_addr_t      araddr;
+    axi_prot_t      arprot;
+    logic           arvalid;
+    // Read Data channel
+    logic           rready;
+  } s_axil_mosi_t;
 
   //endpackage
 `endif
