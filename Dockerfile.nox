@@ -29,8 +29,9 @@ RUN make install
 # [riscv-toolchain]
 WORKDIR /opt/
 RUN wget -c https://github.com/xpack-dev-tools/riscv-none-embed-gcc-xpack/releases/download/v10.2.0-1.2/xpack-riscv-none-embed-gcc-10.2.0-1.2-linux-x64.tar.gz -O - | tar -xz
+RUN rm -rf xpack-riscv-none-embed-gcc-10.2.0-1.2-linux-x64.tar.gz
 RUN ln -s /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/riscv* /usr/bin
 # Compliance tests
-WORKDIR /opt/
-RUN git clone https://github.com/aignacio/riscv-arch-test-nox.git
-RUN cd riscv-arch-test-nox && git pull
+#WORKDIR /opt/
+#RUN git clone https://github.com/aignacio/riscv-arch-test-nox.git
+#RUN cd riscv-arch-test-nox && git pull
