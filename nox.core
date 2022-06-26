@@ -97,6 +97,7 @@ filesets:
       - xlnx/rtl/clk_mgmt.sv
       - xlnx/rtl/nox_soc.sv
       - xlnx/rtl/axi_interconnect_wrapper.sv
+      - xlnx/rtl/axi_crossbar_wrapper.sv
       - xlnx/rtl/axi_rom_wrapper.sv
       - xlnx/rtl/axi_uart_wrapper.sv
       - sw/bootloader/output/boot_rom.sv
