@@ -111,6 +111,9 @@ module axi_spi_master import utils_pkg::*; #(
 
   logic [$clog2(CLK_BETWEEN_TX)-1:0]  cool_off_count_ff, next_cool_off_count;
 
+  axi_tid_t rid_ff, next_rid;
+  axi_tid_t wid_ff, next_wid;
+
   // CSRs
   s_cfg_spi_t                 cfg_spi_ff, cfg_spi_next;
   s_cfg_spi_t                 cfg_default;
@@ -234,6 +237,19 @@ module axi_spi_master import utils_pkg::*; #(
     end
     // Way of avoiding destroying your FPGA =)
     cfg_spi_next.clk_div[0] = 1'b1;
+
+    next_rid = rid_ff;
+    next_wid = wid_ff;
+    axi_miso.rid = rid_ff;
+    axi_miso.bid = wid_ff;
+
+    if (axi_mosi.arvalid && axi_miso.arready) begin
+      next_rid = axi_mosi.arid;
+    end
+
+    if (axi_mosi.awvalid && axi_miso.awready) begin
+      next_wid = axi_mosi.awid;
+    end
   end
 
   always_comb begin : spi_txn_mosi
@@ -415,6 +431,8 @@ module axi_spi_master import utils_pkg::*; #(
       bvalid_ff          <= 1'b0;
       clk_counter_ff     <= '0;
       spi_clk_ff         <= 1'b0;
+      rid_ff             <= '0;
+      wid_ff             <= '0;
     end
     else begin
       wr_req_ff          <= wr_req_next;
@@ -424,6 +442,8 @@ module axi_spi_master import utils_pkg::*; #(
       bvalid_ff          <= bvalid_next;
       clk_counter_ff     <= next_clk_counter;
       spi_clk_ff         <= next_spi_clk;
+      rid_ff             <= next_rid;
+      wid_ff             <= next_wid;
     end
   end
 

@@ -13,9 +13,37 @@ module axi_uart_wrapper
   input                 uart_rx_i,
   output                uart_rx_irq_o
 );
+  axi_tid_t rid_ff, next_rid;
+  axi_tid_t wid_ff, next_wid;
 
   /* verilator lint_off PINMISSING */
-  assign axi_miso.rlast = axi_miso.rvalid;
+  always_comb begin
+    axi_miso.rlast = axi_miso.rvalid;
+
+    next_rid = rid_ff;
+    next_wid = wid_ff;
+    axi_miso.rid = rid_ff;
+    axi_miso.bid = wid_ff;
+
+    if (axi_mosi.arvalid && axi_miso.arready) begin
+      next_rid = axi_mosi.arid;
+    end
+
+    if (axi_mosi.awvalid && axi_miso.awready) begin
+      next_wid = axi_mosi.awid;
+    end
+  end
+
+  always_ff @ (posedge clk) begin
+    if (~rst) begin
+      rid_ff <= '0;
+      wid_ff <= '0;
+    end
+    else begin
+      rid_ff <= next_rid;
+      wid_ff <= next_wid;
+    end
+  end
 
   axiluart #(
 		// 4MB 8N1, when using 100MHz clock

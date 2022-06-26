@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 26.05.2022
+ * Last Modified Date: 26.06.2022
  */
 
 `default_nettype wire
@@ -87,26 +87,27 @@ module nox_soc import utils_pkg::*; (
   );
 `endif
 
-  axi_interconnect_wrapper #(
-    .N_MASTERS      (2),
-    .N_SLAVES       (8),
-    .M_BASE_ADDR    ({32'hF000_0000,    // MTIMER
-                      32'hE000_0000,    // SPI
-                      32'hD000_0000,    // GPIO
-                      32'hC000_0000,    // RST Ctrl
-                      32'hB000_0000,    // UART
-                      32'hA000_0000,    // 128KB IMEM
-                      32'h1000_0000,    // DRAM - 8KB
-                      32'h0000_0000}),  // BOOTROM
-    .M_ADDR_WIDTH   ({32'd17,
-                      32'd17,
-                      32'd17,
-                      32'd17,
-                      32'd17,
-                      32'd17,
-                      32'd17,
-                      32'd17})
-  ) u_axi_intcon (
+  axi_crossbar_wrapper #(
+    .N_MASTERS     (2),
+    .N_SLAVES      (8),
+    .AXI_TID_WIDTH (8),
+    .M_BASE_ADDR   ({32'hF000_0000,    // MTIMER
+                     32'hE000_0000,    // SPI
+                     32'hD000_0000,    // GPIO
+                     32'hC000_0000,    // RST Ctrl
+                     32'hB000_0000,    // UART
+                     32'hA000_0000,    // 128KB IMEM
+                     32'h1000_0000,    // DRAM - 8KB
+                     32'h0000_0000}),  // BOOTROM
+    .M_ADDR_WIDTH  ({32'd17,
+                     32'd17,
+                     32'd17,
+                     32'd17,
+                     32'd17,
+                     32'd17,
+                     32'd17,
+                     32'd17})
+  ) u_axi_crossbar (
     .clk              (clk),
     .arst             (rst),
     .*
@@ -133,7 +134,8 @@ module nox_soc import utils_pkg::*; (
   );
 
   axi_mem_wrapper #(
-    .MEM_KB(32)
+    .MEM_KB   (32),
+    .ID_WIDTH (8)
   ) u_dram (
     .clk              (clk),
     .rst              (rst),

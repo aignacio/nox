@@ -1,5 +1,6 @@
 module axi_mem_wrapper import utils_pkg::*; #(
-  parameter MEM_KB = 4
+  parameter MEM_KB   = 4,
+  parameter ID_WIDTH = 8
 )(
   input                 clk,
   input                 rst,
@@ -24,7 +25,7 @@ module axi_mem_wrapper import utils_pkg::*; #(
     // Width of address bus in bits
     .ADDR_WIDTH(ADDR_RAM),
     // Width of ID signal
-    .ID_WIDTH(1),
+    .ID_WIDTH(ID_WIDTH),
     // Extra pipeline register on output
     .PIPELINE_OUTPUT(0)
   ) u_ram (

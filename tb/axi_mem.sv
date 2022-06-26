@@ -8,6 +8,8 @@ module axi_mem import utils_pkg::*; #(
   input   s_axi_mosi_t  axi_mosi,
   output  s_axi_miso_t  axi_miso
 );
+  axi_tid_t axi_rid_ff, next_axi_rid;
+  axi_tid_t axi_wid_ff, next_axi_wid;
   localparam ADDR_RAM  = $clog2((MEM_KB*1024)/4);
   localparam NUM_WORDS = (MEM_KB*1024)/4;
   logic [NUM_WORDS-1:0][31:0] mem_ff;
@@ -143,6 +145,7 @@ module axi_mem import utils_pkg::*; #(
     next_bvalid  = 'b0;
     next_wr_size = axi_size_t'('h0);
     next_wdata   = 'h0;
+    next_axi_wid = axi_wid_ff;
 
     axi_miso.awready = 'b1;
     axi_miso.wready  = 'b1;
@@ -183,9 +186,9 @@ module axi_mem import utils_pkg::*; #(
     next_fin       = 'b0;
     next_sig       = sig_ff;
 
-
     // Address phase
     if (axi_mosi.awvalid && axi_miso.awready) begin
+      next_axi_wid = axi_mosi.awid;
       if (axi_mosi.awaddr == 'hA000_0000) begin
         next_char = 'b1;
       end
@@ -247,6 +250,7 @@ module axi_mem import utils_pkg::*; #(
     //end
 
     axi_miso.bvalid = bvalid_ff;
+    axi_miso.bid    = axi_wid_ff;
   end : axi_wr_datapath
 
   always_comb begin : axi_rd_datapath
@@ -256,6 +260,7 @@ module axi_mem import utils_pkg::*; #(
     rd_addr      = axi_mosi.araddr[2+:ADDR_RAM];
     axi_miso.arready = 'b1;
     raw_hit = (axi_mosi.arvalid && we_mem && (axi_mosi.araddr == wr_addr_ff));
+    next_axi_rid = axi_rid_ff;
 
     if (axi_rd_vld_ff) begin
       next_axi_rd  = ~axi_mosi.rready;
@@ -264,7 +269,7 @@ module axi_mem import utils_pkg::*; #(
     if (axi_mosi.arvalid && axi_miso.arready) begin
       next_axi_rd  = 'b1;
       byte_sel_rd  = axi_mosi.araddr[1:0];
-
+      next_axi_rid = axi_mosi.arid;
       if (raw_hit) begin
         for (int i=0;i<4;i++) begin
           if (axi_mosi.wstrb[i])
@@ -276,11 +281,11 @@ module axi_mem import utils_pkg::*; #(
       end
     end
 
-    axi_miso.rid    = 1'b0;
     axi_miso.rresp  = AXI_OKAY;
     axi_miso.ruser  = axi_user_req_t'('h0);
     axi_miso.rvalid = axi_rd_vld_ff;
     axi_miso.rlast  = axi_rd_vld_ff;
+    axi_miso.rid    = axi_rid_ff;
     axi_miso.rdata  = axi_miso.rvalid ? axi_data_t'(rd_data_ff) : axi_data_t'('h0);
   end : axi_rd_datapath
 
@@ -294,6 +299,8 @@ module axi_mem import utils_pkg::*; #(
       bvalid_ff     <= `OP_RST_L;
       csr_output_ff <= `OP_RST_L;
       csr_decode_ff <= `OP_RST_L;
+      axi_wid_ff    <= '0;
+      axi_rid_ff    <= '0;
 `ifdef SIMULATION
       char_ff       <= 'b0;
       num_ff        <= 'b0;
@@ -319,7 +326,8 @@ module axi_mem import utils_pkg::*; #(
       start_sig_ff  <= next_start_sig;
       end_sig_ff    <= next_end_sig;
       fin_sig_ff    <= next_fin;
-
+      axi_wid_ff    <= next_axi_wid;
+      axi_rid_ff    <= next_axi_rid;
       if (char_ff) begin
 //`ifdef EN_PRINTF
         //$write("%c",find_byte(axi_mosi.wdata));

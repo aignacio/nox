@@ -16,6 +16,8 @@ module axi_mtimer import utils_pkg::*; (
   s_axi_req_t   wr_req_ff, next_wr_req;
   s_axi_req_t   rd_req_ff, next_rd_req;
   logic         bvalid_ff, next_bvalid;
+  axi_tid_t rid_ff, next_rid;
+  axi_tid_t wid_ff, next_wid;
 
   always_comb begin
     axi_miso = s_axi_miso_t'('0);
@@ -83,6 +85,19 @@ module axi_mtimer import utils_pkg::*; (
       axi_miso.rlast  = 'b1;
       next_rd_req.vld = ~axi_mosi.rready;
     end
+
+    next_rid = rid_ff;
+    next_wid = wid_ff;
+    axi_miso.rid = rid_ff;
+    axi_miso.bid = wid_ff;
+
+    if (axi_mosi.arvalid && axi_miso.arready) begin
+      next_rid = axi_mosi.arid;
+    end
+
+    if (axi_mosi.awvalid && axi_miso.awready) begin
+      next_wid = axi_mosi.awid;
+    end
   end
 
   always_ff @ (posedge clk) begin
@@ -92,6 +107,8 @@ module axi_mtimer import utils_pkg::*; (
       wr_req_ff     <= '0;
       rd_req_ff     <= '0;
       bvalid_ff     <= '0;
+      rid_ff        <= '0;
+      wid_ff        <= '0;
     end
     else begin
       mtimer_ff     <= next_mtimer;
@@ -99,6 +116,8 @@ module axi_mtimer import utils_pkg::*; (
       wr_req_ff     <= next_wr_req;
       rd_req_ff     <= next_rd_req;
       bvalid_ff     <= next_bvalid;
+      rid_ff        <= next_rid;
+      wid_ff        <= next_wid;
     end
   end
 endmodule

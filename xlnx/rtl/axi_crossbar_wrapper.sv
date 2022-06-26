@@ -4,6 +4,7 @@ module axi_crossbar_wrapper
   parameter N_MASTERS     = 1,
   parameter N_SLAVES      = 1,
   parameter M_BASE_ADDR   = 0,
+  parameter AXI_TID_WIDTH = 8, // Slave ARID/AWID/BID/RID is bigger by clog2 num of masters
   parameter M_ADDR_WIDTH  = 0
 )(
   input                                 clk,
@@ -59,7 +60,7 @@ module axi_crossbar_wrapper
   logic [N_MASTERS*2-1:0]            from_m_axi_rvalid;
   logic [N_MASTERS*2-1:0]            from_m_axi_rready;
 
-  logic [N_SLAVES*ID_WIDTH-1:0]      to_s_axi_awid;
+  logic [N_SLAVES*SID_WIDTH-1:0]      to_s_axi_awid;
   logic [N_SLAVES*ADDR_WIDTH-1:0]    to_s_axi_awaddr;
   logic [N_SLAVES*ALEN_WIDTH:0]      to_s_axi_awlen;
   logic [N_SLAVES*3-1:0]             to_s_axi_awsize;
@@ -77,12 +78,12 @@ module axi_crossbar_wrapper
   logic [N_SLAVES*WUSER_WIDTH-1:0]   to_s_axi_wuser;
   logic [N_SLAVES-1:0]               to_s_axi_wvalid;
   logic [N_SLAVES-1:0]               to_s_axi_wready;
-  logic [N_SLAVES*ID_WIDTH-1:0]      to_s_axi_bid;
+  logic [N_SLAVES*SID_WIDTH-1:0]      to_s_axi_bid;
   logic [N_SLAVES*2-1:0]             to_s_axi_bresp;
   logic [N_SLAVES*BUSER_WIDTH-1:0]   to_s_axi_buser;
   logic [N_SLAVES-1:0]               to_s_axi_bvalid;
   logic [N_SLAVES-1:0]               to_s_axi_bready;
-  logic [N_SLAVES*ID_WIDTH-1:0]      to_s_axi_arid;
+  logic [N_SLAVES*SID_WIDTH-1:0]      to_s_axi_arid;
   logic [N_SLAVES*ADDR_WIDTH-1:0]    to_s_axi_araddr;
   logic [N_SLAVES*ALEN_WIDTH:0]      to_s_axi_arlen;
   logic [N_SLAVES*3-1:0]             to_s_axi_arsize;
@@ -94,7 +95,7 @@ module axi_crossbar_wrapper
   logic [N_SLAVES*ARUSER_WIDTH-1:0]  to_s_axi_aruser;
   logic [N_SLAVES-1:0]               to_s_axi_arvalid;
   logic [N_SLAVES-1:0]               to_s_axi_arready;
-  logic [N_SLAVES*ID_WIDTH-1:0]      to_s_axi_rid;
+  logic [N_SLAVES*SID_WIDTH-1:0]      to_s_axi_rid;
   logic [N_SLAVES*DATA_WIDTH-1:0]    to_s_axi_rdata;
   logic [N_SLAVES*2-1:0]             to_s_axi_rresp;
   logic [N_SLAVES*2-1:0]             to_s_axi_rlast;
@@ -102,7 +103,8 @@ module axi_crossbar_wrapper
   logic [N_SLAVES*2-1:0]             to_s_axi_rvalid;
   logic [N_SLAVES*2-1:0]             to_s_axi_rready;
 
-  localparam ID_WIDTH     = 1;
+  localparam ID_WIDTH     = AXI_TID_WIDTH-$clog2(N_MASTERS);
+  localparam SID_WIDTH    = AXI_TID_WIDTH;
   localparam DATA_WIDTH   = 32;
   localparam ADDR_WIDTH   = 32;
   localparam AWUSER_WIDTH = 1;
@@ -161,7 +163,7 @@ module axi_crossbar_wrapper
 
     for (int s_idx=0;s_idx<N_SLAVES;s_idx++) begin
       // Slaves
-      slaves_axi_mosi[s_idx].awid    = to_s_axi_awid    [s_idx*ID_WIDTH     +: ID_WIDTH];
+      slaves_axi_mosi[s_idx].awid    = to_s_axi_awid    [s_idx*SID_WIDTH    +: SID_WIDTH];
       slaves_axi_mosi[s_idx].awaddr  = to_s_axi_awaddr  [s_idx*ADDR_WIDTH   +: ADDR_WIDTH];
       slaves_axi_mosi[s_idx].awlen   = to_s_axi_awlen   [s_idx*ALEN_WIDTH   +: ALEN_WIDTH];
       slaves_axi_mosi[s_idx].awsize  = axi_size_t'(to_s_axi_awsize  [s_idx*3            +: 3]);
@@ -179,12 +181,12 @@ module axi_crossbar_wrapper
       slaves_axi_mosi[s_idx].wuser   = to_s_axi_wuser   [s_idx*WUSER_WIDTH  +: WUSER_WIDTH];
       slaves_axi_mosi[s_idx].wvalid  = to_s_axi_wvalid  [s_idx*1            +: 1];
       to_s_axi_wready[s_idx*1+:1]                     = slaves_axi_miso[s_idx].wready;
-      to_s_axi_bid   [s_idx*ID_WIDTH+:ID_WIDTH]       = slaves_axi_miso[s_idx].bid;
+      to_s_axi_bid   [s_idx*SID_WIDTH+:SID_WIDTH]       = slaves_axi_miso[s_idx].bid;
       to_s_axi_bresp [s_idx*2+:2]                     = slaves_axi_miso[s_idx].bresp;
       to_s_axi_buser [s_idx*BUSER_WIDTH+:BUSER_WIDTH] = slaves_axi_miso[s_idx].buser;
       to_s_axi_bvalid[s_idx*1+:1]                     = slaves_axi_miso[s_idx].bvalid;
       slaves_axi_mosi[s_idx].bready   = to_s_axi_bready  [s_idx*1            +: 1];
-      slaves_axi_mosi[s_idx].arid     = to_s_axi_arid    [s_idx*ID_WIDTH     +: ID_WIDTH];
+      slaves_axi_mosi[s_idx].arid     = to_s_axi_arid    [s_idx*SID_WIDTH     +: SID_WIDTH];
       slaves_axi_mosi[s_idx].araddr   = to_s_axi_araddr  [s_idx*ADDR_WIDTH   +: ADDR_WIDTH];
       slaves_axi_mosi[s_idx].arlen    = to_s_axi_arlen   [s_idx*ALEN_WIDTH   +: ALEN_WIDTH];
       slaves_axi_mosi[s_idx].arsize   = axi_size_t'(to_s_axi_arsize  [s_idx*3            +: 3]);
@@ -196,7 +198,7 @@ module axi_crossbar_wrapper
       slaves_axi_mosi[s_idx].aruser   = to_s_axi_aruser  [s_idx*ARUSER_WIDTH +: ARUSER_WIDTH];
       slaves_axi_mosi[s_idx].arvalid  = to_s_axi_arvalid [s_idx*1            +: 1];
       to_s_axi_arready[s_idx*1+:1]                    = slaves_axi_miso[s_idx].arready;
-      to_s_axi_rid    [s_idx*ID_WIDTH+:ID_WIDTH]      = slaves_axi_miso[s_idx].rid;
+      to_s_axi_rid    [s_idx*SID_WIDTH+:SID_WIDTH]      = slaves_axi_miso[s_idx].rid;
       to_s_axi_rdata  [s_idx*DATA_WIDTH+:DATA_WIDTH]  = slaves_axi_miso[s_idx].rdata;
       to_s_axi_rresp  [s_idx*2+:2]                    = slaves_axi_miso[s_idx].rresp;
       to_s_axi_rlast  [s_idx*1+:1]                    = slaves_axi_miso[s_idx].rlast;
@@ -211,7 +213,7 @@ module axi_crossbar_wrapper
     // Number of AXI outputs (master interfaces)
     .M_COUNT      (N_SLAVES),
     // Width of ID signal
-    .S_ID_WIDTH   (1),
+    .S_ID_WIDTH   (ID_WIDTH),
     // Width of address bus in bits
     .ADDR_WIDTH   (32),
     // Master interface base addresses

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 13.03.2022
- * Last Modified Date: 08.05.2022
+ * Last Modified Date: 26.06.2022
  */
 module rst_ctrl import utils_pkg::*; (
   input                 clk,
@@ -14,6 +14,8 @@ module rst_ctrl import utils_pkg::*; (
 );
   s_axi_mosi_t  axi_mosi_int;
   s_axi_miso_t  axi_miso_int;
+  axi_tid_t     rid_ff, next_rid;
+  axi_tid_t     wid_ff, next_wid;
 
   logic [31:0] rst_addr_ff, next_rst;
   logic        wr_rst_ff,   next_wr_rst;
@@ -61,8 +63,32 @@ module rst_ctrl import utils_pkg::*; (
         next_rd_rst = 'b0;
       end
     end
+
+    next_rid = rid_ff;
+    next_wid = wid_ff;
+    axi_miso.rid = rid_ff;
+    axi_miso.bid = wid_ff;
+
+    if (axi_mosi.arvalid && axi_miso.arready) begin
+      next_rid = axi_mosi.arid;
+    end
+
+    if (axi_mosi.awvalid && axi_miso.awready) begin
+      next_wid = axi_mosi.awid;
+    end
   end
   /* verilator lint_on WIDTH */
+
+  always_ff @ (posedge clk) begin
+    if (~rst) begin
+      rid_ff <= '0;
+      wid_ff <= '0;
+    end
+    else begin
+      rid_ff <= next_rid;
+      wid_ff <= next_wid;
+    end
+  end
 
   always_ff @(posedge clk) begin
     if (~rst) begin
