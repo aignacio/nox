@@ -1,9 +1,9 @@
 /**
- * File              : fifo.sv
+ * File              : fifo_nox.sv
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 25.03.2022
+ * Last Modified Date: 25.06.2022
  *
  * Simple FIFO SLOTSxWIDTH with async reads
  */
@@ -91,7 +91,7 @@ module fifo_nox
     illegal_fifo_slot : assert (2**$clog2(SLOTS) == SLOTS)
     else $error("FIFO Slots must be power of 2");
 
-    min_fifo_size : assert (SLOTS >= 1)
+    min_fifo_size : assert (SLOTS >= 2)
     else $error("FIFO size of SLOTS defined is illegal!");
   end
 `endif
