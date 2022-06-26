@@ -12,7 +12,9 @@ module nox
   parameter int MTVEC_DEFAULT_VAL     = 'h1000, // 4KB
   parameter int L0_BUFFER_SIZE        = 2,      // Max instrs locally stored
   parameter int TRAP_ON_MIS_LSU_ADDR  = 1,      // Trap in case of misaligned addr on LSU
-  parameter int TRAP_ON_LSU_ERROR     = 1       // Trap in case of LSU error
+  parameter int TRAP_ON_LSU_ERROR     = 1,      // Trap in case of LSU error
+  parameter int FETCH_IF_ID           = 0,
+  parameter int LSU_IF_ID             = 1
 )(
   input                 clk,
   input                 arst,
@@ -79,7 +81,7 @@ module nox
 
 `ifdef TARGET_IF_AXI
   cb_to_axi #(
-    .AXI_ID                (0)
+    .AXI_ID                (FETCH_IF_ID)
   ) u_instr_cb_to_axi(
     // Core bus Master I/F
     .cb_mosi_i             (instr_cb_mosi),
@@ -90,7 +92,7 @@ module nox
   );
 
   cb_to_axi  #(
-    .AXI_ID                (1)
+    .AXI_ID                (LSU_IF_ID)
   ) u_lsu_cb_to_axi(
     // Core bus Master I/F
     .cb_mosi_i             (lsu_cb_mosi),

@@ -145,7 +145,7 @@ module nox_soc import utils_pkg::*; (
 
 `ifdef SIMULATION
   axi_mem #(
-    .MEM_KB(128)
+    .MEM_KB   (128)
   ) u_imem (
     .clk              (clk),
     .rst              (rst),
@@ -154,7 +154,8 @@ module nox_soc import utils_pkg::*; (
   );
 `else
   axi_mem_wrapper #(
-    .MEM_KB(128)
+    .MEM_KB   (128),
+    .ID_WIDTH (8)
   ) u_imem (
     .clk              (clk),
     .rst              (rst),
@@ -214,13 +215,26 @@ module nox_soc import utils_pkg::*; (
 
   //ila_0 u_ila_aignacio (
     //.clk(clk),
-    //.probe0 (masters_axi_mosi[0].arvalid),                             // 1
-    //.probe1 (masters_axi_mosi[0].araddr),                              // 32
-    //.probe2 (masters_axi_miso[0].rvalid),                              // 1
-    //.probe3 (masters_axi_miso[0].rdata),                               // 32
-    //.probe4 (u_nox_wrapper.irq_i[0]),                                  // 1
-    //.probe5 (u_nox_wrapper.irq_i[1]),                                  // 1
-    //.probe6 (u_nox_wrapper.irq_i[2])                                   // 1
+    //.probe0  (masters_axi_mosi[0].arvalid),                             // 1
+    //.probe1  (masters_axi_mosi[0].araddr),                              // 32
+    //.probe2  (masters_axi_miso[0].rvalid),                              // 1
+    //.probe3  (masters_axi_miso[0].rdata),                               // 32
+    //.probe4  (masters_axi_mosi[1].arvalid),                             // 1
+    //.probe5  (masters_axi_mosi[1].araddr),                              // 32
+    //.probe6  (masters_axi_miso[1].rvalid),                              // 1
+    //.probe7  (masters_axi_miso[1].rdata),                               // 32
+    //.probe8  (u_nox_wrapper.u_nox.u_fetch.fetch_req_i),                 // 1
+    //.probe9  (u_nox_wrapper.u_nox.u_fetch.fetch_addr_i),                // 32
+    //.probe10 (u_nox_wrapper.u_nox.u_fetch.req_ff),                      // 1
+    //.probe11 (u_nox_wrapper.u_nox.u_fetch.write_instr),                 // 1
+    //.probe12 (u_nox_wrapper.u_nox.u_fetch.full_fifo),                   // 1
+    //.probe13 (u_nox_wrapper.u_nox.u_fetch.ready_txn),                   // 1
+    //.probe14 (u_nox_wrapper.u_nox.u_fetch.vld_instr_ff),                // 1
+    //.probe15 (u_nox_wrapper.u_nox.u_fetch.clear_buffer),                // 1
+    //.probe16 (u_nox_wrapper.u_nox.u_fetch.pc_addr_ff),                  // 32
+    //.probe17 (u_nox_wrapper.u_nox.u_execute.trap_out.active),           // 1
+    //.probe18 (u_nox_wrapper.u_nox.u_execute.trap_out.pc_addr),          // 32
+    //.probe19 (u_nox_wrapper.u_nox.u_execute.u_csr.csr_mcause_ff)        // 32
   //);
 
   //ila_0 u_ila_aignacio (

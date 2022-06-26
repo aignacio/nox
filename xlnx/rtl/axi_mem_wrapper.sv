@@ -5,8 +5,7 @@ module axi_mem_wrapper import utils_pkg::*; #(
   input                 clk,
   input                 rst,
   input   s_axi_mosi_t  axi_mosi,
-  output  s_axi_miso_t  axi_miso,
-  output  logic [7:0]   csr_o
+  output  s_axi_miso_t  axi_miso
 );
   s_axi_mosi_t  axi_mosi_int;
   s_axi_miso_t  axi_miso_int;

@@ -4,7 +4,8 @@ module axi_interconnect_wrapper
   parameter N_MASTERS     = 1,
   parameter N_SLAVES      = 1,
   parameter M_BASE_ADDR   = 0,
-  parameter M_ADDR_WIDTH  = 0
+  parameter M_ADDR_WIDTH  = 0,
+  parameter AXI_TID_WIDTH = 0
 )(
   input                                 clk,
   input                                 arst,

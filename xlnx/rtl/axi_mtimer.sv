@@ -27,6 +27,7 @@ module axi_mtimer import utils_pkg::*; (
     axi_miso.awready  = 'b1;
     axi_miso.wready   = wr_req_ff.vld;
     axi_miso.bvalid   = bvalid_ff;
+    axi_miso.arready  = 'b1;
 
     next_bvalid     = bvalid_ff;
     next_mtimercmp  = mtimercmp_ff;
