@@ -3,13 +3,11 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 25.06.2022
+ * Last Modified Date: 26.06.2022
  */
 module nox
   import utils_pkg::*;
 #(
-  parameter int FETCH_IF_ID           = 0,
-  parameter int LSU_IF_ID             = 1,
   parameter int SUPPORT_DEBUG         = 1,
   parameter int MTVEC_DEFAULT_VAL     = 'h1000, // 4KB
   parameter int L0_BUFFER_SIZE        = 2,      // Max instrs locally stored
@@ -81,7 +79,7 @@ module nox
 
 `ifdef TARGET_IF_AXI
   cb_to_axi #(
-    .AXI_ID                (FETCH_IF_ID)
+    .AXI_ID                (0)
   ) u_instr_cb_to_axi(
     // Core bus Master I/F
     .cb_mosi_i             (instr_cb_mosi),
@@ -92,7 +90,7 @@ module nox
   );
 
   cb_to_axi  #(
-    .AXI_ID                (LSU_IF_ID)
+    .AXI_ID                (1)
   ) u_lsu_cb_to_axi(
     // Core bus Master I/F
     .cb_mosi_i             (lsu_cb_mosi),

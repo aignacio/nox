@@ -39,7 +39,7 @@
   `endif
 
   `ifndef AXI_TXN_ID_WIDTH
-      `define AXI_TXN_ID_WIDTH    1
+      `define AXI_TXN_ID_WIDTH    8
   `endif
 
   typedef logic [`AXI_ADDR_WIDTH-1:0]      axi_addr_t;
