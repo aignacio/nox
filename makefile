@@ -243,9 +243,6 @@ soc: clean $(VERI_EXE_SOC)
 	@echo "$(VERI_EXE_SOC) -h"
 	@echo "\n"
 
-#$(RUN_SW_SOC):
-	#make -C sw/soc_hello_world all
-
 $(RUN_SW_SOC):
 	make -C sw/soc_hello_world all UART_MODE=UART_SIM
 
@@ -263,8 +260,3 @@ run_comp:
 	$(RUN_CMD_COMP) riscof validateyaml --config=config.ini
 	$(RUN_CMD_COMP) riscof testlist --config=config.ini --suite=riscv-arch-test/riscv-test-suite/ --env=riscv-arch-test/riscv-test-suite/env
 	$(RUN_CMD_COMP) riscof run --config=config.ini --suite=riscv-arch-test/riscv-test-suite/ --env=riscv-arch-test/riscv-test-suite/env
-
-#compliance:
-	#$(RUN_CMD_2) make verify RISCV_PREFIX=riscv-none-embed-	\
-		#RISCV_TARGET=nox RISCV_DEVICE=I		 										\
-		#TARGET_SIM=/nox_files/$(VERILATOR_EXE) -j8
