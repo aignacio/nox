@@ -28,7 +28,7 @@ ENTRY( _start_reset )
 
 MEMORY
 {
-  IRAM(rxai!w) : ORIGIN = 0x80000000, LENGTH = 24K
+  IRAM(rxai!w) : ORIGIN = 0xA0000000, LENGTH = 24K
   DRAM(wxa!ri) : ORIGIN = 0x10000000, LENGTH = 8K
 }
 
@@ -66,6 +66,7 @@ SECTIONS
     _end_data = .;
   } > DRAM
 
+  . = ALIGN(. != 0 ? 32 / 8 : 1);
    _start_bss = .;
 
   .bss : AT (_stored_data) {

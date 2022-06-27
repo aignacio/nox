@@ -18,13 +18,15 @@ Original Author: Shay Gal-on
 #include "coremark.h"
 #include "core_portme.h"
 #include "printf.h"
+#include "riscv_csr_encoding.h"
 #include <stdint.h>
 
 #define LEDS_ADDR         0xD0000000
-#define RST_CFG           0xC0000000
 #define UART_TX           0xB000000C
 #define UART_RX           0xB0000008
 #define UART_STATS        0xB0000004
+#define UART_CFG          0xB0000000
+#define PRINT_ADDR        0xD0000008
 #define STRING_TEST       "Test!"
 
 volatile uint32_t* const addr_leds  = (uint32_t*) LEDS_ADDR;
@@ -78,6 +80,29 @@ barebones_clock()
 /*#error \*/
     /*"You must implement a method to measure time in barebones_clock()! This function should return current time.\n"*/
 }
+
+CORETIMETYPE nox_cpu_get_cycle(void) {
+
+  union {
+    uint64_t uint64;
+    uint32_t uint32[sizeof(uint64_t)/sizeof(uint32_t)];
+  } cycles;
+
+  register uint32_t tmp1, tmp2, tmp3;
+  while(1) {
+    tmp1 = read_csr(0xC80);
+    tmp2 = read_csr(0xC00);
+    tmp3 = read_csr(0xC80);
+    if (tmp1 == tmp3) {
+      break;
+    }
+  }
+
+  cycles.uint32[0] = tmp2;
+  cycles.uint32[1] = tmp3;
+
+  return cycles.uint64;
+}
 /* Define : TIMER_RES_DIVIDER
         Divider to trade off timer resolution and total time that can be
    measured.
@@ -87,7 +112,7 @@ barebones_clock()
    increase this value.
         */
 #define CLOCKS_PER_SEC             50000000
-#define GETMYTIME(_t)              (*_t = barebones_clock())
+#define GETMYTIME(_t)              (*_t = nox_cpu_get_cycle())
 #define MYTIMEDIFF(fin, ini)       ((fin) - (ini))
 #define TIMER_RES_DIVIDER          1
 #define SAMPLE_TIME_IMPLEMENTATION 1

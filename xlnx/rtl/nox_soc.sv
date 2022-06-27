@@ -282,8 +282,8 @@ module nox_soc import utils_pkg::*; (
     /*verilator public*/
     logic [31:0] addr_val;
     logic [31:0] word_val;
-    u_imem.u_ram.mem[addr_val] = word_val;
-    //u_iram_mirror.mem_loading[addr_val] = word_val;
+    //u_imem.u_ram.mem[addr_val] = word_val;
+    u_imem.mem_loading[addr_val] = word_val;
   endfunction
 
   function automatic void writeWordDRAM(addr_val, word_val);
