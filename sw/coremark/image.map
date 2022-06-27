@@ -61,7 +61,7 @@ END GROUP
 LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a
                 0x0000000000000100                _min_stack = 0x100
 
-.text           0x0000000080000000     0x584c
+.text           0x0000000080000000     0x5848
                 0x0000000080000000                _start_text = .
  *(.init)
  .init          0x0000000080000000       0x14 ./nox/crt0.o
@@ -117,41 +117,41 @@ LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/
                 0x0000000080004c20                vprintf_
                 0x0000000080004c70                vsnprintf_
                 0x0000000080004cc4                fctprintf
- .text          0x0000000080004d54      0x1d8 ./nox/core_portme.o
+ .text          0x0000000080004d54      0x1d4 ./nox/core_portme.o
                 0x0000000080004d54                _putchar
-                0x0000000080004d98                barebones_clock
-                0x0000000080004dc0                start_time
-                0x0000000080004df0                stop_time
-                0x0000000080004e20                get_time
-                0x0000000080004e50                time_in_secs
-                0x0000000080004e98                portable_init
-                0x0000000080004f10                portable_fini
- .text          0x0000000080004f2c       0x24 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(muldi3.o)
-                0x0000000080004f2c                __mulsi3
- .text          0x0000000080004f50       0xb4 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(div.o)
-                0x0000000080004f50                __divsi3
-                0x0000000080004f58                __udivsi3
-                0x0000000080004fa0                __umodsi3
-                0x0000000080004fd4                __modsi3
-                0x0000000080005004                _edata = .
+                0x0000000080004d84                barebones_clock
+                0x0000000080004dac                start_time
+                0x0000000080004ddc                stop_time
+                0x0000000080004e0c                get_time
+                0x0000000080004e3c                time_in_secs
+                0x0000000080004e84                portable_init
+                0x0000000080004f00                portable_fini
+ .text          0x0000000080004f28       0x24 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(muldi3.o)
+                0x0000000080004f28                __mulsi3
+ .text          0x0000000080004f4c       0xb4 /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/10.2.0/rv32i/ilp32/libgcc.a(div.o)
+                0x0000000080004f4c                __divsi3
+                0x0000000080004f54                __udivsi3
+                0x0000000080004f9c                __umodsi3
+                0x0000000080004fd0                __modsi3
+                0x0000000080005000                _edata = .
  *(.rodata*)
- .rodata        0x0000000080005004      0x51b ./core_main.o
- *fill*         0x000000008000551f        0x1 
- .rodata        0x0000000080005520       0xd0 ./core_state.o
- .rodata        0x00000000800055f0       0x4e ./core_util.o
- *fill*         0x000000008000563e        0x2 
- .rodata        0x0000000080005640      0x1e0 ./nox/printf.o
- .rodata        0x0000000080005820       0x2a ./nox/core_portme.o
+ .rodata        0x0000000080005000      0x51b ./core_main.o
+ *fill*         0x000000008000551b        0x1 
+ .rodata        0x000000008000551c       0xd0 ./core_state.o
+ .rodata        0x00000000800055ec       0x4e ./core_util.o
+ *fill*         0x000000008000563a        0x2 
+ .rodata        0x000000008000563c      0x1e0 ./nox/printf.o
+ .rodata        0x000000008000581c       0x2a ./nox/core_portme.o
  *(.srodata*)
-                0x000000008000584c                . = ALIGN (0x4)
- *fill*         0x000000008000584a        0x2 
-                0x000000008000584c                _end_text = .
-                0x000000008000584c                _stored_data = .
+                0x0000000080005848                . = ALIGN (0x4)
+ *fill*         0x0000000080005846        0x2 
+                0x0000000080005848                _end_text = .
+                0x0000000080005848                _stored_data = .
 
-.rela.dyn       0x000000008000584c        0x0
- .rela.init     0x000000008000584c        0x0 ./core_list_join.o
+.rela.dyn       0x0000000080005848        0x0
+ .rela.init     0x0000000080005848        0x0 ./core_list_join.o
 
-.data           0x0000000010000000       0x7c load address 0x000000008000584c
+.data           0x0000000010000000       0x7c load address 0x0000000080005848
                 0x0000000010000000                __DATA_BEGIN__ = .
                 0x0000000010000000                _start_data = .
  *(.data .data.* .gnu.linkonce.d.*)
@@ -172,7 +172,7 @@ LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/
                 0x000000001000007c                _end_data = .
                 0x000000001000007c                _start_bss = .
 
-.bss            0x000000001000007c        0x8 load address 0x000000008000584c
+.bss            0x000000001000007c        0x8 load address 0x0000000080005848
                 0x000000001000007c                __BSS_START__ = .
  *(.dynbss)
  *(.bss .bss.* .gnu.linkonce.b.*)
@@ -180,7 +180,7 @@ LOAD /opt/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/../lib/gcc/riscv-none-embed/
  *(COMMON)
                 0x0000000010000084                . = ALIGN ((. != 0x0)?0x4:0x1)
 
-.sbss           0x0000000010000084        0xc load address 0x000000008000584c
+.sbss           0x0000000010000084        0xc load address 0x0000000080005848
  *(.dynsbss)
  *(.sbss .sbss.* .gnu.linkonce.sb.*)
  .sbss          0x0000000010000084        0xc ./nox/core_portme.o
@@ -241,16 +241,16 @@ OUTPUT(./coremark.elf elf32-littleriscv)
  .debug_aranges
                 0x0000000000000100       0x28 ./nox/startup.o
 
-.debug_line     0x0000000000000000     0x3b2c
+.debug_line     0x0000000000000000     0x3b1c
  .debug_line    0x0000000000000000      0xa91 ./core_list_join.o
  .debug_line    0x0000000000000a91      0xb55 ./core_main.o
  .debug_line    0x00000000000015e6      0x83a ./core_matrix.o
  .debug_line    0x0000000000001e20      0x6e4 ./core_state.o
  .debug_line    0x0000000000002504      0x20c ./core_util.o
  .debug_line    0x0000000000002710      0xf6d ./nox/printf.o
- .debug_line    0x000000000000367d      0x242 ./nox/core_portme.o
- .debug_line    0x00000000000038bf       0x4d ./nox/crt0.o
- .debug_line    0x000000000000390c      0x220 ./nox/startup.o
+ .debug_line    0x000000000000367d      0x232 ./nox/core_portme.o
+ .debug_line    0x00000000000038af       0x4d ./nox/crt0.o
+ .debug_line    0x00000000000038fc      0x220 ./nox/startup.o
 
 .debug_str      0x0000000000000000      0xa37
  .debug_str     0x0000000000000000      0x36b ./core_list_join.o

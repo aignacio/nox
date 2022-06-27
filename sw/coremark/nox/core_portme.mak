@@ -44,6 +44,7 @@ OBJCOPY	 = $(RUN_CMD)objcopy
 
 # Flag : CFLAGS
 #	Use this flag to define compiler options. Note, you can add compiler options from the command line using XCFLAGS="other flags"
+UART_MODE ?= REAL_UART
 PORT_CFLAGS = -O0 -g              \
           	  -march=rv32i	      \
 			  -mabi=ilp32		  \
@@ -54,6 +55,7 @@ PORT_CFLAGS = -O0 -g              \
 			  -DPRINTF_DISABLE_SUPPORT_FLOAT		 \
 			  -DPRINTF_DISABLE_SUPPORT_EXPONENTIAL	 \
 			  -DPRINTF_DISABLE_SUPPORT_LONG_LONG	 \
+			  -D$(UART_MODE)						 \
 			  -Wall -Wno-main
 FLAGS_STR = "$(PORT_CFLAGS) $(XCFLAGS) $(XLFLAGS) $(LFLAGS_END)"
 CFLAGS = $(PORT_CFLAGS) -I$(PORT_DIR) -I. -DFLAGS_STR=\"$(FLAGS_STR)\"

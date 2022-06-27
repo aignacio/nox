@@ -256,7 +256,7 @@ module nox_soc import utils_pkg::*; (
   //);
 
 `ifdef SIMULATION
-  integer fd,i;
+  integer ret_fd, axi_fd, i, j;
   initial begin
       axi_fd = $fopen("axi_memory_log.txt", "w");
       ret_fd = $fopen("retired_instr.txt", "w");

@@ -21,19 +21,29 @@ Original Author: Shay Gal-on
 #include <stdint.h>
 
 #define LEDS_ADDR         0xD0000000
-#define UART_ADDR         0xA0000000
-#define UART_BUSY_ADDR    0xA0000004
+#define RST_CFG           0xC0000000
+#define UART_TX           0xB000000C
+#define UART_RX           0xB0000008
+#define UART_STATS        0xB0000004
 #define STRING_TEST       "Test!"
 
-volatile uint32_t* const addr_leds = (uint32_t*) LEDS_ADDR;
-volatile uint32_t* const uart_print = (uint32_t*) UART_ADDR;
-volatile uint32_t* const uart_busy  = (uint32_t*) UART_BUSY_ADDR;
+volatile uint32_t* const addr_leds  = (uint32_t*) LEDS_ADDR;
+volatile uint32_t* const addr_print = (uint32_t*) PRINT_ADDR;
+volatile uint32_t* const uart_stats = (uint32_t*) UART_STATS;
+volatile uint32_t* const uart_print = (uint32_t*) UART_TX;
+volatile uint32_t* const uart_rx    = (uint32_t*) UART_RX;
+volatile uint32_t* const uart_cfg   = (uint32_t*) UART_CFG;
 
+#ifdef UART_SIM
 void _putchar(char character){
-  while(*uart_busy != 0);
+  *addr_print = character;
+}
+#else
+void _putchar(char character){
+  while((*uart_stats & 0x10000) == 0);
   *uart_print = character;
 }
-
+#endif
 
 #if VALIDATION_RUN
 volatile ee_s32 seed1_volatile = 0x3415;
@@ -177,6 +187,8 @@ portable_init(core_portable *p, int *argc, char *argv[])
 void
 portable_fini(core_portable *p)
 {
+
+    *addr_leds = 0x0;
     p->portable_id = 0;
     while(1);
 }
