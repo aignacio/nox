@@ -254,30 +254,28 @@ module nox_soc import utils_pkg::*; (
     //.probe12(u_nox_wrapper.u_nox.u_fetch.fetch_addr_i),                // 32
     //.probe13(u_nox_wrapper.u_nox.u_execute.u_csr.trap_ff.active)       // 1
   //);
-  //
+
+`ifdef SIMULATION
   integer fd,i;
   initial begin
-      //fd = $fopen("axi_memory_log.txt", "w");
-      fd = $fopen("retired_instr.txt", "w");
+      axi_fd = $fopen("axi_memory_log.txt", "w");
+      ret_fd = $fopen("retired_instr.txt", "w");
       i = 0;
+      j = 0;
       //$fclose(fd);
   end
 
   always_ff @ (posedge clk) begin
-    //if (slaves_axi_mosi[2].arvalid && slaves_axi_miso[2].arready) begin
-      //$fdisplay (fd, "[%d] addr=[%x]", i, slaves_axi_mosi[2].araddr);
-      //i++;
-    //end
-    //if(u_nox_wrapper.u_nox.u_decode.fetch_valid_i && u_nox_wrapper.u_nox.u_decode.fetch_ready_o) begin
-      //$fdisplay (fd, "[%d] pc=[%x] instr=[%x]", i, u_nox_wrapper.u_nox.u_decode.next_id_ex.pc_dec, u_nox_wrapper.u_nox.u_decode.fetch_instr_i);
-      //i++;
-    //end
-    if(u_nox_wrapper.u_nox.u_decode.will_be_executed) begin
-      $fdisplay (fd, "[%d] pc=[%x] instr=[%x]", i, u_nox_wrapper.u_nox.u_decode.id_ex_ff.pc_dec, u_nox_wrapper.u_nox.u_decode.instr_retired_ff);
+    if (slaves_axi_mosi[2].arvalid && slaves_axi_miso[2].arready) begin
+      $fdisplay (axi_fd, "[%d] addr=[%x]", i, slaves_axi_mosi[2].araddr);
       i++;
     end
-
+    if(u_nox_wrapper.u_nox.u_decode.will_be_executed) begin
+      $fdisplay (ret_fd, "[%d] pc=[%x] instr=[%x]", j, u_nox_wrapper.u_nox.u_decode.id_ex_ff.pc_dec, u_nox_wrapper.u_nox.u_decode.instr_retired_ff);
+      j++;
+    end
   end
+`endif
 
   // synthesis translate_off
   function automatic void writeWordIRAM(addr_val, word_val);
