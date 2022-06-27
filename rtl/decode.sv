@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 18.03.2022
+ * Last Modified Date: 27.06.2022
  */
 module decode
   import utils_pkg::*;
@@ -36,9 +36,15 @@ module decode
   s_id_ex_t   id_ex_ff, next_id_ex;
 
   always_comb begin
-    next_vld_dec  = fetch_valid_i;
+    next_vld_dec  = dec_valid_ff;
     fetch_ready_o = id_ready_i && ~wfi_stop_ff;
-    id_valid_o    = dec_valid_ff;
+    id_valid_o = dec_valid_ff;
+    if (~id_valid_o || (id_valid_o && id_ready_i)) begin
+      next_vld_dec = fetch_valid_i;
+    end
+    else if (id_valid_o && ~id_ready_i) begin
+      next_vld_dec = 'b1;
+    end
   end
 
   always_comb begin
@@ -273,6 +279,34 @@ module decode
     .rs2_data_o(rs2_data_o)
   );
 
+  // *SIMULATION ONLY*
+  // - Additional logic to log retired instructions from the core
+`ifdef SIMULATION
+  instr_raw_t instr_retired_ff, next_instr;
+  logic will_be_executed;
+
+  always_comb begin
+    will_be_executed = 'b0;
+    next_instr = instr_retired_ff;
+
+    if (id_ready_i) begin
+      next_instr = instr_dec;
+    end
+
+    if (id_valid_o && ~jump_i && ~wfi_stop_ff && id_ready_i) begin
+      will_be_executed = 'b1;
+    end
+  end
+
+  `CLK_PROC(clk, rst) begin
+    `RST_TYPE(rst) begin
+      instr_retired_ff <= '0;
+    end
+    else begin
+      instr_retired_ff <= next_instr;
+    end
+  end
+`endif
 `ifdef COCOTB_SIM
   `ifdef XCELIUM
     `DUMP_WAVES_XCELIUM

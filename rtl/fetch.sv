@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 26.06.2022
+ * Last Modified Date: 27.06.2022
  */
 module fetch
   import utils_pkg::*;
@@ -69,7 +69,6 @@ module fetch
           next_pc_addr = cb_addr_t'({pc_buf_ff[31:2],2'd0});
           next_req     = 'b1;
           next_fetch   = 'b0;
-          clear_buffer = 'b1;
           skip_incr_pc = 'b1;
           next_vld     = 'b0;
         end
@@ -94,6 +93,7 @@ module fetch
           next_pc_buf = cb_addr_t'({fetch_addr_i[31:2],2'd0});
           next_fetch  = 'b1;
           next_vld    = 'b0;
+          clear_buffer = 'b1;
         end
       end
     end : act_req
