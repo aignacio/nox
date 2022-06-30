@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 28.10.2021
- * Last Modified Date: 27.06.2022
+ * Last Modified Date: 30.06.2022
  */
 module decode
   import utils_pkg::*;
@@ -295,6 +295,19 @@ module decode
 
     if (id_valid_o && ~jump_i && ~wfi_stop_ff && id_ready_i) begin
       will_be_executed = 'b1;
+    end
+  end
+
+  integer ret_fd, j;
+  initial begin
+      ret_fd = $fopen("retired_instr_nox.txt", "w");
+      j = 0;
+  end
+
+  always_ff @ (posedge clk) begin
+    if (u_nox_wrapper.u_nox.u_decode.will_be_executed) begin
+      $fdisplay (ret_fd, "[%d] pc=[%x] instr=[%x]", j, id_ex_ff.pc_dec, instr_retired_ff);
+      j++;
     end
   end
 

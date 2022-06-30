@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.10.2021
- * Last Modified Date: 23.02.2022
+ * Last Modified Date: 30.06.2022
  */
 module cb_to_axi
   import utils_pkg::*;
@@ -50,4 +50,31 @@ module cb_to_axi
     cb_miso_o.rd_valid      = axi_miso_i.rvalid;
   end
 
+`ifndef NO_ASSERTIONS
+  `ifndef VERILATOR
+    nox_axi4_arvalid_arready : assert property(@(posedge clk) $rose(axi_mosi_o.arvalid) |-> axi_mosi_o.arvalid          throughout axi_miso_i.arready[->1]);
+    nox_axi4_arvalid_araddr  : assert property(@(posedge clk) $rose(axi_mosi_o.arvalid) |-> $stable(axi_mosi_o.araddr)  throughout axi_miso_i.arready[->1]);
+    nox_axi4_arvalid_arlen   : assert property(@(posedge clk) $rose(axi_mosi_o.arvalid) |-> $stable(axi_mosi_o.arlen)   throughout axi_miso_i.arready[->1]);
+    nox_axi4_arvalid_arsize  : assert property(@(posedge clk) $rose(axi_mosi_o.arvalid) |-> $stable(axi_mosi_o.arsize)  throughout axi_miso_i.arready[->1]);
+    nox_axi4_arvalid_arburst : assert property(@(posedge clk) $rose(axi_mosi_o.arvalid) |-> $stable(axi_mosi_o.arburst) throughout axi_miso_i.arready[->1]);
+
+    nox_axi4_awvalid_awready : assert property(@(posedge clk) $rose(axi_mosi_o.awvalid) |-> axi_mosi_o.awvalid          throughout axi_miso_i.awready[->1]);
+    nox_axi4_awvalid_awaddr  : assert property(@(posedge clk) $rose(axi_mosi_o.awvalid) |-> $stable(axi_mosi_o.awaddr)  throughout axi_miso_i.awready[->1]);
+    nox_axi4_awvalid_awlen   : assert property(@(posedge clk) $rose(axi_mosi_o.awvalid) |-> $stable(axi_mosi_o.awlen)   throughout axi_miso_i.awready[->1]);
+    nox_axi4_awvalid_awsize  : assert property(@(posedge clk) $rose(axi_mosi_o.awvalid) |-> $stable(axi_mosi_o.awsize)  throughout axi_miso_i.awready[->1]);
+    nox_axi4_awvalid_awburst : assert property(@(posedge clk) $rose(axi_mosi_o.awvalid) |-> $stable(axi_mosi_o.awburst) throughout axi_miso_i.awready[->1]);
+
+    nox_axi4_wvalid_wready   : assert property(@(posedge clk) $rose(axi_mosi_o.wvalid)  |-> axi_mosi_o.wvalid           throughout axi_miso_i.wready[->1]);
+    nox_axi4_wvalid_wdata    : assert property(@(posedge clk) $rose(axi_mosi_o.wvalid)  |-> axi_mosi_o.wdata            throughout axi_miso_i.wready[->1]);
+    nox_axi4_wvalid_wstrb    : assert property(@(posedge clk) $rose(axi_mosi_o.wvalid)  |-> axi_mosi_o.wstrb            throughout axi_miso_i.wready[->1]);
+    nox_axi4_wvalid_wlast    : assert property(@(posedge clk) $rose(axi_mosi_o.wvalid)  |-> axi_mosi_o.wlast            throughout axi_miso_i.wready[->1]);
+
+    nox_axi4_bvalid_bready   : assert property(@(posedge clk) $rose(axi_miso_i.bvalid)  |-> axi_miso_i.bvalid           throughout axi_mosi_o.bready[->1]);
+    nox_axi4_bvalid_bresp    : assert property(@(posedge clk) $rose(axi_miso_i.bvalid)  |-> $stable(axi_miso_i.bresp)   throughout axi_mosi_o.bready[->1]);
+
+    nox_axi4_rvalid_rready   : assert property(@(posedge clk) $rose(axi_miso_i.rvalid)  |-> axi_miso_i.rvalid           throughout axi_mosi_o.rready[->1]);
+    nox_axi4_rvalid_rdata    : assert property(@(posedge clk) $rose(axi_miso_i.rvalid)  |-> $stable(axi_miso_i.rdata)   throughout axi_mosi_o.rready[->1]);
+    nox_axi4_rvalid_rlast    : assert property(@(posedge clk) $rose(axi_miso_i.rvalid)  |-> $stable(axi_miso_i.rlast)   throughout axi_mosi_o.rready[->1]);
+  `endif
+`endif
 endmodule

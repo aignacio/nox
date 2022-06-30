@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 27.06.2022
+ * Last Modified Date: 30.06.2022
  */
 
 `default_nettype wire
@@ -256,23 +256,17 @@ module nox_soc import utils_pkg::*; (
   //);
 
 `ifdef SIMULATION
-  integer ret_fd, axi_fd, i, j;
+  integer axi_fd, i;
+
   initial begin
-      axi_fd = $fopen("axi_memory_log.txt", "w");
-      ret_fd = $fopen("retired_instr.txt", "w");
-      i = 0;
-      j = 0;
-      //$fclose(fd);
+    axi_fd = $fopen("axi_memory_log.txt", "w");
+    i = 0;
   end
 
   always_ff @ (posedge clk) begin
     if (slaves_axi_mosi[2].arvalid && slaves_axi_miso[2].arready) begin
       $fdisplay (axi_fd, "[%d] addr=[%x]", i, slaves_axi_mosi[2].araddr);
       i++;
-    end
-    if(u_nox_wrapper.u_nox.u_decode.will_be_executed) begin
-      $fdisplay (ret_fd, "[%d] pc=[%x] instr=[%x]", j, u_nox_wrapper.u_nox.u_decode.id_ex_ff.pc_dec, u_nox_wrapper.u_nox.u_decode.instr_retired_ff);
-      j++;
     end
   end
 `endif
