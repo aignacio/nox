@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Sat Jul  2 12:50:55 2022
+[*] Sat Jul  2 14:24:36 2022
 [*]
 [dumpfile] "/Users/aignacio/projects/nox/nox_waves.fst"
-[dumpfile_mtime] "Sat Jul  2 12:49:11 2022"
-[dumpfile_size] 3166198
+[dumpfile_mtime] "Sat Jul  2 14:21:32 2022"
+[dumpfile_size] 2531393
 [savefile] "/Users/aignacio/projects/nox/waves_soc.gtkw"
-[timestart] 3084
+[timestart] 3827
 [size] 3609 1258
 [pos] 131 703
-*-2.856144 3110 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-1.883889 3839 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.nox_soc.
 [treeopen] TOP.nox_soc.u_nox_wrapper.
@@ -33,8 +33,10 @@ TOP.nox_soc.start_fetch
 @22
 TOP.nox_soc.u_nox_wrapper.u_nox.u_decode.id_ex_ff.pc_dec[31:0]
 TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.fetch_addr_i[31:0]
-@28
+@29
+[color] 3
 TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.fetch_req_i
+@28
 TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.full_fifo
 @22
 TOP.nox_soc.u_nox_wrapper.u_nox.instr_axi_mosi_o.araddr[31:0]
@@ -267,33 +269,38 @@ TOP.nox_soc.u_axi_mtimer.mtimer_ff[63:0]
 TOP.nox_soc.u_axi_mtimer.mtimercmp_ff[63:0]
 @1401200
 -misc
-@800201
+@800200
 -fetch_st
-@23
+@22
 TOP.nox_soc.u_imem.axi_mosi.araddr[31:0]
 TOP.nox_soc.u_imem.axi_mosi.arid[7:0]
-@29
+@28
 TOP.nox_soc.u_imem.axi_mosi.arvalid
-@23
+@22
 TOP.nox_soc.u_imem.axi_mosi.awaddr[31:0]
-@29
+@28
 TOP.nox_soc.u_imem.axi_mosi.awvalid
 TOP.nox_soc.u_imem.axi_mosi.rready
-@23
+@22
 TOP.nox_soc.u_imem.axi_mosi.wdata[31:0]
-@29
+@28
 TOP.nox_soc.u_imem.axi_mosi.wvalid
-@23
+@22
 TOP.nox_soc.u_nox_wrapper.u_nox.u_execute.id_ex_i.pc_dec[31:0]
-@100000029
+@100000028
 TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.st_ff[1:0]
-@25
+@8024
 TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.ot_cnt_ff[1:0]
-@29
+@24
+TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.ot_cnt_ff[1:0]
+@28
 TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.req_ff
-@100000029
+@100000028
 TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.st_ff[1:0]
-@1000201
+@28
+TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.valid_txn_i
+TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.valid_txn_o
+@1000200
 -fetch_st
 [pattern_trace] 1
 [pattern_trace] 0

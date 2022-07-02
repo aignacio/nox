@@ -79,6 +79,8 @@ module fetch
     jump         = fetch_req_i;
     valid_txn_i  = 1'b0;
 
+    next_ot = ot_cnt_ff + (req_ff && addr_ready) - (data_valid && data_ready);
+
     case (st_ff)
       F_STP: begin
         next_st = fetch_start_i ? F_REQ : F_STP;
@@ -99,20 +101,20 @@ module fetch
         end
 
         if ((req_ff && addr_ready) || ~req_ff) begin
+          valid_txn_i = 1'b1;
           // Next txn
-          if (ot_cnt_ff < (buffer_t'(L0_BUFFER_SIZE))) begin
+          if (next_ot < (buffer_t'(L0_BUFFER_SIZE))) begin
             valid_addr  = ~full_fifo;
-            valid_txn_i = 1'b1;
           end
         end
 
         if (jump) begin
           next_pc_addr = fetch_addr_i;
           next_pc_buff = pc_addr_ff;
-          if ((req_ff && ~addr_ready) || (ot_cnt_ff > 0)) begin
-            next_st = F_CLR;
-            valid_addr  = 1'b1;
-            valid_txn_i = 1'b0;
+          valid_txn_i  = 1'b0;
+          if (next_ot > 0) begin
+            next_st    = F_CLR;
+            valid_addr = ~addr_ready;
           end
         end
 
@@ -127,15 +129,13 @@ module fetch
           valid_addr  = 1'b1;
           valid_txn_i = 1'b0;
         end
-        else begin
+        else if (next_ot == '0) begin
           next_st    = F_REQ;
           valid_addr = 1'b1; // Next txn is the jump
         end
       end
       default: valid_addr = 1'b0;
     endcase
-
-    next_ot = ot_cnt_ff + (req_ff && addr_ready) - (data_valid && data_ready);
 
     next_req = valid_addr;
     instr_cb_mosi_o.rd_addr_valid = req_ff;
