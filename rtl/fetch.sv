@@ -97,11 +97,11 @@ module fetch
         end
 
         if (req_ff && addr_ready) begin
+          valid_txn_i = 1'b1;
           next_pc_addr = pc_addr_ff + 'd4;
         end
 
         if ((req_ff && addr_ready) || ~req_ff) begin
-          valid_txn_i = 1'b1;
           // Next txn
           if (next_ot < (buffer_t'(L0_BUFFER_SIZE))) begin
             valid_addr  = ~full_fifo;
@@ -112,10 +112,7 @@ module fetch
           next_pc_addr = fetch_addr_i;
           next_pc_buff = pc_addr_ff;
           valid_txn_i  = 1'b0;
-          if (next_ot > 0) begin
-            next_st    = F_CLR;
-            valid_addr = ~addr_ready;
-          end
+          next_st      = F_CLR;
         end
 
         if (~fetch_start_i) begin
@@ -125,9 +122,9 @@ module fetch
       F_CLR: begin
         // After a jump request:
         //  - Finish ongoing txn
+        valid_txn_i = 1'b0;
         if (req_ff && ~addr_ready) begin
           valid_addr  = 1'b1;
-          valid_txn_i = 1'b0;
         end
         else if (next_ot == '0) begin
           next_st    = F_REQ;

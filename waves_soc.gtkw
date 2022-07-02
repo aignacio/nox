@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Sat Jul  2 14:24:36 2022
+[*] Sat Jul  2 16:03:45 2022
 [*]
 [dumpfile] "/Users/aignacio/projects/nox/nox_waves.fst"
-[dumpfile_mtime] "Sat Jul  2 14:21:32 2022"
-[dumpfile_size] 2531393
+[dumpfile_mtime] "Sat Jul  2 15:55:00 2022"
+[dumpfile_size] 3014221
 [savefile] "/Users/aignacio/projects/nox/waves_soc.gtkw"
-[timestart] 3827
+[timestart] 3369
 [size] 3609 1258
-[pos] 131 703
-*-1.883889 3839 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] 107 373
+*-3.413412 3426 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.nox_soc.
 [treeopen] TOP.nox_soc.u_nox_wrapper.
@@ -33,10 +33,9 @@ TOP.nox_soc.start_fetch
 @22
 TOP.nox_soc.u_nox_wrapper.u_nox.u_decode.id_ex_ff.pc_dec[31:0]
 TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.fetch_addr_i[31:0]
-@29
+@28
 [color] 3
 TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.fetch_req_i
-@28
 TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.full_fifo
 @22
 TOP.nox_soc.u_nox_wrapper.u_nox.instr_axi_mosi_o.araddr[31:0]
@@ -300,6 +299,8 @@ TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.st_ff[1:0]
 @28
 TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.valid_txn_i
 TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.valid_txn_o
+@23
+TOP.nox_soc.u_nox_wrapper.u_nox.u_fetch.fetch_instr_o[31:0]
 @1000200
 -fetch_st
 [pattern_trace] 1
