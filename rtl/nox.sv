@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 26.06.2022
+ * Last Modified Date: 02.07.2022
  */
 module nox
   import utils_pkg::*;
@@ -83,6 +83,7 @@ module nox
   cb_to_axi #(
     .AXI_ID                (FETCH_IF_ID)
   ) u_instr_cb_to_axi(
+    .clk                   (clk),
     // Core bus Master I/F
     .cb_mosi_i             (instr_cb_mosi),
     .cb_miso_o             (instr_cb_miso),
@@ -94,6 +95,7 @@ module nox
   cb_to_axi  #(
     .AXI_ID                (LSU_IF_ID)
   ) u_lsu_cb_to_axi(
+    .clk                   (clk),
     // Core bus Master I/F
     .cb_mosi_i             (lsu_cb_mosi),
     .cb_miso_o             (lsu_cb_miso),

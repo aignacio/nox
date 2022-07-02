@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 30.06.2022
+ * Last Modified Date: 01.07.2022
  */
 
 `default_nettype wire
@@ -145,7 +145,7 @@ module nox_soc import utils_pkg::*; (
 
 `ifdef SIMULATION
   axi_mem #(
-    .MEM_KB(128)
+    .MEM_KB(24)
   ) u_imem (
     .clk              (clk),
     .rst              (rst),

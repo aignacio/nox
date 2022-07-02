@@ -222,7 +222,37 @@ module axi_crossbar_wrapper
     .M_BASE_ADDR  (M_BASE_ADDR),
     // Master interface address widths
     // M_COUNT concatenated fields of M_REGIONS concatenated fields of 32 bits
-    .M_ADDR_WIDTH (M_ADDR_WIDTH)
+    .M_ADDR_WIDTH (M_ADDR_WIDTH)//,
+    //// Slave interface AW channel register type (input)
+    //// 0 to bypass, 1 for simple buffer, 2 for skid buffer
+    //.S_AW_REG_TYPE({N_MASTERS{2'd2}}),
+    //// Slave interface W channel register type (input)
+    //// 0 to bypass, 1 for simple buffer, 2 for skid buffer
+    //.S_W_REG_TYPE({N_MASTERS{2'd2}}),
+    //// Slave interface B channel register type (output)
+    //// 0 to bypass, 1 for simple buffer, 2 for skid buffer
+    //.S_B_REG_TYPE({N_MASTERS{2'd2}}),
+    //// Slave interface AR channel register type (input)
+    //// 0 to bypass, 1 for simple buffer, 2 for skid buffer
+    //.S_AR_REG_TYPE({N_MASTERS{2'd2}}),
+    //// Slave interface R channel register type (output)
+    //// 0 to bypass, 1 for simple buffer, 2 for skid buffer
+    //.S_R_REG_TYPE({N_MASTERS{2'd2}}),
+    //// Master interface AW channel register type (output)
+    //// 0 to bypass, 1 for simple buffer, 2 for skid buffer
+    //.M_AW_REG_TYPE({N_SLAVES{2'd2}}),
+    //// Master interface W channel register type (output)
+    //// 0 to bypass, 1 for simple buffer, 2 for skid buffer
+    //.M_W_REG_TYPE({N_SLAVES{2'd2}}),
+    //// Master interface B channel register type (input)
+    //// 0 to bypass, 1 for simple buffer, 2 for skid buffer
+    //.M_B_REG_TYPE({N_SLAVES{2'd2}}),
+    //// Master interface AR channel register type (output)
+    //// 0 to bypass, 1 for simple buffer, 2 for skid buffer
+    //.M_AR_REG_TYPE({N_SLAVES{2'd2}}),
+    //// Master interface R channel register type (input)
+    //// 0 to bypass, 1 for simple buffer, 2 for skid buffer
+    //.M_R_REG_TYPE({N_SLAVES{2'd2}})
   ) u_axi_crossbar (
     .clk            (clk),
     .rst            (~arst),

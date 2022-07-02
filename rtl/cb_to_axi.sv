@@ -3,13 +3,14 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 23.10.2021
- * Last Modified Date: 30.06.2022
+ * Last Modified Date: 02.07.2022
  */
 module cb_to_axi
   import utils_pkg::*;
 #(
   parameter AXI_ID = 0
 )(
+  input                 clk,
   // Core bus Master I/F
   input   s_cb_mosi_t   cb_mosi_i,
   output  s_cb_miso_t   cb_miso_o,
