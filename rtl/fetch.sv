@@ -113,6 +113,9 @@ module fetch
           next_pc_buff = pc_addr_ff;
           valid_txn_i  = 1'b0;
           next_st      = F_CLR;
+          if (req_ff && addr_ready) begin
+            valid_addr = 1'b0;
+          end
         end
 
         if (~fetch_start_i) begin
