@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 16.10.2021
- * Last Modified Date: 02.07.2022
+ * Last Modified Date: 03.07.2022
  */
 module fetch
   import utils_pkg::*;
@@ -112,7 +112,11 @@ module fetch
           next_pc_addr = fetch_addr_i;
           next_pc_buff = pc_addr_ff;
           valid_txn_i  = 1'b0;
-          next_st      = F_CLR;
+
+          if ((req_ff && ~addr_ready) || (next_ot > 'd0)) begin
+            next_st    = F_CLR;
+          end
+
           if (req_ff && addr_ready) begin
             valid_addr = 1'b0;
           end
