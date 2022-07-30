@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 17.03.2022
- * Last Modified Date: 26.05.2022
+ * Last Modified Date: 29.07.2022
  */
 
 `default_nettype wire
@@ -12,6 +12,7 @@ module clk_mgmt(
 `ifdef KC705_KINTEX_7_100MHz
   input   clk_in_p,
   input   clk_in_n,
+  output  clk_200MHz,
   input   rst_in,
   output  clk_out,
   output  clk_locked
@@ -30,7 +31,7 @@ module clk_mgmt(
 `ifdef NEXYS_VIDEO_50MHz
   logic        clkfbout_clk_wiz_2;
   logic        clkfbout_buf_clk_wiz_2;
-  logic        clk_out_clk_wiz_2;
+  logic        clk_out_50MHz;
   logic        clk_in_pn;
 
   PLLE2_ADV#(
@@ -46,7 +47,7 @@ module clk_mgmt(
     .CLKIN1_PERIOD        (10.000)
   ) plle2_adv_inst (
     .CLKFBOUT            (clkfbout_clk_wiz_2),
-    .CLKOUT0             (clk_out_clk_wiz_2),
+    .CLKOUT0             (clk_out_50MHz),
     .CLKOUT1             (),
     .CLKOUT2             (),
     .CLKOUT3             (),
@@ -84,7 +85,7 @@ module clk_mgmt(
 
   BUFG clkout1_buf(
     .O (clk_out),
-    .I (clk_out_clk_wiz_2)
+    .I (clk_out_50MHz)
   );
 
 `endif
@@ -92,7 +93,7 @@ module clk_mgmt(
 `ifdef QMTECH_KINTEX_7_100MHz
   logic        clkfbout_clk_wiz_2;
   logic        clkfbout_buf_clk_wiz_2;
-  logic        clk_out_clk_wiz_2;
+  logic        clk_out_50MHz;
 
   PLLE2_ADV#(
     .BANDWIDTH            ("OPTIMIZED"),
@@ -107,7 +108,7 @@ module clk_mgmt(
     .CLKIN1_PERIOD        (20.000)
   ) plle2_adv_inst (
     .CLKFBOUT            (clkfbout_clk_wiz_2),
-    .CLKOUT0             (clk_out_clk_wiz_2),
+    .CLKOUT0             (clk_out_50MHz),
     .CLKOUT1             (),
     .CLKOUT2             (),
     .CLKOUT3             (),
@@ -146,14 +147,14 @@ module clk_mgmt(
 
   BUFG clkout1_buf(
     .O (clk_out),
-    .I (clk_out_clk_wiz_2)
+    .I (clk_out_50MHz)
   );
 `endif
 
 `ifdef KC705_KINTEX_7_100MHz
   logic        clkfbout_clk_wiz_2;
   logic        clkfbout_buf_clk_wiz_2;
-  logic        clk_out_clk_wiz_2;
+  logic        clk_out_50MHz;
 
   PLLE2_ADV#(
     .BANDWIDTH            ("OPTIMIZED"),
@@ -168,7 +169,7 @@ module clk_mgmt(
     .CLKIN1_PERIOD        (5.000)
   ) plle2_adv_inst (
     .CLKFBOUT            (clkfbout_clk_wiz_2),
-    .CLKOUT0             (clk_out_clk_wiz_2),
+    .CLKOUT0             (clk_out_50MHz),
     .CLKOUT1             (),
     .CLKOUT2             (),
     .CLKOUT3             (),
@@ -195,6 +196,8 @@ module clk_mgmt(
     //.RST                 (rst_in)
   );
 
+  assign clk_200MHz = clk_in_pn;
+
   IBUFDS clkin1_ibufgds (
     .O  (clk_in_pn),
     .I  (clk_in_p),
@@ -213,7 +216,7 @@ module clk_mgmt(
 
   BUFG clkout1_buf(
     .O (clk_out),
-    .I (clk_out_clk_wiz_2)
+    .I (clk_out_50MHz)
   );
 `endif
 

@@ -42,6 +42,29 @@
       `define AXI_TXN_ID_WIDTH    8
   `endif
 
+  `ifndef AXIS_DATA_WIDTH
+    `define AXIS_DATA_WIDTH       8
+  `endif
+
+  `ifndef AXIS_TXN_ID_WIDTH
+    `define AXIS_TXN_ID_WIDTH     8
+  `endif
+
+  `ifndef AXIS_TDST_WIDTH
+    `define AXIS_TDST_WIDTH       1
+  `endif
+
+  `ifndef AXIS_TUSER_WIDTH
+    `define AXIS_TUSER_WIDTH      1
+  `endif
+
+  typedef logic [`AXIS_DATA_WIDTH-1:0]     axis_data_t;
+  typedef logic [`AXIS_DATA_WIDTH/8-1:0]   axis_strb_t;
+  typedef logic [`AXIS_DATA_WIDTH/8-1:0]   axis_tkeep_t;
+  typedef logic [`AXIS_TXN_ID_WIDTH-1:0]   axis_tid_t;
+  typedef logic [`AXIS_TDST_WIDTH-1:0]     axis_tdest_t;
+  typedef logic [`AXIS_TUSER_WIDTH-1:0]    axis_tuser_t;
+
   typedef logic [`AXI_ADDR_WIDTH-1:0]      axi_addr_t;
   typedef logic [`AXI_DATA_WIDTH-1:0]      axi_data_t;
   typedef logic [`AXI_ALEN_WIDTH-1:0]      axi_alen_t;
@@ -190,5 +213,19 @@
     logic           rready;
   } s_axil_mosi_t;
 
+  typedef struct packed {
+    logic           tvalid;
+    axis_data_t     tdata;
+    axis_strb_t     tstrb;
+    axis_tkeep_t    tkeep;
+    logic           tlast;
+    axis_tid_t      tid;
+    axis_tdest_t    tdest;
+    axis_tuser_t    tuser;
+  } s_axis_mosi_t;
+
+  typedef struct packed {
+    logic           tready;
+  } s_axis_miso_t;
   //endpackage
 `endif
