@@ -7,3 +7,6 @@
 [submodule "xlnx/rtl/wbuart32"]
 	path = xlnx/rtl/wbuart32
 	url = https://github.com/ZipCPU/wbuart32.git
+[submodule "xlnx/rtl/ethernet_axi"]
+	path = xlnx/rtl/ethernet_axi
+	url = git@github.com:aignacio/ethernet_axi.git
