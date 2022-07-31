@@ -21,6 +21,9 @@
 #define ETH_SEND_CLEAR        (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_SEND_FIFO_CLEAR_BYTE_OFFSET)
 #define ETH_SEND_WR_PTR       (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_SEND_FIFO_WR_PTR_BYTE_OFFSET)
 #define ETH_SEND_RD_PTR       (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_SEND_FIFO_RD_PTR_BYTE_OFFSET)
+#define ETH_RECV_WR_PTR       (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_RECV_FIFO_WR_PTR_BYTE_OFFSET)
+#define ETH_RECV_RD_PTR       (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_RECV_FIFO_RD_PTR_BYTE_OFFSET)
+#define ETH_RECV_UDP_LEN      (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_RECV_UDP_LENGTH_BYTE_OFFSET)
 
 typedef union {
   uint64_t  mac_address;
@@ -43,5 +46,9 @@ void set_local_mask_cfg(ip_t mask);
 void set_local_gateway_cfg(ip_t ip);
 uint32_t get_infifo_wrptr(void);
 uint32_t get_infifo_rdptr(void);
+uint32_t get_outfifo_wrptr(void);
+uint32_t get_outfifo_rdptr(void);
+uint32_t get_infifo_data(void);
+uint32_t get_udp_length_recv(void);
 
 #endif

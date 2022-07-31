@@ -22,6 +22,9 @@ volatile uint32_t* const eth_csr_send_pkt      = (uint32_t*) ETH_SEND_PKT;
 volatile uint32_t* const eth_csr_send_clear    = (uint32_t*) ETH_SEND_CLEAR;
 volatile uint32_t* const eth_csr_send_rd_ptr   = (uint32_t*) ETH_SEND_RD_PTR;
 volatile uint32_t* const eth_csr_send_wr_ptr   = (uint32_t*) ETH_SEND_WR_PTR;
+volatile uint32_t* const eth_csr_recv_rd_ptr   = (uint32_t*) ETH_RECV_RD_PTR;
+volatile uint32_t* const eth_csr_recv_wr_ptr   = (uint32_t*) ETH_RECV_WR_PTR;
+volatile uint32_t* const eth_csr_udp_len       = (uint32_t*) ETH_RECV_UDP_LEN;
 
 void set_local_mac_addr_cfg(mac_addr_t mac){
   uint32_t low  = mac.mcb[2]<<16|mac.mcb[1]<<8|mac.mcb[0];
@@ -82,10 +85,26 @@ void write_eth_udp_payload(uint8_t *msg, uint16_t len){
   }
 }
 
-uint32_t get_infifo_wrptr(void){
+uint32_t get_outfifo_wrptr(void){
   return *eth_csr_send_wr_ptr;
 }
 
-uint32_t get_infifo_rdptr(void){
+uint32_t get_outfifo_rdptr(void){
   return *eth_csr_send_rd_ptr;
+}
+
+uint32_t get_infifo_wrptr(void){
+  return *eth_csr_recv_wr_ptr;
+}
+
+uint32_t get_infifo_rdptr(void){
+  return *eth_csr_recv_rd_ptr;
+}
+
+uint32_t get_infifo_data(void){
+  return *eth_infifo;
+}
+
+uint32_t get_udp_length_recv(void){
+  return *eth_csr_udp_len;
 }

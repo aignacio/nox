@@ -70,14 +70,18 @@ void irq_timer_callback(void){
 
   uint8_t    payload[] = {"Hello from NoX!!"};
   write_eth_udp_payload(payload,16);
+  set_send_len(16);
   set_send_pkt();
-  printf("\n\r Mtimer IRQ! - RD_PTR=%d WR_PTR=%d",get_infifo_rdptr(),get_infifo_wrptr());
+  printf("\n\rMtimer IRQ! - LEN: %d - Infifo: RD=%d WR=%d \t Outfifo: RD=%d WR=%d", get_udp_length_recv(), get_infifo_rdptr(), get_infifo_wrptr(), get_outfifo_rdptr(), get_outfifo_wrptr());
+
+  /*for (;get_infifo_rdptr() != get_infifo_wrptr();)*/
+    /*printf("%x",get_infifo_data());*/
 }
 
 void irq_udp_callback(void){
   printf("\n\r UDP pkt received!");
-  clear_send_fifo_rd_ptr();
-  set_send_pkt();
+  /*clear_send_fifo_rd_ptr();*/
+  /*set_send_pkt();*/
 }
 
 int main(void) {
@@ -94,8 +98,8 @@ int main(void) {
   /*********************************************/
   /*********************************************/
   mac_addr_t mac;
-  ip_t       ip   = 0xc0a80182; // 192.168.1.130
-  ip_t       gateway = 0xc0a80101; // 192.168.1.1
+  ip_t ip = 0xc0a80182; // 192.168.1.130
+  ip_t gateway = 0xc0a80101; // 192.168.1.1
   mac.mac_address = 0x020000000000;
   set_local_mac_addr_cfg(mac);
   set_local_gateway_cfg(gateway);
@@ -110,7 +114,6 @@ int main(void) {
   mac.mac_address = 0x00e04c000752;
   set_send_mac_addr_cfg(mac);
   set_send_ip_addr_cfg(ip);
-  set_send_len(15);
   set_send_src_port(1234);
   set_send_dst_port(1234);
   /*set_send_pkt();*/
@@ -118,7 +121,8 @@ int main(void) {
   /*********************************************/
 
   uint64_t mtime_half_second = *mtimer;
-  mtime_half_second += 25000000;
+  //mtime_half_second += 25000000;
+  mtime_half_second += 2500;
   *mtimer_cmp = mtime_half_second;
 
   set_csr(mstatus,MSTATUS_MIE);

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 24.07.2022
+ * Last Modified Date: 30.07.2022
  */
 
 `default_nettype wire
@@ -138,7 +138,7 @@ module nox_soc import utils_pkg::*; (
   nox_wrapper u_nox_wrapper (
     .clk              (clk),
     .rst              (rst),
-    .irq_i            ({mtimer_irq,pkt_recv||pkt_sent,uart_rx_irq}),
+    .irq_i            ({mtimer_irq,pkt_recv,uart_rx_irq}),
     .start_fetch_i    (start_fetch),
     .start_addr_i     (core_rst),
     .instr_axi_mosi_o (masters_axi_mosi[0]),
@@ -263,7 +263,9 @@ module nox_soc import utils_pkg::*; (
     .phy_tx_ctl         (phy_tx_ctl),
     .phy_reset_n        (phy_reset_n),
     .phy_int_n          (phy_int_n),
-    .phy_pme_n          (phy_pme_n)
+    .phy_pme_n          (phy_pme_n),
+    .pkt_recv_o         (pkt_recv),
+    .pkt_sent_o         (pkt_sent)
   );
 
   //ila_0 u_ila_aignacio (

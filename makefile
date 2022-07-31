@@ -42,7 +42,52 @@ _SOC_VERILOG 	+=	xlnx/rtl/nox_wrapper.sv
 _SOC_VERILOG 	+=	xlnx/rtl/cdc_async_fifo.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_spi_master.sv
 _SOC_VERILOG 	+=	xlnx/rtl/axi_mtimer.sv
+_SOC_VERILOG 	+=	xlnx/rtl/axil_to_axi.sv
 _SOC_VERILOG 	+=	sw/bootloader/output/boot_rom.sv
+_SOC_VERILOG 	+=	$(shell find xlnx/rtl/ethernet_axi/rggen-verilog-rtl -type f -iname *.v)
+_SOC_VERILOG 	+=	$(shell find xlnx/rtl/ethernet_axi/rtl -type f -iname *.sv)
+_SOC_VERILOG 	+=	$(shell find xlnx/rtl/ethernet_axi/rtl -type f -iname *.v)
+_SOC_VERILOG 	+=	xlnx/rtl/ethernet_axi/csr_out/eth_csr.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/eth_mac_mii_fifo.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/eth_mac_mii.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/eth_axis_rx.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/eth_axis_tx.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/udp_complete.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/ip_arb_mux.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/ip_complete.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/udp.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/udp_ip_rx.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/udp_ip_tx.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/udp_checksum_gen.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/lib/axis/rtl/axis_async_fifo_adapter.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/lib/axis/rtl/axis_fifo.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/lib/axis/rtl/axis_async_fifo.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/eth_arb_mux.v
+#_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/lib/axis/rtl/arbiter.v
+#_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/lib/axis/rtl/priority_encoder.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/mii_phy_if.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/axis_gmii_rx.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/axis_gmii_tx.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/eth_mac_1g.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/ip.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/ip_eth_tx.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/ip_eth_rx.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/arp.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/arp_cache.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/arp_eth_rx.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/arp_eth_tx.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/ssio_sdr_in.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/lfsr.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/eth_mac_1g_rgmii_fifo.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/eth_mac_1g_rgmii.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/rgmii_phy_if.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/ssio_ddr_in.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/iddr.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/oddr.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/eth_mac_1g_gmii_fifo.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/eth_mac_1g_gmii.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/gmii_phy_if.v
+_SOC_VERILOG	+=  xlnx/rtl/ethernet_axi/verilog-ethernet/rtl/ssio_sdr_out.v
 
 ifeq ($(AXI_IF),0)
 _SOC_VERILOG 	+=	xlnx/rtl/nox_soc_ahb.sv
@@ -53,6 +98,7 @@ SOC_VERILOG		:=	$(_SOC_VERILOG)
 
 # Design include files
 _INCS_VLOG		?=	rtl/inc
+_INCS_VLOG		+=	xlnx/rtl/ethernet_axi/rggen-verilog-rtl
 INCS_VLOG			:=	$(addprefix -I,$(_INCS_VLOG))
 
 # Parameters of simulation
@@ -120,7 +166,7 @@ RUN_CMD_COMP	:=	docker run --rm --name ship_nox	\
 
 RUN_SW				:=	sw/hello_world/output/hello_world.elf
 #RUN_SW_SOC		:=	sw/bootloader/output/bootloader.elf
-RUN_SW_SOC		:=	sw/soc_hello_world/output/soc_hello_world.elf
+RUN_SW_SOC		:=	sw/eth_hello_world/output/eth_hello_world.elf
 #RUN_SW_SOC		:=	sw/FreeRTOS_demo/output/FreeRTOS_demo.elf
 
 CPPFLAGS_VERI	:=	"$(INCS_CPP) -O0 -g3 -Wall						\
@@ -244,10 +290,10 @@ soc: clean $(VERI_EXE_SOC)
 	@echo "\n"
 
 $(RUN_SW_SOC):
-	make -C sw/soc_hello_world all UART_MODE=UART_SIM
+	make -C sw/eth_hello_world all UART_MODE=UART_SIM
 
 run_soc: $(RUN_SW_SOC)
-	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 100000 -e $<
+	$(RUN_CMD) ./$(VERI_EXE_SOC) -s 150000 -e $<
 
 ##########################
 #	RISC-V Compliance test #
