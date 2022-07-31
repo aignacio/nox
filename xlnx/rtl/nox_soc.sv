@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 30.07.2022
+ * Last Modified Date: 31.07.2022
  */
 
 `default_nettype wire
@@ -267,6 +267,30 @@ module nox_soc import utils_pkg::*; (
     .pkt_recv_o         (pkt_recv),
     .pkt_sent_o         (pkt_sent)
   );
+
+  //ila_0 u_ila_aignacio (
+    //.clk     (clk),
+    //.probe0  (u_ethernet.udp_hdr_valid),                  // 1
+    //.probe1  (u_ethernet.recv_udp.mac),                   // 48
+    //.probe2  (u_ethernet.recv_udp.ip),                    // 32
+    //.probe3  (u_ethernet.recv_udp.src_port),              // 16
+    //.probe4  (u_ethernet.recv_udp.dst_port),              // 16
+    //.probe5  (u_ethernet.recv_udp.length),                // 16
+    //.probe6  (u_ethernet.axis_mosi_frame_output.tdata),   // 8
+    //.probe7  (u_ethernet.axis_mosi_frame_output.tvalid),  // 1
+    //.probe8  (u_ethernet.axis_miso_frame_output.tready),  // 1
+    //.probe9  (u_ethernet.axis_mosi_frame_output.tlast),   // 1
+    //.probe10 (u_ethernet.axis_mosi_frame_output.tuser),   // 1
+    //.probe11 (u_ethernet.infifo_status.done),             // 1
+    //.probe12 (u_ethernet.infifo_status.rd_ptr),           // 32
+    //.probe13 (u_ethernet.infifo_status.wr_ptr),           // 32
+    //.probe14 (u_ethernet.infifo_status.full),             // 1
+    //.probe15 (u_ethernet.infifo_status.empty),            // 1
+    //.probe16 (u_ethernet.u_infifo.fifo_st_o.done),        // 1
+    //.probe17 (u_ethernet.u_infifo.axis_sin_mosi.tvalid),  // 1
+    //.probe18 (u_ethernet.u_infifo.axis_sin_mosi.tlast),   // 1
+    //.probe19 (u_ethernet.u_infifo.axis_sin_miso.tready)   // 1
+  //);
 
   //ila_0 u_ila_aignacio (
     //.clk(clk),

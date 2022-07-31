@@ -19,6 +19,7 @@
 #define ETH_SEND_UDP_DST_PORT (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_SEND_DST_PORT_BYTE_OFFSET)
 #define ETH_SEND_PKT          (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_SEND_PKT_BYTE_OFFSET)
 #define ETH_SEND_CLEAR        (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_SEND_FIFO_CLEAR_BYTE_OFFSET)
+#define ETH_RECV_CLEAR        (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_RECV_FIFO_CLEAR_BYTE_OFFSET)
 #define ETH_SEND_WR_PTR       (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_SEND_FIFO_WR_PTR_BYTE_OFFSET)
 #define ETH_SEND_RD_PTR       (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_SEND_FIFO_RD_PTR_BYTE_OFFSET)
 #define ETH_RECV_WR_PTR       (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_RECV_FIFO_WR_PTR_BYTE_OFFSET)
@@ -39,7 +40,8 @@ void set_send_src_port(uint32_t port);
 void set_send_dst_port(uint32_t port);
 void write_eth_udp_payload(uint8_t *msg, uint16_t len);
 void set_send_pkt(void);
-void clear_send_fifo_rd_ptr(void);
+void clear_send_fifo_ptr(void);
+void clear_recv_fifo_ptr(void);
 void set_local_ip_addr_cfg(ip_t ip);
 void set_local_mac_addr_cfg(mac_addr_t mac);
 void set_local_mask_cfg(ip_t mask);

@@ -73,7 +73,7 @@ void irq_timer_callback(void){
   set_send_len(16);
   set_send_pkt();
   printf("\n\rMtimer IRQ! - LEN: %d - Infifo: RD=%d WR=%d \t Outfifo: RD=%d WR=%d", get_udp_length_recv(), get_infifo_rdptr(), get_infifo_wrptr(), get_outfifo_rdptr(), get_outfifo_wrptr());
-
+  clear_recv_fifo_ptr();
   /*for (;get_infifo_rdptr() != get_infifo_wrptr();)*/
     /*printf("%x",get_infifo_data());*/
 }

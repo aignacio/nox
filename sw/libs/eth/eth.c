@@ -20,6 +20,7 @@ volatile uint32_t* const eth_csr_send_src_port = (uint32_t*) ETH_SEND_UDP_SRC_PO
 volatile uint32_t* const eth_csr_send_dst_port = (uint32_t*) ETH_SEND_UDP_DST_PORT;
 volatile uint32_t* const eth_csr_send_pkt      = (uint32_t*) ETH_SEND_PKT;
 volatile uint32_t* const eth_csr_send_clear    = (uint32_t*) ETH_SEND_CLEAR;
+volatile uint32_t* const eth_csr_recv_clear    = (uint32_t*) ETH_RECV_CLEAR;
 volatile uint32_t* const eth_csr_send_rd_ptr   = (uint32_t*) ETH_SEND_RD_PTR;
 volatile uint32_t* const eth_csr_send_wr_ptr   = (uint32_t*) ETH_SEND_WR_PTR;
 volatile uint32_t* const eth_csr_recv_rd_ptr   = (uint32_t*) ETH_RECV_RD_PTR;
@@ -72,8 +73,12 @@ void set_send_pkt(void){
   *eth_csr_send_pkt = 0x1;
 }
 
-void clear_send_fifo_rd_ptr(void){
+void clear_send_fifo_ptr(void){
   *eth_csr_send_clear = 0x1;
+}
+
+void clear_recv_fifo_ptr(void){
+  *eth_csr_recv_clear = 0x1;
 }
 
 void write_eth_udp_payload(uint8_t *msg, uint16_t len){
