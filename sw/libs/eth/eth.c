@@ -26,47 +26,36 @@ volatile uint32_t* const eth_csr_send_wr_ptr   = (uint32_t*) ETH_SEND_WR_PTR;
 volatile uint32_t* const eth_csr_recv_rd_ptr   = (uint32_t*) ETH_RECV_RD_PTR;
 volatile uint32_t* const eth_csr_recv_wr_ptr   = (uint32_t*) ETH_RECV_WR_PTR;
 volatile uint32_t* const eth_csr_udp_len       = (uint32_t*) ETH_RECV_UDP_LEN;
+volatile uint32_t* const eth_csr_clear_irq     = (uint32_t*) ETH_CLEAR_IRQ;
 
-void set_local_mac_addr_cfg(mac_addr_t mac){
-  uint32_t low  = mac.mcb[2]<<16|mac.mcb[1]<<8|mac.mcb[0];
-  uint32_t high = mac.mcb[5]<<16|mac.mcb[4]<<8|mac.mcb[3];
+void eth_set_local_cfg(eth_local_cfg_t cfg){
+  // MAC address
+  uint32_t low  = cfg.mac_addr.val_b[2]<<16|cfg.mac_addr.val_b[1]<<8|cfg.mac_addr.val_b[0];
+  uint32_t high = cfg.mac_addr.val_b[5]<<16|cfg.mac_addr.val_b[4]<<8|cfg.mac_addr.val_b[3];
   *eth_csr_loc_mac_low  = low;
   *eth_csr_loc_mac_high = high;
+  // IPv4 addr.
+  *eth_csr_loc_ip = cfg.ip_addr;
+  // IPv4 addr. gateway
+  *eth_csr_gateway_ip = cfg.ip_gateway;
+  // Subnet Mask
+  *eth_csr_subnet_mask = cfg.subnet_mask;
 }
 
-void set_local_ip_addr_cfg(ip_t ip){
-  *eth_csr_loc_ip = ip;
-}
-
-void set_local_gateway_cfg(ip_t ip){
-  *eth_csr_gateway_ip = ip;
-}
-
-void set_local_mask_cfg(ip_t mask){
-  *eth_csr_subnet_mask = mask;
-}
-
-void set_send_mac_addr_cfg(mac_addr_t mac){
-  uint32_t low  = mac.mcb[2]<<16|mac.mcb[1]<<8|mac.mcb[0];
-  uint32_t high = mac.mcb[5]<<16|mac.mcb[4]<<8|mac.mcb[3];
+void eth_set_send_cfg(eth_cfg_t cfg){
+  // MAC address
+  uint32_t low  = cfg.mac_addr.val_b[2]<<16|cfg.mac_addr.val_b[1]<<8|cfg.mac_addr.val_b[0];
+  uint32_t high = cfg.mac_addr.val_b[5]<<16|cfg.mac_addr.val_b[4]<<8|cfg.mac_addr.val_b[3];
   *eth_csr_send_mac_low  = low;
   *eth_csr_send_mac_high = high;
-}
-
-void set_send_ip_addr_cfg(ip_t ip){
-  *eth_csr_send_ip = ip;
-}
-
-void set_send_len(uint32_t len){
-  *eth_csr_send_len = len;
-}
-
-void set_send_src_port(uint32_t port){
-  *eth_csr_send_src_port = port;
-}
-
-void set_send_dst_port(uint32_t port){
-  *eth_csr_send_dst_port = port;
+  // IPv4 addr.
+  *eth_csr_send_ip = cfg.ip_addr;
+  // UDP src port
+  *eth_csr_send_src_port = cfg.src_port;
+  // UDP dst port
+  *eth_csr_send_dst_port = cfg.dst_port;
+  // UDP pkt len
+  *eth_csr_send_len = cfg.len;
 }
 
 void set_send_pkt(void){
@@ -112,4 +101,8 @@ uint32_t get_infifo_data(void){
 
 uint32_t get_udp_length_recv(void){
   return *eth_csr_udp_len;
+}
+
+void clear_irq_eth(void){
+  *eth_csr_clear_irq = 0x1;
 }

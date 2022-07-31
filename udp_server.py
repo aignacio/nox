@@ -1,7 +1,7 @@
 import socket
 from datetime import datetime
 
-localIP     = "192.168.1.90"
+localIP     = "192.168.0.10"
 localPort   = 1234
 bufferSize  = 1024
 msgFromServer = "Hello UDP Client"

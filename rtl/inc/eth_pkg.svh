@@ -50,7 +50,7 @@
   `endif
   `endif
 
-  localparam INFIFO_KB_SIZE                  = 4;
+  localparam INFIFO_KB_SIZE                  = 1;
   localparam OUTFIFO_KB_SIZE                 = 1;
   localparam ETH_OT_FIFO                     = 4;
 

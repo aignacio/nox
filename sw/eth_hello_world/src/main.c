@@ -70,7 +70,6 @@ void irq_timer_callback(void){
 
   uint8_t    payload[] = {"Hello from NoX!!"};
   write_eth_udp_payload(payload,16);
-  set_send_len(16);
   set_send_pkt();
   printf("\n\rMtimer IRQ! - LEN: %d - Infifo: RD=%d WR=%d \t Outfifo: RD=%d WR=%d", get_udp_length_recv(), get_infifo_rdptr(), get_infifo_wrptr(), get_outfifo_rdptr(), get_outfifo_wrptr());
   clear_recv_fifo_ptr();
@@ -79,9 +78,16 @@ void irq_timer_callback(void){
 }
 
 void irq_udp_callback(void){
-  printf("\n\r UDP pkt received!");
-  /*clear_send_fifo_rd_ptr();*/
-  /*set_send_pkt();*/
+  printf("\n\r UDP pkt received! ");
+  /*if (get_udp_length_recv() == 16){*/
+    /*for (int i=0;i<4;i++){*/
+      /*uint8_t str[20];*/
+      /*strcpy(str, get_infifo_data());*/
+      /*printf("%s",str);*/
+    /*}*/
+  /*}*/
+  clear_recv_fifo_ptr();
+  clear_irq_eth();
 }
 
 int main(void) {
@@ -90,38 +96,29 @@ int main(void) {
 
   // 50MHz / 115200 = 434
   *uart_cfg = FREQ_SYSTEM/BR_UART;
-  printf("\n\r ------> Nao trave aqui");
-  printf("\n\r ------> Eth CFG = %x",*eth_cfg);
-  printf("\nETH_SEND_MAC_LOW  = %x", ETH_SEND_MAC_LOW);
-  printf("\nETH_SEND_MAC_HIGH = %x", ETH_SEND_MAC_HIGH);
 
-  /*********************************************/
-  /*********************************************/
-  mac_addr_t mac;
-  ip_t ip = 0xc0a80182; // 192.168.1.130
-  ip_t gateway = 0xc0a80101; // 192.168.1.1
-  mac.mac_address = 0x020000000000;
-  set_local_mac_addr_cfg(mac);
-  set_local_gateway_cfg(gateway);
-  set_local_ip_addr_cfg(ip);
-  /*uint8_t    payload[] = {"Hello from NoX!"};*/
-  /*write_eth_udp_payload(payload,15);*/
-  /*********************************************/
-  /*********************************************/
-  /*********************************************/
-  /*********************************************/
-  ip = 0xc0a8015a; // 192.168.1.90
-  mac.mac_address = 0x00e04c000752;
-  set_send_mac_addr_cfg(mac);
-  set_send_ip_addr_cfg(ip);
-  set_send_src_port(1234);
-  set_send_dst_port(1234);
-  /*set_send_pkt();*/
-  /*********************************************/
+  /*********** Local Ethernet CFG **********/
+  eth_local_cfg_t local_cfg;
+
+  local_cfg.ip_addr =  0xc0a80082; // 0xc0a80182; // 192.168.001.130
+  local_cfg.ip_gateway = 0xc0a80001; // 192.168.001.001
+  local_cfg.subnet_mask = 0xFFFFFF00; // 255.255.255.000
+  local_cfg.mac_addr.val = 0x000A35A23456; // Xilinx Inc.
+  eth_set_local_cfg(local_cfg);
+
+  /********** Send ethernet CFG ************/
+  eth_cfg_t send_cfg;
+
+  send_cfg.len = 16;
+  send_cfg.src_port = 1234;
+  send_cfg.dst_port = 1234;
+  send_cfg.ip_addr = 0xc0a8000A; // 0xc0a8015A; // 192.168.001.090
+  send_cfg.mac_addr.val = 0xe0b55ff33298;
+  //0x00e04c000752; //0xe0b55ff33298;
+  eth_set_send_cfg(send_cfg);
   /*********************************************/
 
   uint64_t mtime_half_second = *mtimer;
-  //mtime_half_second += 25000000;
   mtime_half_second += 2500;
   *mtimer_cmp = mtime_half_second;
 

@@ -25,32 +25,46 @@
 #define ETH_RECV_WR_PTR       (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_RECV_FIFO_WR_PTR_BYTE_OFFSET)
 #define ETH_RECV_RD_PTR       (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_RECV_FIFO_RD_PTR_BYTE_OFFSET)
 #define ETH_RECV_UDP_LEN      (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_RECV_UDP_LENGTH_BYTE_OFFSET)
-
-typedef union {
-  uint64_t  mac_address;
-  uint8_t   mcb[8];
-} mac_addr_t;
+#define ETH_CLEAR_IRQ         (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_CLEAR_IRQ_BYTE_OFFSET)
 
 typedef uint32_t ip_t;
+typedef uint32_t sbm_t;
+typedef uint16_t udp_port_t;
+typedef uint16_t udp_len_t;
 
-void set_send_mac_addr_cfg(mac_addr_t mac);
-void set_send_ip_addr_cfg(ip_t ip);
-void set_send_len(uint32_t len);
-void set_send_src_port(uint32_t port);
-void set_send_dst_port(uint32_t port);
+typedef union {
+  uint64_t  val;
+  uint8_t   val_b[8];
+} mac_addr_t;
+
+typedef struct {
+  mac_addr_t  mac_addr;
+  ip_t        ip_addr;
+  ip_t        ip_gateway;
+  sbm_t       subnet_mask;
+} eth_local_cfg_t;
+
+typedef struct {
+  mac_addr_t  mac_addr;
+  ip_t        ip_addr;
+  udp_port_t  src_port;
+  udp_port_t  dst_port;
+  udp_len_t   len;
+} eth_cfg_t;
+
+// Prototypes
+void eth_set_local_cfg(eth_local_cfg_t cfg);
+void eth_set_send_cfg(eth_cfg_t cfg);
+
 void write_eth_udp_payload(uint8_t *msg, uint16_t len);
 void set_send_pkt(void);
 void clear_send_fifo_ptr(void);
 void clear_recv_fifo_ptr(void);
-void set_local_ip_addr_cfg(ip_t ip);
-void set_local_mac_addr_cfg(mac_addr_t mac);
-void set_local_mask_cfg(ip_t mask);
-void set_local_gateway_cfg(ip_t ip);
 uint32_t get_infifo_wrptr(void);
 uint32_t get_infifo_rdptr(void);
 uint32_t get_outfifo_wrptr(void);
 uint32_t get_outfifo_rdptr(void);
 uint32_t get_infifo_data(void);
 uint32_t get_udp_length_recv(void);
-
+void clear_irq_eth(void);
 #endif
