@@ -85,7 +85,7 @@ void irq_udp_callback(void){
       data[i] = get_infifo_data();
     data[4] = '\0';
     printf("%s", data);
-    clear_recv_fifo_ptr();
+    /*clear_recv_fifo_ptr();*/
   }
   else {
     printf("\n\r Unexpected pkt received!");
@@ -120,7 +120,8 @@ int main(void) {
   send_cfg.mac_addr.val = 0xe0b55ff33298;
   eth_set_send_cfg(send_cfg);
   //0x00e04c000752 - Wired     0xe0b55ff33298 - Wireless;
-  /*********************************************/
+
+  /********* Filter ethernet cfg ***********/
   eth_filter_cfg_t filter_cfg;
   filter_cfg.filter_en = 0x1;
   filter_cfg.udp_port = 1234;
