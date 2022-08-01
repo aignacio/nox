@@ -5,13 +5,11 @@
 
 volatile uint32_t* const eth_infifo            = (uint32_t*) ETH_INFIFO_ADDR;
 volatile uint32_t* const eth_outfifo           = (uint32_t*) ETH_OUTFIFO_ADDR;
-
 volatile uint32_t* const eth_csr_loc_mac_low   = (uint32_t*) ETH_LOC_MAC_LOW;
 volatile uint32_t* const eth_csr_loc_mac_high  = (uint32_t*) ETH_LOC_MAC_HIGH;
 volatile uint32_t* const eth_csr_loc_ip        = (uint32_t*) ETH_LOC_IP;
 volatile uint32_t* const eth_csr_gateway_ip    = (uint32_t*) ETH_GATEWAY_IP;
 volatile uint32_t* const eth_csr_subnet_mask   = (uint32_t*) ETH_SUBNET_MASK;
-
 volatile uint32_t* const eth_csr_send_mac_low  = (uint32_t*) ETH_SEND_MAC_LOW;
 volatile uint32_t* const eth_csr_send_mac_high = (uint32_t*) ETH_SEND_MAC_HIGH;
 volatile uint32_t* const eth_csr_send_ip       = (uint32_t*) ETH_SEND_IP;
