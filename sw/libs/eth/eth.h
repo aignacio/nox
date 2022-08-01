@@ -10,7 +10,6 @@
 #define ETH_LOC_IP            (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_ETH_IP_BYTE_OFFSET)
 #define ETH_GATEWAY_IP        (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_GATEWAY_IP_BYTE_OFFSET)
 #define ETH_SUBNET_MASK       (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_SUBNET_MASK_BYTE_OFFSET)
-
 #define ETH_SEND_MAC_LOW      (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_SEND_MAC_LOW_BYTE_OFFSET)
 #define ETH_SEND_MAC_HIGH     (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_SEND_MAC_HIGH_BYTE_OFFSET)
 #define ETH_SEND_IP           (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_SEND_IP_BYTE_OFFSET)
@@ -34,6 +33,11 @@ typedef uint32_t ip_t;
 typedef uint32_t sbm_t;
 typedef uint16_t udp_port_t;
 typedef uint16_t udp_len_t;
+
+typedef union {
+  uint16_t  rd_ptr;
+  uint16_t  wr_ptr;
+} fifo_ptr_t;
 
 typedef union {
   uint64_t  val;
@@ -64,18 +68,15 @@ typedef struct {
 // Prototypes
 void eth_set_local_cfg(eth_local_cfg_t cfg);
 void eth_set_send_cfg(eth_cfg_t cfg);
-
-void write_eth_udp_payload(uint8_t *msg, uint16_t len);
-void set_send_pkt(void);
-void clear_send_fifo_ptr(void);
-void clear_recv_fifo_ptr(void);
-uint32_t get_infifo_wrptr(void);
-uint32_t get_infifo_rdptr(void);
-uint32_t get_outfifo_wrptr(void);
-uint32_t get_outfifo_rdptr(void);
-uint32_t get_infifo_data(void);
-uint32_t get_udp_length_recv(void);
-void clear_irq_eth(void);
 void eth_set_filter(eth_filter_cfg_t cfg);
+void eth_send_pkt(void);
+void eth_clr_outfifo_ptr(void);
+void eth_clr_infifo_ptr(void);
+fifo_ptr_t eth_outfifo_ptr(void);
+fifo_ptr_t eth_infifo_ptr(void);
+void eth_write_infifo_data(uint8_t *msg, uint16_t len);
+uint32_t eth_get_recv_len(void);
+uint32_t eth_recv_data(void);
+void eth_clr_irqs(void);
 
 #endif

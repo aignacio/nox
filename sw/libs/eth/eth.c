@@ -67,19 +67,19 @@ void eth_set_filter(eth_filter_cfg_t cfg){
   *eth_csr_filter_ip = cfg.ip_addr;
 }
 
-void set_send_pkt(void){
+void eth_send_pkt(void){
   *eth_csr_send_pkt = 0x1;
 }
 
-void clear_send_fifo_ptr(void){
+void eth_clr_outfifo_ptr(void){
   *eth_csr_send_clear = 0x1;
 }
 
-void clear_recv_fifo_ptr(void){
+void eth_clr_infifo_ptr(void){
   *eth_csr_recv_clear = 0x1;
 }
 
-void write_eth_udp_payload(uint8_t *msg, uint16_t len){
+void eth_write_infifo_data(uint8_t *msg, uint16_t len){
   uint32_t val;
 
   for (int i=0;i<len;i+=4){
@@ -88,30 +88,28 @@ void write_eth_udp_payload(uint8_t *msg, uint16_t len){
   }
 }
 
-uint32_t get_outfifo_wrptr(void){
-  return *eth_csr_send_wr_ptr;
+fifo_ptr_t eth_outfifo_ptr(void){
+  fifo_ptr_t fifo;
+  fifo.wr_ptr = *eth_csr_send_wr_ptr;
+  fifo.rd_ptr = *eth_csr_send_rd_ptr;
+  return fifo;
 }
 
-uint32_t get_outfifo_rdptr(void){
-  return *eth_csr_send_rd_ptr;
+fifo_ptr_t eth_infifo_ptr(void){
+  fifo_ptr_t fifo;
+  fifo.wr_ptr = *eth_csr_recv_wr_ptr;
+  fifo.rd_ptr = *eth_csr_recv_rd_ptr;
+  return fifo;
 }
 
-uint32_t get_infifo_wrptr(void){
-  return *eth_csr_recv_wr_ptr;
-}
-
-uint32_t get_infifo_rdptr(void){
-  return *eth_csr_recv_rd_ptr;
-}
-
-uint32_t get_infifo_data(void){
-  return *eth_infifo;
-}
-
-uint32_t get_udp_length_recv(void){
+uint32_t eth_get_recv_len(void){
   return *eth_csr_udp_len;
 }
 
-void clear_irq_eth(void){
+uint32_t eth_recv_data(void){
+  return *eth_infifo;
+}
+
+void eth_clr_irqs(void){
   *eth_csr_clear_irq = 0x1;
 }

@@ -69,29 +69,28 @@ void irq_timer_callback(void){
   }
 
   uint8_t    payload[] = {"Hello from NoX!!"};
-  write_eth_udp_payload(payload,16);
-  set_send_pkt();
-  printf("\n\rMtimer IRQ! - LEN: %d - Infifo: RD=%d WR=%d \t Outfifo: RD=%d WR=%d", get_udp_length_recv(), get_infifo_rdptr(), get_infifo_wrptr(), get_outfifo_rdptr(), get_outfifo_wrptr());
-  //clear_recv_fifo_ptr();
-  /*for (;get_infifo_rdptr() != get_infifo_wrptr();)*/
-    /*printf("%x",get_infifo_data());*/
+  eth_write_infifo_data(payload,16);
+  eth_send_pkt();
+  fifo_ptr_t out_ptr = eth_outfifo_ptr();
+  fifo_ptr_t in_ptr = eth_infifo_ptr();
+  printf("\n\rMtimer IRQ! - RX len=%d \tIn: RD=%d WR=%d \tOut: RD=%d WR=%d", eth_get_recv_len(), in_ptr.rd_ptr, in_ptr.wr_ptr, out_ptr.rd_ptr, out_ptr.wr_ptr);
 }
 
 void irq_udp_callback(void){
   uint32_t data[100];
-  if (get_udp_length_recv() == 16){
+  if (eth_get_recv_len() == 16){
     printf("\n\r UDP recv: ");
     for (int i=0;i<4;i++)
-      data[i] = get_infifo_data();
+      data[i] = eth_recv_data();
     data[4] = '\0';
     printf("%s", data);
-    /*clear_recv_fifo_ptr();*/
+    eth_clr_infifo_ptr();
   }
   else {
     printf("\n\r Unexpected pkt received!");
-    clear_recv_fifo_ptr();
+    eth_clr_infifo_ptr();
   }
-  clear_irq_eth();
+  eth_clr_irqs();
 }
 
 int main(void) {
