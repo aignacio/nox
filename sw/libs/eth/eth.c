@@ -27,6 +27,9 @@ volatile uint32_t* const eth_csr_recv_rd_ptr   = (uint32_t*) ETH_RECV_RD_PTR;
 volatile uint32_t* const eth_csr_recv_wr_ptr   = (uint32_t*) ETH_RECV_WR_PTR;
 volatile uint32_t* const eth_csr_udp_len       = (uint32_t*) ETH_RECV_UDP_LEN;
 volatile uint32_t* const eth_csr_clear_irq     = (uint32_t*) ETH_CLEAR_IRQ;
+volatile uint32_t* const eth_csr_enable_filter = (uint32_t*) ETH_FILTER_EN;
+volatile uint32_t* const eth_csr_filter_port   = (uint32_t*) ETH_FILTER_PORT;
+volatile uint32_t* const eth_csr_filter_ip     = (uint32_t*) ETH_FILTER_IP;
 
 void eth_set_local_cfg(eth_local_cfg_t cfg){
   // MAC address
@@ -56,6 +59,12 @@ void eth_set_send_cfg(eth_cfg_t cfg){
   *eth_csr_send_dst_port = cfg.dst_port;
   // UDP pkt len
   *eth_csr_send_len = cfg.len;
+}
+
+void eth_set_filter(eth_filter_cfg_t cfg){
+  *eth_csr_enable_filter = cfg.filter_en;
+  *eth_csr_filter_port = cfg.udp_port;
+  *eth_csr_filter_ip = cfg.ip_addr;
 }
 
 void set_send_pkt(void){

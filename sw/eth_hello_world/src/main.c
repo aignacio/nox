@@ -72,21 +72,25 @@ void irq_timer_callback(void){
   write_eth_udp_payload(payload,16);
   set_send_pkt();
   printf("\n\rMtimer IRQ! - LEN: %d - Infifo: RD=%d WR=%d \t Outfifo: RD=%d WR=%d", get_udp_length_recv(), get_infifo_rdptr(), get_infifo_wrptr(), get_outfifo_rdptr(), get_outfifo_wrptr());
-  clear_recv_fifo_ptr();
+  //clear_recv_fifo_ptr();
   /*for (;get_infifo_rdptr() != get_infifo_wrptr();)*/
     /*printf("%x",get_infifo_data());*/
 }
 
 void irq_udp_callback(void){
-  printf("\n\r UDP pkt received! ");
-  /*if (get_udp_length_recv() == 16){*/
-    /*for (int i=0;i<4;i++){*/
-      /*uint8_t str[20];*/
-      /*strcpy(str, get_infifo_data());*/
-      /*printf("%s",str);*/
-    /*}*/
-  /*}*/
-  clear_recv_fifo_ptr();
+  uint32_t data[100];
+  if (get_udp_length_recv() == 16){
+    printf("\n\r UDP recv: ");
+    for (int i=0;i<4;i++)
+      data[i] = get_infifo_data();
+    data[4] = '\0';
+    printf("%s", data);
+    clear_recv_fifo_ptr();
+  }
+  else {
+    printf("\n\r Unexpected pkt received!");
+    clear_recv_fifo_ptr();
+  }
   clear_irq_eth();
 }
 
@@ -114,9 +118,14 @@ int main(void) {
   send_cfg.dst_port = 1234;
   send_cfg.ip_addr = 0xc0a8000A; // 0xc0a8015A; // 192.168.001.090
   send_cfg.mac_addr.val = 0xe0b55ff33298;
-  //0x00e04c000752; //0xe0b55ff33298;
   eth_set_send_cfg(send_cfg);
+  //0x00e04c000752 - Wired     0xe0b55ff33298 - Wireless;
   /*********************************************/
+  eth_filter_cfg_t filter_cfg;
+  filter_cfg.filter_en = 0x1;
+  filter_cfg.udp_port = 1234;
+  filter_cfg.ip_addr = send_cfg.ip_addr;
+  eth_set_filter(filter_cfg);
 
   uint64_t mtime_half_second = *mtimer;
   mtime_half_second += 2500;

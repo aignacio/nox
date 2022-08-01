@@ -26,6 +26,9 @@
 #define ETH_RECV_RD_PTR       (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_RECV_FIFO_RD_PTR_BYTE_OFFSET)
 #define ETH_RECV_UDP_LEN      (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_RECV_UDP_LENGTH_BYTE_OFFSET)
 #define ETH_CLEAR_IRQ         (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_CLEAR_IRQ_BYTE_OFFSET)
+#define ETH_FILTER_EN         (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_FILTER_EN_BYTE_OFFSET)
+#define ETH_FILTER_PORT       (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_FILTER_PORT_BYTE_OFFSET)
+#define ETH_FILTER_IP         (uint32_t*)(ETH_CSR_ADDR+ETH_CSR_FILTER_IP_BYTE_OFFSET)
 
 typedef uint32_t ip_t;
 typedef uint32_t sbm_t;
@@ -52,6 +55,12 @@ typedef struct {
   udp_len_t   len;
 } eth_cfg_t;
 
+typedef struct {
+  uint8_t     filter_en;
+  udp_port_t  udp_port;
+  ip_t        ip_addr;
+} eth_filter_cfg_t;
+
 // Prototypes
 void eth_set_local_cfg(eth_local_cfg_t cfg);
 void eth_set_send_cfg(eth_cfg_t cfg);
@@ -67,4 +76,6 @@ uint32_t get_outfifo_rdptr(void);
 uint32_t get_infifo_data(void);
 uint32_t get_udp_length_recv(void);
 void clear_irq_eth(void);
+void eth_set_filter(eth_filter_cfg_t cfg);
+
 #endif

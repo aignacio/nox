@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.03.2022
- * Last Modified Date: 31.07.2022
+ * Last Modified Date: 01.08.2022
  */
 
 `default_nettype wire
@@ -265,7 +265,8 @@ module nox_soc import utils_pkg::*; (
     .phy_int_n          (phy_int_n),
     .phy_pme_n          (phy_pme_n),
     .pkt_recv_o         (pkt_recv),
-    .pkt_sent_o         (pkt_sent)
+    .pkt_sent_o         (pkt_sent),
+    .pkt_recv_full_o    ()
   );
 
   //ila_0 u_ila_aignacio (
