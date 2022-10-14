@@ -7,7 +7,9 @@
  * Description       : http://fpgacpu.ca/fpga/Pipeline_Skid_Buffer.html
  */
 module skid_buffer
-  import utils_pkg::*;
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
 #(
   parameter int DATA_WIDTH = 1
 )(

@@ -1,24 +1,24 @@
 AXI_IF				?=	1
 GTKWAVE_PRE		:=	/Applications/gtkwave.app/Contents/Resources/bin/
 # Design files
-_SRC_VERILOG	?=	rtl/inc/axi_pkg.svh
-_SRC_VERILOG	?=	rtl/inc/ahb_pkg.svh
+_SRC_VERILOG	?=	amba_sv_structs/amba_axi_pkg.sv
+_SRC_VERILOG	+=	amba_sv_structs/amba_ahb_pkg.sv
 _SRC_VERILOG	+=	rtl/inc/nox_pkg.svh
 _SRC_VERILOG 	+=	rtl/inc/core_bus_pkg.svh
 _SRC_VERILOG 	+=	rtl/inc/riscv_pkg.svh
-_SRC_VERILOG 	+=	rtl/inc/utils_pkg.sv
+_SRC_VERILOG 	+=	rtl/inc/nox_utils_pkg.sv
 _SRC_VERILOG 	+=	$(shell find rtl/ -type f -iname *.sv)
 _CORE_VERILOG :=	$(_SRC_VERILOG)
 _SRC_VERILOG 	+=	$(shell find tb/  -type f -iname *.sv)
 SRC_VERILOG 	?=	$(_SRC_VERILOG)
 
 # SoC design files
-_SOC_VERILOG	?=	rtl/inc/axi_pkg.svh
-_SOC_VERILOG	?=	rtl/inc/ahb_pkg.svh
+_SOC_VERILOG	+=  amba_sv_structs/amba_axi_pkg.sv
+_SOC_VERILOG	+=  amba_sv_structs/amba_ahb_pkg.sv
 _SOC_VERILOG	+=	rtl/inc/nox_pkg.svh
 _SOC_VERILOG 	+=	rtl/inc/core_bus_pkg.svh
 _SOC_VERILOG 	+=	rtl/inc/riscv_pkg.svh
-_SOC_VERILOG 	+=	rtl/inc/utils_pkg.sv
+_SOC_VERILOG 	+=	rtl/inc/nox_utils_pkg.sv
 _SOC_VERILOG 	+=	tb/axi_mem.sv
 _SOC_VERILOG 	+=	$(_CORE_VERILOG)
 _SOC_VERILOG 	+=	$(shell find xlnx/rtl/verilog-axi/rtl -type f -iname *.v)

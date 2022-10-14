@@ -6,7 +6,9 @@
  * Last Modified Date: 03.07.2022
  */
 module fetch
-  import utils_pkg::*;
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
 #(
   parameter int SUPPORT_DEBUG  = 1,
   parameter int L0_BUFFER_SIZE = 2  // Max instrs locally stored

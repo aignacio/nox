@@ -7,3 +7,6 @@
 [submodule "xlnx/rtl/wbuart32"]
 	path = xlnx/rtl/wbuart32
 	url = https://github.com/ZipCPU/wbuart32.git
+[submodule "amba_sv_structs"]
+	path = amba_sv_structs
+	url = git@github.com:aignacio/amba_sv_structs.git

@@ -6,7 +6,9 @@
  * Last Modified Date: 23.02.2022
  */
 module wb
-  import utils_pkg::*;
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
 (
   input                 clk,
   input                 rst,

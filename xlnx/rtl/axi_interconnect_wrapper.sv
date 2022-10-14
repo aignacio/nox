@@ -1,5 +1,7 @@
 module axi_interconnect_wrapper
-  import utils_pkg::*;
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
 #(
   parameter N_MASTERS     = 1,
   parameter N_SLAVES      = 1,

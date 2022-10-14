@@ -8,7 +8,11 @@
 
 `default_nettype wire
 
-module nox_soc import utils_pkg::*; (
+module nox_soc
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
+(
 `ifdef KC705_KINTEX_7_100MHz
   input               clk_in_p,
   input               clk_in_n,

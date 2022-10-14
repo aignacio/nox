@@ -6,7 +6,9 @@
  * Last Modified Date: 01.07.2022
  */
 module decode
-  import utils_pkg::*;
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
 #(
   parameter int SUPPORT_DEBUG = 1
 )(

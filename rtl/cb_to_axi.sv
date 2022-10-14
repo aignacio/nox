@@ -6,7 +6,9 @@
  * Last Modified Date: 02.07.2022
  */
 module cb_to_axi
-  import utils_pkg::*;
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
 #(
   parameter AXI_ID = 0
 )(

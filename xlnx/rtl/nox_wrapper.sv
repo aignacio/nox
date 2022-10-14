@@ -5,7 +5,11 @@
  * Date              : 12.03.2022
  * Last Modified Date: 17.03.2022
  */
-module nox_wrapper import utils_pkg::*; (
+module nox_wrapper
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
+(
   input                 clk,
   input                 rst,
   input   [2:0]         irq_i,

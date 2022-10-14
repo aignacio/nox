@@ -1,6 +1,10 @@
 // Simple AXI-SPI peripheral design by aignacio
 // https://www.corelis.com/education/tutorials/spi-tutorial/
-module axi_spi_master import utils_pkg::*; #(
+module axi_spi_master
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
+#(
   parameter int SLAVES          = 1,
   parameter int SPI_PINS        = 10,          // Extra pins used to drive some displays
   parameter int BASE_ADDR       = 'hB000_0000,

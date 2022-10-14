@@ -9,7 +9,9 @@
 `default_nettype wire
 
 module nox_coremark
-  import utils_pkg::*;
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
 (
   input               clk_in,
   input               rst_cpu,

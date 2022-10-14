@@ -6,7 +6,9 @@
  * Last Modified Date: 25.02.2022
  */
 module cb_to_ahb
-  import utils_pkg::*;
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
 (
   // Core bus Master I/F
   input   s_cb_mosi_t   cb_mosi_i,

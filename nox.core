@@ -5,12 +5,12 @@ description: Nox RISC-V core
 filesets:
   rtl_nox:
     files:
-      - rtl/inc/axi_pkg.svh: {is_include_file: true}
-      - rtl/inc/ahb_pkg.svh: {is_include_file: true}
+      - amba_sv_structs/amba_axi_pkg.sv
+      - amba_sv_structs/amba_ahb_pkg.sv
       - rtl/inc/nox_pkg.svh: {is_include_file: true}
       - rtl/inc/core_bus_pkg.svh: {is_include_file: true}
       - rtl/inc/riscv_pkg.svh: {is_include_file: true}
-      - rtl/inc/utils_pkg.sv
+      - rtl/inc/nox_utils_pkg.sv
       - rtl/fetch.sv
       - rtl/fifo_nox.sv
       - rtl/nox.sv

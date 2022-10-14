@@ -6,7 +6,9 @@
  * Last Modified Date: 07.01.2022
  */
 module register_file
-  import utils_pkg::*;
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
 (
   input           clk,
   input           rst,

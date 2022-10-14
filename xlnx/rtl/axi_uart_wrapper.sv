@@ -1,5 +1,7 @@
 module axi_uart_wrapper
-  import utils_pkg::*;
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
 #(
   parameter [30:0] INITIAL_SETUP = 31'd25,
   parameter [3:0]	 LGFLEN = 4,

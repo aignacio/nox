@@ -1,4 +1,8 @@
-module axi_mtimer import utils_pkg::*; (
+module axi_mtimer
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
+(
   input                 clk,
   input                 rst,
   input   s_axi_mosi_t  axi_mosi,

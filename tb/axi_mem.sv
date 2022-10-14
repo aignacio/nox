@@ -1,4 +1,8 @@
-module axi_mem import utils_pkg::*; #(
+module axi_mem
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
+#(
   parameter MEM_KB = 4,
   parameter DISPLAY_TEST = `DISPLAY_TEST
 )(

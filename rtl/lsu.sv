@@ -6,7 +6,9 @@
  * Last Modified Date: 21.03.2022
  */
 module lsu
-  import utils_pkg::*;
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
 #(
   parameter int SUPPORT_DEBUG         = 1,
   parameter int TRAP_ON_MIS_LSU_ADDR  = 0,

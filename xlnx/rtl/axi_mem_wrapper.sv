@@ -1,4 +1,8 @@
-module axi_mem_wrapper import utils_pkg::*; #(
+module axi_mem_wrapper
+  import amba_axi_pkg::*;
+  import amba_ahb_pkg::*;
+  import nox_utils_pkg::*;
+#(
   parameter MEM_KB   = 4,
   parameter ID_WIDTH = 8
 )(
