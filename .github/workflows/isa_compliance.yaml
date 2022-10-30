@@ -1,0 +1,31 @@
+name: ISA Compliance
+on: [push, pull_request]
+
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    container: aignacio/riscof:latest
+    steps:
+      - name: Build/Install verilator
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get upgrade -y
+          sudo apt install -y --no-install-recommends make g++ perl python3 autoconf flex bison libfl2 libfl-dev zlibc zlib1g zlib1g-dev
+          git clone https://github.com/verilator/verilator.git
+          cd verilator
+          git checkout stable
+          autoconf
+          ./configure
+          make -j $(nproc)
+      - name: Build RISCOF NoX model
+      - run: |
+          make all RV_COMPLIANCE=1 IRAM_ADDR=0x80000000 DRAM_ADDR=0x10000000 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
+      - name: Run RISCOF test
+      - run: |
+          cd riscof_compliance && riscof --verbose info arch-test --clone
+          cd riscof_compliance && riscof validateyaml --config=config.ini
+          cd riscof_compliance && riscof testlist --config=config.ini --suite=riscv-arch-test/riscv-test-suite/ --env=riscv-arch-test/riscv-test-suite
+          cd riscof_compliance && riscof run --config=config.ini --suite=riscv-arch-test/riscv-test-suite/ --env=riscv-arch-test/riscv-test-suite/env
