@@ -11,9 +11,9 @@ jobs:
         with:
           submodules: 'recursive'
       - run: |
-          sudo apt-get update -y
-          sudo apt-get upgrade -y
-          sudo apt install -y --no-install-recommends make g++ perl python3 autoconf flex bison libfl2 libfl-dev zlibc zlib1g zlib1g-dev
+          apt-get update -y
+          apt-get upgrade -y
+          apt install -y --no-install-recommends make g++ perl python3 autoconf flex bison libfl2 libfl-dev zlibc zlib1g zlib1g-dev
           git clone https://github.com/verilator/verilator.git
           cd verilator
           git checkout stable
