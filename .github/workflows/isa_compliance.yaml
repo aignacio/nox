@@ -7,7 +7,7 @@ jobs:
     container: aignacio/riscof:latest
     steps:
       - name: Build/Install verilator
-        uses: actions/checkout@v3
+        #uses: actions/checkout@v3 - We comment here to disable the GA run once verilator reaches the max. container usage and cannot build the big SoC design
         with:
           submodules: 'recursive'
       - run: |
