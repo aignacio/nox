@@ -21,6 +21,6 @@ jobs:
           make -j $(nproc)
           sudo make install
       - name: Build model DUT
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - run: |
           make RUN_CMD="" lint

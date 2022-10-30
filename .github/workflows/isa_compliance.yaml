@@ -21,9 +21,11 @@ jobs:
           ./configure
           make -j $(nproc)
       - name: Build RISCOF NoX model
+        uses: actions/checkout@v3
       - run: |
           make all RV_COMPLIANCE=1 IRAM_ADDR=0x80000000 DRAM_ADDR=0x10000000 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
       - name: Run RISCOF test
+        uses: actions/checkout@v3
       - run: |
           cd riscof_compliance
           riscof --verbose info arch-test --clone
