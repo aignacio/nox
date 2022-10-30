@@ -10,6 +10,7 @@
 * [Quickstart](#quick)
 * [RTL uArch](#uarch)
 * [NoX SoC](#nox_soc)
+* [FreeRTOS](#freertos)
 * [Compliance Tests](#compliance)
 * [CoreMark](#coremark)
 * [License](#lic)
@@ -175,6 +176,10 @@ python3 sw/bootloader_elf.py --elf sw/soc_hello_world/output/soc_hello_world.elf
 
 The bootloader PB and the reset CPU are respectively SW2 and SW1 for the [K7 core board](https://github.com/ChinaQMTECH/DB_FPGA/blob/main/QMTECH_DB_For_FPGA_V04.pdf). You should have something like this:
 ![NoX SoC K7](docs/img/nox_soc_qmtech_k7.gif)
+
+## <a name="freertos"></a> FreeRTOS
+
+If you are willing to use FreeRTOS with this core, there is a template available here [NoX FreeRTOS template](https://github.com/aignacio/nox_freertos) with a running demo with `4x Tasks` running in parallel in the **NoX SoC**.
 
 ## <a name="compliance"></a> RISC-V ISA Compliance tests
 To run the compliance tests, two steps needs to be followed.
