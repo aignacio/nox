@@ -25,7 +25,8 @@ jobs:
           make all RV_COMPLIANCE=1 IRAM_ADDR=0x80000000 DRAM_ADDR=0x10000000 IRAM_KB_SIZE=2048 DRAM_KB_SIZE=128 WAVEFORM_USE=0
       - name: Run RISCOF test
       - run: |
-          cd riscof_compliance && riscof --verbose info arch-test --clone
-          cd riscof_compliance && riscof validateyaml --config=config.ini
-          cd riscof_compliance && riscof testlist --config=config.ini --suite=riscv-arch-test/riscv-test-suite/ --env=riscv-arch-test/riscv-test-suite
-          cd riscof_compliance && riscof run --config=config.ini --suite=riscv-arch-test/riscv-test-suite/ --env=riscv-arch-test/riscv-test-suite/env
+          cd riscof_compliance
+          riscof --verbose info arch-test --clone
+          riscof validateyaml --config=config.ini
+          riscof testlist --config=config.ini --suite=riscv-arch-test/riscv-test-suite/ --env=riscv-arch-test/riscv-test-suite
+          riscof run --config=config.ini --suite=riscv-arch-test/riscv-test-suite/ --env=riscv-arch-test/riscv-test-suite/env
