@@ -20,6 +20,7 @@ jobs:
           autoconf
           ./configure
           make -j $(nproc)
+          make install
       - name: Build RISCOF NoX model
         uses: actions/checkout@v3
       - run: |
