@@ -1,4 +1,4 @@
-[![Lint](https://github.com/aignacio/nox/actions/workflows/lint.yaml/badge.svg)](https://github.com/aignacio/nox/actions/workflows/lint.yaml)
+[![Lint](https://github.com/aignacio/nox/actions/workflows/lint.yaml/badge.svg)](https://github.com/aignacio/nox/actions/workflows/lint.yaml) [![ISA Compliance](https://github.com/aignacio/nox/actions/workflows/isa_compliance.yaml/badge.svg)](https://github.com/aignacio/nox/actions/workflows/isa_compliance.yaml)
 
 <img align="right" alt="rvss" src="docs/img/rv_logo.png" width="100"/>
 <img alt="nox" src="docs/img/logo_nox.svg" width="200"/>
