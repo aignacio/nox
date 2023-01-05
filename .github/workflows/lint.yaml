@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   lint_nox_sim:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Install Verilator
         uses: actions/checkout@v3
