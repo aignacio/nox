@@ -18,13 +18,13 @@ module axi_rom_wrapper
     axi_miso.awready = '0;
     axi_miso.wready  = '0;
     axi_miso.bid     = '0;
-    axi_miso.bresp   = axi_error_t'('0);
+    axi_miso.bresp   = axi_resp_t'('0);
     axi_miso.buser   = '0;
     axi_miso.bvalid  = bvalid_ff;
     axi_miso.arready = 'd1;
     axi_miso.rid     = axi_rid_ff;
     axi_miso.rdata   = '0;
-    axi_miso.rresp   = axi_error_t'('0);
+    axi_miso.rresp   = axi_resp_t'('0);
     axi_miso.rlast   = '0;
     axi_miso.ruser   = '0;
     axi_miso.rvalid  = '0;

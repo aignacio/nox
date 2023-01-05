@@ -138,7 +138,7 @@ module axi_crossbar_wrapper
       from_m_axi_wvalid  [m_idx*1            +: 1]            = masters_axi_mosi[m_idx].wvalid;
       masters_axi_miso[m_idx].wready   = from_m_axi_wready[m_idx*1+:1];
       masters_axi_miso[m_idx].bid      = from_m_axi_bid   [m_idx*ID_WIDTH+:ID_WIDTH];
-      masters_axi_miso[m_idx].bresp    = axi_error_t'(from_m_axi_bresp [m_idx*2+:2]);
+      masters_axi_miso[m_idx].bresp    = axi_resp_t'(from_m_axi_bresp [m_idx*2+:2]);
       masters_axi_miso[m_idx].buser    = from_m_axi_buser [m_idx*BUSER_WIDTH+:BUSER_WIDTH];
       masters_axi_miso[m_idx].bvalid   = from_m_axi_bvalid[m_idx*1+:1];
       from_m_axi_bready  [m_idx*1            +: 1]            = masters_axi_mosi[m_idx].bready;
@@ -156,7 +156,7 @@ module axi_crossbar_wrapper
       masters_axi_miso[m_idx].arready = from_m_axi_arready[m_idx*1+:1];
       masters_axi_miso[m_idx].rid     = from_m_axi_rid    [m_idx*ID_WIDTH+:ID_WIDTH];
       masters_axi_miso[m_idx].rdata   = from_m_axi_rdata  [m_idx*DATA_WIDTH+:DATA_WIDTH];
-      masters_axi_miso[m_idx].rresp   = axi_error_t'(from_m_axi_rresp  [m_idx*2+:2]);
+      masters_axi_miso[m_idx].rresp   = axi_resp_t'(from_m_axi_rresp  [m_idx*2+:2]);
       masters_axi_miso[m_idx].rlast   = from_m_axi_rlast  [m_idx*1+:1];
       masters_axi_miso[m_idx].ruser   = from_m_axi_ruser  [m_idx*1+:1];
       masters_axi_miso[m_idx].rvalid  = from_m_axi_rvalid [m_idx*1+:1];
