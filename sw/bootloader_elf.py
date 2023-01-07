@@ -80,7 +80,7 @@ def _fmt_data(data, size_file, size_mem):
             if ((i+2) < size_file):
                 word_int |= data[i+2]<<16
 
-            if ((i+3) < size_file):
+            if ((i+3) < siz.e_file):
                 word_int |= data[i+3]<<24
 
             # print(">>I=%d", i)
@@ -89,9 +89,9 @@ def _fmt_data(data, size_file, size_mem):
             # print('W=%s' % word_str)
             byte_list.append(bytes('@'+word_str+'\r','UTF-8'))
 
-    if size_file != size_mem:
-        for i in range(0,size_mem,4):
-            byte_list.append(bytes('@00000000\r','UTF-8'))
+    # if size_file != size_mem:
+        # for i in range(0,size_mem,4):
+            # byte_list.append(bytes('@00000000\r','UTF-8'))
     return byte_list
 
 def _transfer_program(elf, serial_p):
