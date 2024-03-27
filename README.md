@@ -159,6 +159,7 @@ Once it is finished and the board is programmed, the following output will be sh
 
 To transfer a program through the bootloader script:
 ```bash
+make -C sw/bootloader all
 make -C sw/soc_hello_world all
 python3 sw/bootloader_elf.py --elf sw/soc_hello_world/output/soc_hello_world.elf
 # Press rst button in the board
@@ -168,6 +169,7 @@ python3 sw/bootloader_elf.py --elf sw/soc_hello_world/output/soc_hello_world.elf
 
 If you have a [Kintex 7 Qmtech board](https://github.com/ChinaQMTECH/QMTECH_XC7K325T_CORE_BOARD?spm=a2g0o.detail.1000023.1.425dffdb5DOMQd), you can build/program the target with the commands below. 
 ```bash
+make -C sw/bootloader all
 fusesoc library add core  .
 fusesoc run --run --target=x7_synth core:nox:v0.0.1
 # Once the FPGA bitstream is downloaed, change the program to the demo
