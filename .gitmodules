@@ -9,4 +9,4 @@
 	url = https://github.com/ZipCPU/wbuart32.git
 [submodule "bus_arch_sv_pkg"]
 	path = bus_arch_sv_pkg
-	url = git@github.com:aignacio/bus_arch_sv_pkg.git
+	url = https://github.com/aignacio/bus_arch_sv_pkg.git
