@@ -13,6 +13,7 @@
 * [FreeRTOS](#freertos)
 * [Compliance Tests](#compliance)
 * [CoreMark](#coremark)
+* [Synthesis](#synth)
 * [License](#lic)
 
 ## <a name="intro"></a> Introduction
@@ -244,7 +245,25 @@ seedcrc          : 0x18f2
 [0]crcfinal      : 0x0cac
 Correct operation validated. See README.md for run and reporting rules.
 ```
+## <a name="synth"></a> Synthesis
+
+Adapting the setup to [Ibex Core - low risc](https://github.com/lowRISC/ibex/tree/master/syn), attached is the command to perform synthesis on the 45nm nangate PDK.
+```bash
+docker run  -v .:/test -w /test --rm aignacio/oss_cad_suite:latest bash -c "cd /test/synth && ./syn_yosys.sh"
+```
+
+### Area results:
+* 27.04 kGE @ 250MHz in 45nm
+
+```bash
+...
+End of script. Logfile hash: 39230763f8, CPU: user 15.51s system 0.15s, MEM: 175.05 MB peak
+Yosys 0.40+25 (git sha1 171577f90, clang++ 14.0.0-1ubuntu1.1 -fPIC -Os)
+Time spent: 72% 2416x select (5 sec), 22% 2x read_verilog (1 sec), ...
+Area in kGE =  27.04
+```
 
 ## <a name="lic"></a> License
+
 NoX is licensed under the permissive MIT license. Please refer to the [LICENSE](LICENSE) file for details.
 
