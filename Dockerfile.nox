@@ -6,7 +6,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install git file gcc make time wget zip -y
 #[sv2v]
-RUN wget https://github.com/zachjs/sv2v/releases/download/v0.0.9/sv2v-Linux.zip
+RUN wget https://github.com/zachjs/sv2v/releases/download/v0.0.11/sv2v-Linux.zip
 RUN unzip sv2v-Linux.zip && rm sv2v-Linux.zip
 RUN ln -s /sv2v-Linux/sv2v /usr/bin/sv2v && chmod +x /sv2v-Linux/sv2v
 # [Verilator]

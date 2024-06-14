@@ -1,0 +1,21 @@
+FROM ubuntu:latest
+LABEL author="Anderson Ignacio da Silva"
+LABEL maintainer="anderson@aignacio.com"
+ENV TZ=Europe/Dublin
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install git file gcc make time wget zip -y
+# OSS CAD suite
+RUN wget -c http://github.com/YosysHQ/oss-cad-suite-build/releases/download/2024-04-23/oss-cad-suite-linux-x64-20240423.tgz -O - | tar -xz
+ENV PATH="/oss-cad-suite/bin:$PATH"
+#[sv2v]
+RUN wget https://github.com/zachjs/sv2v/releases/download/v0.0.11/sv2v-Linux.zip
+RUN unzip sv2v-Linux.zip && rm sv2v-Linux.zip
+RUN ln -s /sv2v-Linux/sv2v /usr/bin/sv2v && chmod +x /sv2v-Linux/sv2v
+RUN git clone https://github.com/parallaxsw/OpenSTA.git /opensta
+RUN apt-get install cmake build-essential flex bison swig clang expect tcl-dev libeigen3-dev -y
+WORKDIR /opensta
+RUN mkdir build
+RUN cd build && cmake ../
+RUN cd build && make -j`nproc`
+RUN cd build && make install
