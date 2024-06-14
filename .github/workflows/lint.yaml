@@ -3,16 +3,20 @@ on: [push, pull_request]
 
 jobs:
   lint_nox_sim:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Install Verilator
         uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-      - run: |
-          sudo apt-get update -y
-          sudo apt-get upgrade -y
-          sudo apt install -y --no-install-recommends make g++ perl python3 autoconf flex bison libfl2 libfl-dev zlibc zlib1g zlib1g-dev
+        run: |
+          sudo apt update -y
+          sudo apt-get install git help2man perl python3 make autoconf g++ flex bison ccache -fy
+          sudo apt-get install libunwind-dev libgoogle-perftools-dev numactl perl-doc -fy
+          sudo apt-get install libfl2 -fy # Ubuntu only (ignore if gives error)
+          sudo apt-get install libfl-dev -fy # Ubuntu only (ignore if gives error)
+          sudo apt-get install zlib1g zlib1g-dev -fy # Ubuntu only (ignore if gives error)
+          sudo apt-get install lcov -fy
           git clone https://github.com/verilator/verilator.git
           cd verilator
           git checkout stable
@@ -20,7 +24,7 @@ jobs:
           ./configure
           make -j $(nproc)
           sudo make install
-      - name: Build model DUT
+      - name: Run lintT
         uses: actions/checkout@v3
       - run: |
           make RUN_CMD="" lint
