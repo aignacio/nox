@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 16.03.2022
-# Last Modified Date: 28.05.2022
+# Last Modified Date: 14.06.2024
 # Description       : Bootloader script to download binaries using the UART port
 #                     for the Pixel SoC bootloader ROM
 import serial
@@ -80,7 +80,7 @@ def _fmt_data(data, size_file, size_mem):
             if ((i+2) < size_file):
                 word_int |= data[i+2]<<16
 
-            if ((i+3) < siz.e_file):
+            if ((i+3) < size_file):
                 word_int |= data[i+3]<<24
 
             # print(">>I=%d", i)
