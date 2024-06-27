@@ -267,3 +267,16 @@ Area in kGE =  27.04
 
 NoX is licensed under the permissive MIT license. Please refer to the [LICENSE](LICENSE) file for details.
 
+## Ref.
+
+```tex
+@misc{silva2024noxcompactopensourceriscv,
+      title={NoX: a Compact Open-Source RISC-V Processor for Multi-Processor Systems-on-Chip}, 
+      author={Anderson I. Silva and Altamiro Susin and Fernanda L. Kastensmidt and Antonio Carlos S. Beck and Jose Rodrigo Azambuja},
+      year={2024},
+      eprint={2406.17878},
+      archivePrefix={arXiv},
+      primaryClass={cs.AR},
+      url={https://arxiv.org/abs/2406.17878}, 
+}
+```
