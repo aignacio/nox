@@ -2,6 +2,15 @@
 tape-out quality netlists and area/timing numbers it generates are not
 representative of what would be achievable with a tape-out quality flow**
 
+# The openPKD - 45nm dependency was removed because of its size
+# In order to allow the scripts in this folder to work, please clone like below
+
+```bash
+[submodule "synth/pdk_45nm"]
+	path = synth/pdk_45nm
+	url = https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts
+```
+
 # Yosys/OpenSTA Ibex Synthesis Flow
 
 This is a synthesis-only implementation flow using Yosys for Synthesis and

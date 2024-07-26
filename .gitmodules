@@ -10,6 +10,3 @@
 [submodule "bus_arch_sv_pkg"]
 	path = bus_arch_sv_pkg
 	url = https://github.com/aignacio/bus_arch_sv_pkg.git
-[submodule "synth/pdk_45nm"]
-	path = synth/pdk_45nm
-	url = https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts
